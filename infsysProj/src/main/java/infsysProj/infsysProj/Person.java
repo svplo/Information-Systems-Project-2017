@@ -1,22 +1,22 @@
 package infsysProj.infsysProj;
+//package ch.ethz.globis.isk.domain;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.zoodb.api.impl.ZooPC;
+import javax.jdo.annotations.PersistenceCapable;
 
 /**
- * Simple example for a persistent class.
- * 
- * @author ztilmann
+ * Represents a person. The person can have the role of an author
+ * or of an editor for some publications.
  */
-public class Person extends ZooPC {
-
-    private String name;
-    private Set<Person> friends = new HashSet<Person>();
-    
+@PersistenceCapable
+public class Person extends DomainObject {
+	
+	private String name;
+	private Set<Publication> authoredPublications = new HashSet<>();
+	private Set<Publication> editedPublications = new HashSet<>();
+	
     @SuppressWarnings("unused")
     private Person() {
         // All persistent classes need a no-args constructor. 
@@ -27,29 +27,40 @@ public class Person extends ZooPC {
         // no activation required
         this.name = name;
     }
+    
+    public String getName(){
+    	return name;
+    }
 
-    public void setName(String name) {
-        //activate and flag as dirty
-        zooActivateWrite();
-        this.name = name;
+    public void setName(String name){
+    	this.name = name;
     }
-    
-    public String getName() {
-        //activate
-        zooActivateRead();
-        return this.name;
+
+    public Set<Publication> getAuthoredPublications(){
+    	return authoredPublications;
     }
-    
-    public void addFriend(Person p) {
-        //activate and flag as dirty
-        zooActivateWrite();
-        this.friends.add(p);
+
+    public void setAuthoredPublications(Set<Publication> authoredPublications){
+    	this.authoredPublications = authoredPublications;
     }
-    
-    public Collection<Person> getFriends() {
-        //activate
-        zooActivateRead();
-        //prevent callers from modifying the set.
-        return Collections.unmodifiableSet(friends);
+
+    public Set<Publication> getEditedPublications(){
+    	return authoredPublications;
+    }
+    public void setEditedPublications(Set<Publication> editedPublications){
+    	this.editedPublications = editedPublications;
+    }
+
+	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+	@Override
+	public void setId(String id) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

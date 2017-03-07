@@ -1,3 +1,4 @@
+package infsysProj.infsysProj;
 /*
  * Copyright 2009-2016 Tilmann Zaeschke. All rights reserved.
  * 
@@ -18,7 +19,7 @@
  * 
  * See the README and COPYING files for further information. 
  */
-package infsysProj.infsysProj;
+
 
 import java.util.Collection;
 
@@ -34,7 +35,7 @@ import org.zoodb.tools.ZooHelper;
  * 
  * @author ztilmann
  */
-public class App {
+public class Main {
     
     
     public static void main(String[] args) {
@@ -76,10 +77,10 @@ public class App {
         
         //Once an object is loaded, normal method calls can be used to traverse the object graph.
         Person bart = barts.iterator().next();
-        System.out.println(bart.getName() + " has " + bart.getFriends().size() + " friend(s):");
-        for (Person p: bart.getFriends()) {
-            System.out.println(p.getName() + " is a friend of " + bart.getName());
-        }
+       // System.out.println(bart.getName() + " has " + bart.getFriends().size() + " friend(s):");
+       // for (Person p: bart.getFriends()) {
+       //     System.out.println(p.getName() + " is a friend of " + bart.getName());
+       // }
         
         
         pm.currentTransaction().commit();
@@ -109,12 +110,13 @@ public class App {
 
         //add Bart to Lisa's friends
         Person bart = new Person("Bart");
-        lisa.addFriend(bart);
+        pm.makePersistent(bart);
+        //lisa.addFriend(bart);
         
         pm.currentTransaction().commit();
         pm.currentTransaction().begin();
         
-        bart.addFriend(new Person("Maggie"));
+      //  bart.addFriend(new Person("Maggie"));
         
         pm.currentTransaction().commit();
         closeDB(pm);
@@ -152,3 +154,5 @@ public class App {
     }
        
 }
+
+
