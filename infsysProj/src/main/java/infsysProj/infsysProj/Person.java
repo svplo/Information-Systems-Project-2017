@@ -18,7 +18,7 @@ public class Person extends DomainObject {
 	private Set<Publication> editedPublications = new HashSet<>();
 	
     @SuppressWarnings("unused")
-    private Person() {
+	private Person() {
         // All persistent classes need a no-args constructor. 
         // The no-args constructor can be private.
     }
