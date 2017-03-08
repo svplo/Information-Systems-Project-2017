@@ -19,7 +19,7 @@ import infsysProj.infsysProj.Proceedings;
 
 /* Java GUI using swing
 * checkout resource: http://www.developer.com/java/creating-a-jdbc-gui-application.html
-* this class should be used to delete, update and create proceedings
+* this class is under construction!!!
 */
 
 public class ProceedingsUpdateUI extends JPanel {
