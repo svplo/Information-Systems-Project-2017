@@ -2,6 +2,7 @@ package infsysProj.infsysProj;
 //package ch.ethz.globis.isk.domain;
 
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -10,69 +11,93 @@ import java.util.Set;
  * at that conference edition.
  */
 public class Proceedings extends Publication {
-
+	String note;
+	int number;
+	Publisher publisher;
+	String volume;
+	String isbn;
+	Series series;
+	ConferenceEdition confEdition;
+	Set<InProceedings> publications = new HashSet<InProceedings>();
+	
     public String getNote(){
-    	return "";
+    	zooActivateRead();
+    	return note;
     }
 
     public void setNote(String note){
-    	
+    	zooActivateWrite();
+    	this.note = note;
     }
 
     public int getNumber(){
-    	return 0;
+    	zooActivateRead();
+    	return number;
     }
 
     public void setNumber(int number){
-    	
+    	zooActivateWrite();
+    	this.number = number;
     }
 
     public Publisher getPublisher(){
-    	return null;
+    	zooActivateRead();
+    	return publisher;
     }
 
     public void setPublisher(Publisher publisher){
-    	
+    	zooActivateWrite();
+    	this.publisher = publisher;
     }
 
     public String getVolume(){
-    	return "";
+    	zooActivateRead();
+    	return volume;
     }
 
     public void setVolume(String volume){
-    	
+    	zooActivateWrite();
+    	this.volume = volume;
     }
     
     public String getIsbn(){
-    	return "";
+    	zooActivateRead();
+    	return isbn;
     }
     
     public void setIsbn(String isbn){
-    	
+    	zooActivateWrite();
+    	this.isbn = isbn;
     }
 
     public Series getSeries(){
-    	return null;
+    	zooActivateRead();
+    	return series;
     }
 
     public void setSeries(Series series){
-    	
+    	zooActivateWrite();
+    	this.series = series;
     }
 
     public ConferenceEdition getConferenceEdition(){
-    	return null;
+    	zooActivateRead();
+    	return confEdition;
     }
 
     public void setConferenceEdition(ConferenceEdition conferenceEdition){
-    	
+    	zooActivateWrite();
+    	this.confEdition = conferenceEdition;
     }
 
     public Set<InProceedings> getPublications(){
-    	return null;
+    	zooActivateRead();
+    	return publications;
     }
 
     public void setPublications(Set<InProceedings> publications){
-    	
+    	zooActivateWrite();
+    	this.publications = publications;
     }
 
 }

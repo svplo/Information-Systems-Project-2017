@@ -1,6 +1,7 @@
 package infsysProj.infsysProj;
 //package ch.ethz.globis.isk.domain;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -8,37 +9,49 @@ import java.util.List;
  * types of publications.
  */
 public class Publication extends DomainObject {
-
+	String title;
+	List<Person> authors = new LinkedList<Person>();
+	int year;
+	String electronicEdition;
+	
     public String getTitle(){
-    	return "";
+    	zooActivateRead();
+		return title;
     }
 
     public void setTitle(String title){
-    	
+    	zooActivateWrite();
+    	this.title = title;
     }
 
     public List<Person> getAuthors(){
-    	return null;
+    	zooActivateRead();
+    	return authors;
     }
 
     public void setAuthors(List<Person> authors){
-    	
+    	zooActivateWrite();
+    	this.authors = authors;
     }
 
     public int getYear(){
-    	return 0;
+    	zooActivateRead();
+    	return year;
     }
 
     public void setYear(int year){
-    	
+    	zooActivateWrite();
+    	this.year = year;
     }
 
     public String getElectronicEdition(){
-    	return "";
+    	zooActivateRead();
+    	return electronicEdition;
     }
 
     public void setElectronicEdition(String electronicEdition){
-    	
+    	zooActivateWrite();
+    	this.electronicEdition = electronicEdition;
     }
     
 }

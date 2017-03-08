@@ -6,29 +6,38 @@ package infsysProj.infsysProj;
  * to the proceedings published after the conference edition.
  */
 public class ConferenceEdition extends DomainObject {
-
+	Conference conf;
+	int year;
+	Proceedings proceedings;
+	
     public Conference getConference(){
-    	return null;
+    	zooActivateRead();
+    	return conf;
     }
 
     public void setConference(Conference conference){
-    	
+    	zooActivateWrite();
+    	this.conf = conference;
     }
 
     public int getYear(){
-    	return 0;
+    	zooActivateRead();
+    	return year;
     }
 
     public void setYear(int year){
-    	
+    	zooActivateWrite();
+    	this.year = year;
     }
 
     public Proceedings getProceedings(){
-    	return null;
+    	zooActivateRead();
+    	return proceedings;
     }
 
     public void setProceedings(Proceedings proceedings){
-    	
+    	zooActivateWrite();
+    	this.proceedings = proceedings;
     }
     
 }

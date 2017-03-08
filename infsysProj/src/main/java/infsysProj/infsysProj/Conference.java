@@ -1,6 +1,7 @@
 package infsysProj.infsysProj;
 //package ch.ethz.globis.isk.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -8,19 +9,25 @@ import java.util.Set;
  * usually one edition per year.
  */
 public class Conference extends DomainObject {
-
+	String name;
+	Set<ConferenceEdition> editions = new HashSet<ConferenceEdition>();
+	
     public String getName(){
-    	return "";
+    	zooActivateRead();
+    	return name;
     }
 
     public void setName(String name){
-    	
+    	zooActivateWrite();
+    	this.name = name;
     }
     public Set<ConferenceEdition> getEditions(){
-    	return null;
+    	zooActivateRead();
+    	return editions;
     }
     public void setEditions(Set<ConferenceEdition> editions){
-    	
+    	zooActivateWrite();
+    	this.editions = editions;
     }
     
 }

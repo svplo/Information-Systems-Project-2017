@@ -29,10 +29,14 @@ public class Person extends DomainObject {
     }
     
     public String getName(){
+    	//prepare objects for reading
+    	zooActivateRead();
     	return name;
     }
 
     public void setName(String name){
+    	//prepare objects for writing
+    	zooActivateWrite();
     	this.name = name;
     }
 
@@ -45,22 +49,9 @@ public class Person extends DomainObject {
     }
 
     public Set<Publication> getEditedPublications(){
-    	return authoredPublications;
+    	return editedPublications;
     }
     public void setEditedPublications(Set<Publication> editedPublications){
     	this.editedPublications = editedPublications;
     }
-
-	@Override
-	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setId(String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
