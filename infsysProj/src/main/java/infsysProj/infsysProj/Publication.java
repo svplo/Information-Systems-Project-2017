@@ -14,6 +14,15 @@ public class Publication extends DomainObject {
 	int year;
 	String electronicEdition;
 	
+	public Publication(Integer num){
+		this.title = "title "+ num.toString();
+		List<Person> authors = new LinkedList<Person>();
+		authors.add(new Person("Lisa"));
+		authors.add(new Person("Malte"));
+		this.year = num;
+		this.electronicEdition = num.toString();
+	}
+	
     public String getTitle(){
     	zooActivateRead();
 		return title;
@@ -34,7 +43,7 @@ public class Publication extends DomainObject {
     	this.authors = authors;
     }
 
-    public int getYear(){
+    public Integer getYear(){
     	zooActivateRead();
     	return year;
     }

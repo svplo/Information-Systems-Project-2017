@@ -39,7 +39,6 @@ public class ProceedingsUpdateUI extends JPanel {
      private JButton createButton = new JButton("Create");
 	 private JButton updateButton = new JButton("Update");
 	 private JButton deleteButton = new JButton("Delete");
-	 private Proceedings proc = new Proceedings();
 
 	 public ProceedingsUpdateUI() {
 	      setBorder(new TitledBorder (new EtchedBorder(),"Person Details"));

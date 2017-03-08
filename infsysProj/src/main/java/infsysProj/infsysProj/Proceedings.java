@@ -11,6 +11,11 @@ import java.util.Set;
  * at that conference edition.
  */
 public class Proceedings extends Publication {
+	public Proceedings(Integer num) {
+		super(num);
+		// TODO Auto-generated constructor stub
+	}
+
 	String note;
 	int number;
 	Publisher publisher;

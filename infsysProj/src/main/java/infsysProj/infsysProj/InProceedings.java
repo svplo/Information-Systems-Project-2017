@@ -5,6 +5,11 @@ package infsysProj.infsysProj;
  * A type of article that was published as part of a conference proceedings.
  */
 public class InProceedings extends Publication {
+	public InProceedings(Integer num) {
+		super(num);
+		// TODO Auto-generated constructor stub
+	}
+
 	String note;
 	String pages;
 	Proceedings proceedings;
