@@ -1,9 +1,9 @@
 package infsysProj.infsysProj;
+//package ch.ethz.globis.isk.domain;
 import javax.jdo.annotations.PersistenceCapable;
 
 import org.zoodb.api.impl.ZooPC;
 
-//package ch.ethz.globis.isk.domain;
 
 /**
  *  The base class for all domain objects.
