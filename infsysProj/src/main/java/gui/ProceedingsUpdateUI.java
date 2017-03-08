@@ -119,11 +119,11 @@ public class ProceedingsUpdateUI extends JPanel {
 *	         && yearField.getText().trim().isEmpty())
 *	         && pagesField.getText().trim().isEmpty());
 *	   }
-*
-*	   private class ButtonHandler implements ActionListener {
-*	      @Override
-*	      public void actionPerformed(ActionEvent e) {
-*	         Publication p = getFieldData();
+*/
+	   private class ButtonHandler implements ActionListener {
+	      @Override
+	      public void actionPerformed(ActionEvent e) {
+/*	         Publication p = getFieldData();
 *	         switch (e.getActionCommand()) {
 *	         case "Create":
 *	            if (isEmptyFieldData()) {
@@ -162,7 +162,6 @@ public class ProceedingsUpdateUI extends JPanel {
 *	         default:
 *	            JOptionPane.showMessageDialog(null, "invalid command");
 *	         }
-*	      }
-*	     }
-*/
+*/	      }
+	     }
 }
