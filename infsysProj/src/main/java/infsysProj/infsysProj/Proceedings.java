@@ -16,6 +16,11 @@ public class Proceedings extends Publication {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Proceedings() {
+		super(1);
+		// TODO Auto-generated constructor stub
+	}
+
 	String note;
 	int number;
 	Publisher publisher;

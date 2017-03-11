@@ -50,17 +50,14 @@ public class PublicationTableModel extends AbstractTableModel {
 		return columnNames[columnIndex];
 	}
 
-	@Override
 	public int getColumnCount() {
 		return columnNames.length;
 	}
 
-	@Override
 	public int getRowCount() {
 		return listPublication.size();
 	}
 
-	@Override
 	public String getValueAt(int rowIndex, int columnIndex) {
 		Publication publications = listPublication.get(rowIndex);
 		String returnValue = "";

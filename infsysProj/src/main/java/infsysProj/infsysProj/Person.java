@@ -14,8 +14,8 @@ import javax.jdo.annotations.PersistenceCapable;
 public class Person extends DomainObject {
 	
 	private String name;
-	private Set<Publication> authoredPublications = new HashSet<>();
-	private Set<Publication> editedPublications = new HashSet<>();
+	private Set<Publication> authoredPublications = new HashSet<Publication>();
+	private Set<Publication> editedPublications = new HashSet<Publication>();
 	
     @SuppressWarnings("unused")
 	private Person() {

@@ -9,6 +9,10 @@ public class InProceedings extends Publication {
 		super(num);
 		// TODO Auto-generated constructor stub
 	}
+	
+	private InProceedings(){
+		super(1);
+	}
 
 	String note;
 	String pages;

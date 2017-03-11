@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -15,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableModel;
 
+import infsysProj.infsysProj.InProceedings;
 import infsysProj.infsysProj.Publication;
 
 /**
@@ -60,8 +62,14 @@ public class PublicationsWindow extends JFrame {
 	}
 
 	public List<Publication> createListPublications() {
-		List<Publication> listPublications = new ArrayList<>();
 
+		Collection<Publication> allPublications = DatabaseHelper.getAllPublications();
+		return new ArrayList<Publication>(allPublications);
+
+		/*
+		List<Publication> listPublications = new ArrayList<Publication>();
+
+		System.out.println(allPublications);
 		// TODO add real data
 		Publication p1 = new Publication(1);
 		Publication p2 = new Publication(2);
@@ -70,13 +78,11 @@ public class PublicationsWindow extends JFrame {
 		listPublications.add(p1);
 		listPublications.add(p2);
 		listPublications.add(p3);
-
-		return listPublications;
+*/
 	}
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
-			@Override
 			public void run() {
 				new PublicationsWindow().setVisible(true);
 			}

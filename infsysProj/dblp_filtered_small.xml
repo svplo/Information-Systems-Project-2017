@@ -1,0 +1,1452 @@
+<root>
+<incollection mdate="2013-09-26" key="series/ifip/Sterling85">
+<author>Theodor D. Sterling</author>
+<title>Humanizing Computerized Information Systems.</title>
+<pages>159-167</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_15</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#Sterling85</url>
+</incollection>
+<book mdate="2013-09-26" key="series/ifip/cam1985">
+<author>Detlef Kochan</author>
+<title>CAM: Developments in Computer-Integrated Manufacturing</title>
+<publisher>Springer</publisher>
+<year>1985</year>
+<isbn>978-3-642-70274-7</isbn>
+<isbn>978-3-642-70272-3</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-70272-3</ee>
+<series href="db/series/ifip/stateoftheart.html">IFIP State-of-the-Art Reports</series>
+<url>http://dx.doi.org/10.1007/978-3-642-70272-3</url>
+</book>
+<incollection mdate="2013-09-26" key="series/ifip/BriefsKR85">
+<author>Ulrich Briefs</author>
+<author>John Kjaer</author>
+<author>Jean-Louis Rigal</author>
+<title>Information Technology and Work in the Present Society.</title>
+<pages>1-2</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_1</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#BriefsKR85</url>
+</incollection>
+<book mdate="2013-09-26" key="series/ifip/computerization1985">
+<editor>Ulrich Briefs</editor>
+<editor>John Kjaer</editor>
+<editor>Jean-Louis Rigal</editor>
+<title>Computerization and Work, A Reader on Social Aspects of Computerization</title>
+<booktitle>Computerization and Work</booktitle>
+<publisher>Springer</publisher>
+<year>1985</year>
+<isbn>978-3-540-15367-2</isbn>
+<isbn>978-3-642-70453-6</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6</ee>
+<series href="db/series/ifip/stateoftheart.html">IFIP State-of-the-Art Reports</series>
+<url>db/series/ifip/computerization1985.html</url>
+</book>
+<incollection mdate="2013-09-26" key="series/ifip/BriefsKR85d">
+<author>Ulrich Briefs</author>
+<author>John Kjaer</author>
+<author>Jean-Louis Rigal</author>
+<title>IFIP TC 9 - Working Group 1 "Computers and Work" Conclusions and Recommendations from the Workshop on the Effects of Computerization on Employment.</title>
+<pages>168-169</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_16</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#BriefsKR85d</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/BriefsKR85c">
+<author>Ulrich Briefs</author>
+<author>John Kjaer</author>
+<author>Jean-Louis Rigal</author>
+<title>Approaches in System Design for a Defense of Human Work.</title>
+<pages>142-143</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_13</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#BriefsKR85c</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/Rigai85">
+<author>Jean-Louis Rigai</author>
+<title>Computerization and Employment.</title>
+<pages>53-70</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_6</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#Rigai85</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/Ofner85">
+<author>Franz Ofner</author>
+<title>Computerization and Education.</title>
+<pages>132-141</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_12</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#Ofner85</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/Fjalestad85">
+<author>Jostein Fjalestad</author>
+<title>Participation in Technical Change.</title>
+<pages>120-131</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_11</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#Fjalestad85</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/BriefsKR85e">
+<author>Ulrich Briefs</author>
+<author>John Kjaer</author>
+<author>Jean-Louis Rigal</author>
+<title>IFIP TC 9 - Working Group 1 "Computers and Work" Conclusions and Recommendations from the Workshop on the Effects of Computerization on Professional Skills.</title>
+<pages>170-171</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_17</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#BriefsKR85e</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/Briefs85">
+<author>Ulrich Briefs</author>
+<title>The Impact of Information Processing on the Working Class.</title>
+<pages>34-50</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_4</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#Briefs85</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/Gotlieb85">
+<author>Calvin C. Gotlieb</author>
+<title>Computers - A Gift of Fire.</title>
+<pages>3-16</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_2</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#Gotlieb85</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/Kilian85">
+<author>Wolfgang Kilian</author>
+<title>Computerized Information Systems in Personnel.</title>
+<pages>94-104</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_8</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#Kilian85</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/Kubicek85">
+<author>Herbert Kubicek</author>
+<title>Information Technology and Skills: Problems in Research and Politics.</title>
+<pages>71-93</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_7</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#Kubicek85</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/Bjorn-AndersenK85">
+<author>Niels Bjørn-Andersen</author>
+<author>John Kjaer</author>
+<title>Individual and Social Implications of Data Processing and Office Automation in Service Industries.</title>
+<pages>106-119</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_10</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#Bjorn-AndersenK85</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/HeibeyLT85">
+<author>Hanns-Wilhelm Heibey</author>
+<author>Bernd Lutterbeck</author>
+<author>Michael Töpel</author>
+<title>Organizational Consequences of the Use of EDP - How to Design Information Technology.</title>
+<pages>144-158</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_14</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#HeibeyLT85</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/BriefsKR85b">
+<author>Ulrich Briefs</author>
+<author>John Kjaer</author>
+<author>Jean-Louis Rigal</author>
+<title>Some Prerequisites for Systems Design in the Interest of the Workers.</title>
+<pages>105</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_9</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#BriefsKR85b</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/BriefsKR85a">
+<author>Ulrich Briefs</author>
+<author>John Kjaer</author>
+<author>Jean-Louis Rigal</author>
+<title>The Major Specific Impacts of Computerization on Work.</title>
+<pages>51-52</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_5</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#BriefsKR85a</url>
+</incollection>
+<incollection mdate="2013-09-26" key="series/ifip/Steinmuller85">
+<author>Wilhelm Steinmüller</author>
+<title>Information Technologies and Social Power.</title>
+<pages>17-33</pages>
+<year>1985</year>
+<booktitle>Computerization and Work</booktitle>
+<ee>http://dx.doi.org/10.1007/978-3-642-70453-6_3</ee>
+<crossref>series/ifip/computerization1985</crossref>
+<url>db/series/ifip/computerization1985.html#Steinmuller85</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/Engeler71">
+<author>Erwin Engeler</author>
+<title>Structure and meaning of elementary programs.</title>
+<pages>89-101</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059695</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#Engeler71</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/MannaW71">
+<author>Zohar Manna</author>
+<author>Richard J. Waldinger</author>
+<title>Towards automatic program synthesis.</title>
+<pages>270-310</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059702</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#MannaW71</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/Igarashi71">
+<author>Shigeru Igarashi</author>
+<title>Semantics of algol-like statements.</title>
+<pages>117-177</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059697</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#Igarashi71</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/Bakker71a">
+<author>J. W. de Bakker</author>
+<title>A property of linear conditionals.</title>
+<pages>23-27</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059691</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#Bakker71a</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/Bakker71">
+<author>J. W. de Bakker</author>
+<title>Axiom systems for simple assignment statements.</title>
+<pages>1-22</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059690</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#Bakker71</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/Hoare71">
+<author>C. A. R. Hoare</author>
+<title>Procedures and parameters: An axiomatic approach.</title>
+<pages>102-116</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059696</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#Hoare71</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/JonesL71">
+<author>C. B. Jones</author>
+<author>P. Lucas</author>
+<title>Proving correctness of implementation techniques.</title>
+<pages>178-211</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059698</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#JonesL71</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/London71">
+<author>Ralph L. London</author>
+<title>Experience with inductive assertions for proving programs correct.</title>
+<pages>236-251</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059700</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#London71</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/Elgot71">
+<author>Calvin C. Elgot</author>
+<title>Algebraic theories and program schemes.</title>
+<pages>71-88</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059694</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#Elgot71</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/BekicW71">
+<author>Hans Bekic</author>
+<author>Kurt Walk</author>
+<title>Formalization of storage properties.</title>
+<pages>28-61</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059692</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#BekicW71</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/Knuth71">
+<author>Donald E. Knuth</author>
+<title>Examples of formal semantics.</title>
+<pages>212-235</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059699</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#Knuth71</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/Manna71">
+<author>Zohar Manna</author>
+<title>Mathematical theory of partial correctness.</title>
+<pages>252-269</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059701</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#Manna71</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/Scott71">
+<author>Dana S. Scott</author>
+<title>The lattice of flow diagrams.</title>
+<pages>311-366</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059703</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#Scott71</url>
+</incollection>
+<incollection mdate="2011-06-15" key="series/lnm/Cooper71">
+<author>D. C. Cooper</author>
+<title>Program schemes, programs and logic.</title>
+<pages>62-70</pages>
+<year>1971</year>
+<booktitle>Symposium on Semantics of Algorithmic Languages</booktitle>
+<ee>http://dx.doi.org/10.1007/BFb0059693</ee>
+<crossref>series/lnm/1971-188</crossref>
+<url>db/series/lnm/lnm188.html#Cooper71</url>
+</incollection>
+<book mdate="2013-12-03" key="series/eatcs/SippuS88">
+<author>Seppo Sippu</author>
+<author>Eljas Soisalon-Soininen</author>
+<title>Parsing Theory - Volume I: Languages and Parsing</title>
+<year>1988</year>
+<pages>I-VIII, 1-228</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>15</volume>
+<isbn>978-3-642-64801-4</isbn>
+<isbn>978-3-642-61345-6</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-61345-6</ee>
+<url>http://dx.doi.org/10.1007/978-3-642-61345-6</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/Gecseg86">
+<author>Ferenc Gécseg</author>
+<title>Products of Automata</title>
+<year>1986</year>
+<pages>I-VIII, 1-107</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>7</volume>
+<isbn>978-3-642-64884-7</isbn>
+<isbn>978-3-642-61611-2</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-61611-2</ee>
+<url>http://dx.doi.org/10.1007/978-3-642-61611-2</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/Jantzen88">
+<author>Matthias Jantzen</author>
+<title>Confluent String Rewriting</title>
+<year>1988</year>
+<pages>I-IX, 1-126</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>14</volume>
+<isbn>978-3-642-64867-0</isbn>
+<isbn>978-3-642-61549-8</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-61549-8</ee>
+<url>http://dx.doi.org/10.1007/978-3-642-61549-8</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/BestF88">
+<author>Eike Best</author>
+<author>César Fernández</author>
+<title>Nonsequential Processes - A Petri Net View</title>
+<year>1988</year>
+<pages>i-ix, 1-112</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>13</volume>
+<isbn>978-3-642-73485-4</isbn>
+<isbn>978-3-642-73483-0</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-73483-0</ee>
+<url>http://dx.doi.org/10.1007/978-3-642-73483-0</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/Padawitz88">
+<author>Peter Padawitz</author>
+<title>Computing in Horn Clause Theories</title>
+<year>1988</year>
+<pages>I-XI, 1-322</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>16</volume>
+<isbn>978-3-642-73826-5</isbn>
+<isbn>978-3-642-73824-1</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-73824-1</ee>
+<url>http://dx.doi.org/10.1007/978-3-642-73824-1</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/BalcazarDG90">
+<author>José L. Balcázar</author>
+<author>Josep Díaz</author>
+<author>Joaquim Gabarró</author>
+<title>Structural Complexity II</title>
+<year>1990</year>
+<pages>I-IX, 1-285</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>22</volume>
+<isbn>978-3-642-75359-6</isbn>
+<isbn>978-3-642-75357-2</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-75357-2</ee>
+<url>http://dx.doi.org/10.1007/978-3-642-75357-2</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/BalcazarDG88">
+<author>José L. Balcázar</author>
+<author>Josep Díaz</author>
+<author>Joaquim Gabarró</author>
+<title>Structural Complexity I</title>
+<year>1990</year>
+<pages>i-ix, 1-191</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>11</volume>
+<isbn>978-3-642-97064-1</isbn>
+<isbn>978-3-642-97062-7</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-97062-7</ee>
+<url>http://dx.doi.org/10.1007/978-3-642-97062-7</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/Tofte90">
+<author>Mads Tofte</author>
+<title>Compiler Generators - What They Can Do, What They Might Do, and What They Will Probably Never Do</title>
+<year>1990</year>
+<pages>I-XI, 1-147</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>19</volume>
+<isbn>978-3-642-64857-1</isbn>
+<isbn>978-3-642-61504-7</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-61504-7</ee>
+<url>http://dx.doi.org/10.1007/978-3-642-61504-7</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/Weihrauch87">
+<author>Klaus Weihrauch</author>
+<title>Computability</title>
+<year>1987</year>
+<pages>I-X, 1-517</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>9</volume>
+<isbn>978-3-642-69967-2</isbn>
+<isbn>978-3-642-69965-8</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-69965-8</ee>
+<url>http://dx.doi.org/10.1007/978-3-642-69965-8</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/Edelsbrunner87">
+<author>Herbert Edelsbrunner</author>
+<title>Algorithms in Combinatorial Geometry</title>
+<year>1987</year>
+<pages>I-XV, 1-423</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>10</volume>
+<isbn>978-3-642-64873-1</isbn>
+<isbn>978-3-642-61568-9</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-61568-9</ee>
+<url>http://dx.doi.org/10.1007/978-3-642-61568-9</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/EhrigM90">
+<author>Hartmut Ehrig</author>
+<author>Bernd Mahr</author>
+<title>Fundamentals of Algebraic Specification 2</title>
+<year>1990</year>
+<pages>I-XI, 1-427</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>21</volume>
+<isbn>978-3-642-64776-5</isbn>
+<isbn>978-3-642-61284-8</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-61284-8</ee>
+<url>http://dx.doi.org/10.1007/978-3-642-61284-8</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/SippuS90">
+<author>Seppo Sippu</author>
+<author>Eljas Soisalon-Soininen</author>
+<title>Parsing Theory - Volume II: LR(k) and LL(k) Parsing</title>
+<year>1990</year>
+<pages>I-IX, 1-427</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>20</volume>
+<isbn>978-3-642-08079-1</isbn>
+<isbn>978-3-662-08424-3</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-662-08424-3</ee>
+<url>http://dx.doi.org/10.1007/978-3-662-08424-3</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/Salomaa90">
+<author>Arto Salomaa</author>
+<title>Public-Key Cryptography</title>
+<year>1990</year>
+<pages>I-X, 1-247</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>23</volume>
+<isbn>978-3-662-02629-8</isbn>
+<isbn>978-3-662-02627-4</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-662-02627-4</ee>
+<url>http://dx.doi.org/10.1007/978-3-662-02627-4</url>
+</book>
+<book mdate="2013-12-03" key="series/eatcs/Kroger87">
+<author>Fred Kröger</author>
+<title>Temporal Logic of Programs</title>
+<year>1987</year>
+<pages>I-VIII, 1-148</pages>
+<publisher>Springer</publisher>
+<series href="db/series/eatcs/eatcs.html">EATCS Monographs on Theoretical Computer Science</series>
+<volume>8</volume>
+<isbn>978-3-642-71551-8</isbn>
+<isbn>978-3-642-71549-5</isbn>
+<ee>http://dx.doi.org/10.1007/978-3-642-71549-5</ee>
+<url>http://dx.doi.org/10.1007/978-3-642-71549-5</url>
+</book>
+<inproceedings mdate="2002-12-17" key="conf/icail/Purdy87">
+<author>R. D. Purdy</author>
+<title>Knowledge Representation in ``Default'': An Attempt to Classify General Types of Knowledge used by Legal Experts.</title>
+<pages>199-208</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41758</ee>
+<url>db/conf/icail/icail87.html#Purdy87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/GaltungM89">
+<author>A. Galtung</author>
+<author>D. S. Maesel</author>
+<title>Xcite (An Expert System for Naturalization Cases).</title>
+<pages>81-86</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74026</ee>
+<url>db/conf/icail/icail89.html#GaltungM89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/GreenleafMT87">
+<author>Graham Greenleaf</author>
+<author>Andrew Mowbray</author>
+<author>Alan Tyree</author>
+<title>Expert Systems in Law: The Datalex Project.</title>
+<pages>9-17</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41737</ee>
+<url>db/conf/icail/icail87.html#GreenleafMT87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/SimonG89">
+<author>E. Simon</author>
+<author>G. Gaes</author>
+<title>ASSYST - Computer Support for Guideline Sentencing.</title>
+<pages>195-200</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74039</ee>
+<url>db/conf/icail/icail89.html#SimonG89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Sherman89">
+<author>D. M. Sherman</author>
+<title>Expert Systems and ICAI in Tax Law: Killing Two Birds with One AI Stone.</title>
+<pages>74-80</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74025</ee>
+<url>db/conf/icail/icail89.html#Sherman89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Ashley89">
+<author>Kevin D. Ashley</author>
+<title>Toward a Computational Theory of Arguing with Precedents.</title>
+<pages>93-102</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74028</ee>
+<url>db/conf/icail/icail89.html#Ashley89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Dick87">
+<author>Judith P. Dick</author>
+<title>Conceptual Retrieval and Case Law.</title>
+<pages>106-115</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41748</ee>
+<url>db/conf/icail/icail87.html#Dick87</url>
+</inproceedings>
+<inproceedings mdate="2006-03-14" key="conf/icail/Gardner89">
+<author>Anne v. d. L. Gardner</author>
+<title>Representing Developing Legal Doctrine.</title>
+<pages>16-22</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74017</ee>
+<url>db/conf/icail/icail89.html#Gardner89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/RisslandS89">
+<author>Edwina L. Rissland</author>
+<author>David B. Skalak</author>
+<title>Interpreting Statutory Predicates.</title>
+<pages>46-53</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74021</ee>
+<url>db/conf/icail/icail89.html#RisslandS89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/AshleyR87">
+<author>Kevin D. Ashley</author>
+<author>Edwina L. Rissland</author>
+<title>But, See, Accord: Generating Blue Book Citations in HYPO.</title>
+<pages>67-74</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41744</ee>
+<url>db/conf/icail/icail87.html#AshleyR87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/AllenS87">
+<author>Layman E. Allen</author>
+<author>Charles S. Saxon</author>
+<title>Some Problems in Designing Expert Systems to Aid Legal Reasoning.</title>
+<pages>94-103</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41747</ee>
+<url>db/conf/icail/icail87.html#AllenS87</url>
+</inproceedings>
+<inproceedings mdate="2008-02-28" key="conf/icail/HaftJW87">
+<author>Fritjof Haft</author>
+<author>R. P. Jones</author>
+<author>Thomas Wetter</author>
+<title>A Natural Language Based Legal Expert System for Consultation and Tutoring - the LEX Project.</title>
+<pages>75-83</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41745</ee>
+<url>db/conf/icail/icail87.html#HaftJW87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Weiner87">
+<author>S. S. Weiner</author>
+<title>Reasoning about 'hard' Cases in Talmudic Law.</title>
+<pages>222-230</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41760</ee>
+<url>db/conf/icail/icail87.html#Weiner87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Marshall89">
+<author>C. C. Marshall</author>
+<title>Representing the Structure of a Legal Argument.</title>
+<pages>121-127</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74031</ee>
+<url>db/conf/icail/icail89.html#Marshall89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Belzer87">
+<author>M. Belzer</author>
+<title>Legal Reasoning in 3-D.</title>
+<pages>155-163</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41753</ee>
+<url>db/conf/icail/icail87.html#Belzer87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Bellairs87">
+<author>Keith Bellairs</author>
+<title>Legal Data Modeling: The Prohibited Transaction Exemption Analyst.</title>
+<pages>252-257</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41763</ee>
+<url>db/conf/icail/icail87.html#Bellairs87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Skalak89">
+<author>David B. Skalak</author>
+<title>Taking Advantage of Models for Legal Classification.</title>
+<pages>234-241</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74044</ee>
+<url>db/conf/icail/icail89.html#Skalak89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Branting89">
+<author>Karl Branting</author>
+<title>Representing and Reusing Explanations of Legal Precedents.</title>
+<pages>103-110</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74029</ee>
+<url>db/conf/icail/icail89.html#Branting89</url>
+</inproceedings>
+<inproceedings mdate="2004-04-23" key="conf/icail/Bench-CaponRRS87">
+<author>Trevor J. M. Bench-Capon</author>
+<author>G. O. Robinson</author>
+<author>Tom Routen</author>
+<author>Marek J. Sergot</author>
+<title>Logic Programming for Large Scale Applications in Law: A Formalisation of Supplementary Benefit Legislation.</title>
+<pages>190-198</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41757</ee>
+<url>db/conf/icail/icail87.html#Bench-CaponRRS87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Wahlgren89">
+<author>P. Wahlgren</author>
+<title>Legal Reasoning - a Jurisprudential Description.</title>
+<pages>147-156</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74034</ee>
+<url>db/conf/icail/icail89.html#Wahlgren89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Mendelson89">
+<author>S. Mendelson</author>
+<title>An Attempted Dimensional Analysis of the Law Governing Government Appeals in Criminal Cases.</title>
+<pages>128-137</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74032</ee>
+<url>db/conf/icail/icail89.html#Mendelson89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Purdy89">
+<author>R. D. Purdy</author>
+<title>Knowledge and Tools in Building GRANDJUR 1.1.</title>
+<pages>201-206</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74040</ee>
+<url>db/conf/icail/icail89.html#Purdy89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Berman89">
+<author>Donald H. Berman</author>
+<title>Cutting Legal Loops.</title>
+<pages>251-258</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74046</ee>
+<url>db/conf/icail/icail89.html#Berman89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/OskampWSB89">
+<author>Anja Oskamp</author>
+<author>R. F. Walker</author>
+<author>J. A. Schrickx</author>
+<author>P. H. van den Berg</author>
+<title>PROLEXS Divide and Rule: A Legal Application.</title>
+<pages>54-62</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74022</ee>
+<url>db/conf/icail/icail89.html#OskampWSB89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Gordon89">
+<author>Thomas F. Gordon</author>
+<title>Issue Spotting in a System for Searching Interpretation Spaces.</title>
+<pages>157-164</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74035</ee>
+<url>db/conf/icail/icail89.html#Gordon89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Kowalski89">
+<author>Robert A. Kowalski</author>
+<title>The Treatment of Negation in Logic Programs for Representing Legislation.</title>
+<pages>11-15</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74016</ee>
+<url>db/conf/icail/icail89.html#Kowalski89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/SchlobohmW87">
+<author>D. A. Schlobohm</author>
+<author>Donald A. Waterman</author>
+<title>Explanation for an Expert system That Performs Estate Planning.</title>
+<pages>18-27</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41738</ee>
+<url>db/conf/icail/icail87.html#SchlobohmW87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/ONeil87">
+<author>D. P. O'Neil</author>
+<title>A Process Specification of Expert Lawyer Reasoning.</title>
+<pages>52-59</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41742</ee>
+<url>db/conf/icail/icail87.html#ONeil87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Wolstenholme89">
+<author>David E. Wolstenholme</author>
+<title>Amalgamating Regulation- and Case-Based Advice Systems Through Suggested Answers.</title>
+<pages>63-67</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74023</ee>
+<url>db/conf/icail/icail89.html#Wolstenholme89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/SchlobohmM89">
+<author>D. A. Schlobohm</author>
+<author>L. Thorne McCarty</author>
+<title>EPS II: Estate Planning with Prototypes.</title>
+<pages>1-10</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74015</ee>
+<url>db/conf/icail/icail89.html#SchlobohmM89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Hafner87">
+<author>Carole D. Hafner</author>
+<title>Conceptual Organization of Case Law Knowledge Bases.</title>
+<pages>35-42</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41740</ee>
+<url>db/conf/icail/icail87.html#Hafner87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Sherman87">
+<author>D. M. Sherman</author>
+<title>A Prolog Model of the Income Tax Act of Canada.</title>
+<pages>127-136</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41750</ee>
+<url>db/conf/icail/icail87.html#Sherman87</url>
+</inproceedings>
+<inproceedings mdate="2003-07-16" key="conf/icail/Susskind87">
+<author>Richard E. Susskind</author>
+<title>Expert Systems in Law: Out of the Research Laboratory and into the Marketplace.</title>
+<pages>1-8</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41736</ee>
+<url>db/conf/icail/icail87.html#Susskind87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Jones87">
+<author>A. J. I. Jones</author>
+<title>On the Relationship Between Permission and Obligation.</title>
+<pages>164-169</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41754</ee>
+<url>db/conf/icail/icail87.html#Jones87</url>
+</inproceedings>
+<inproceedings mdate="2005-09-22" key="conf/icail/BiagioliMT87">
+<author>Carlo Biagioli</author>
+<author>Paola Mariani</author>
+<author>Daniela Tiscornia</author>
+<title>Esplex: A Rule and Conceptual Model for Representing Statutes.</title>
+<pages>240-251</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41762</ee>
+<url>db/conf/icail/icail87.html#BiagioliMT87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/RisslandA87">
+<author>Edwina L. Rissland</author>
+<author>Kevin D. Ashley</author>
+<title>A Case-Based System for Trade Secrets Law.</title>
+<pages>60-66</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41743</ee>
+<url>db/conf/icail/icail87.html#RisslandA87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/MinskyR87">
+<author>Naftaly H. Minsky</author>
+<author>David Rozenshtein</author>
+<title>System = Program + Users + Law.</title>
+<pages>170-180</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41755</ee>
+<url>db/conf/icail/icail87.html#MinskyR87</url>
+</inproceedings>
+<inproceedings mdate="2004-03-04" key="conf/icail/AlchourronM89">
+<author>Carlos E. Alchourrón</author>
+<author>Antonio A. Martino</author>
+<title>A Sketch of Logic Without Truth.</title>
+<pages>165-179</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74036</ee>
+<url>db/conf/icail/icail89.html#AlchourronM89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/GrdyP87">
+<author>G. Grdy</author>
+<author>Ramesh S. Patil</author>
+<title>An Expert System for Screening Employee Pension Plans for the Internal Revenue Service.</title>
+<pages>137-144</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41751</ee>
+<url>db/conf/icail/icail87.html#GrdyP87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Rissland89">
+<author>Edwina L. Rissland</author>
+<title>Dimension-Based Analysis of Hypotheticals from Supreme Court Oral Argument.</title>
+<pages>111-120</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74030</ee>
+<url>db/conf/icail/icail89.html#Rissland89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Morrison89">
+<author>R. W. Morrison</author>
+<title>Market Realities of Rule-Based Software for Lawyers: Where the Rubber Meets the Road.</title>
+<pages>33-36</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74019</ee>
+<url>db/conf/icail/icail89.html#Morrison89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Belew87">
+<author>Richard K. Belew</author>
+<title>A Connectionist Approach to Conceptual Information Retrieval.</title>
+<pages>116-126</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41749</ee>
+<url>db/conf/icail/icail87.html#Belew87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Gordon87">
+<author>Thomas F. Gordon</author>
+<title>Oblog-2: A Hybrid Knowledge Representation System for Defeasible Reasoning.</title>
+<pages>231-239</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41761</ee>
+<url>db/conf/icail/icail87.html#Gordon87</url>
+</inproceedings>
+<inproceedings mdate="2003-07-16" key="conf/icail/Susskind89">
+<author>Richard E. Susskind</author>
+<title>The Latent Damage System: A Jurisprudential Analysis.</title>
+<pages>23-32</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74018</ee>
+<url>db/conf/icail/icail89.html#Susskind89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Lutomski89">
+<author>L. S. Lutomski</author>
+<title>The Design of an Attorney's Statistical Consultant.</title>
+<pages>224-233</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74043</ee>
+<url>db/conf/icail/icail89.html#Lutomski89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/PetheRK89">
+<author>V. P. Pethe</author>
+<author>C. P. Rippey</author>
+<author>Laxmikant V. Kalé</author>
+<title>A Specialized Expert System for Judicial Decision Support.</title>
+<pages>190-194</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74038</ee>
+<url>db/conf/icail/icail89.html#PetheRK89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/McCarty89">
+<author>L. Thorne McCarty</author>
+<title>A Language for Legal Discourse I: Basic Features.</title>
+<pages>180-189</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74037</ee>
+<url>db/conf/icail/icail89.html#McCarty89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/TongRCD87">
+<author>Richard M. Tong</author>
+<author>C. A. Reid</author>
+<author>G. J. Crowe</author>
+<author>P. R. Douglas</author>
+<title>Conceptual Legal Document Retrieval Using the RUBRIC System.</title>
+<pages>28-34</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41739</ee>
+<url>db/conf/icail/icail87.html#TongRCD87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/MorrisTH87">
+<author>G. Morris</author>
+<author>K. Taylor</author>
+<author>M. Harwood</author>
+<title>Handing of Significant Deviations from Boilerplate Text.</title>
+<pages>145-154</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41752</ee>
+<url>db/conf/icail/icail87.html#MorrisTH87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/LambertG89">
+<author>Kenneth A. Lambert</author>
+<author>Mark H. Grunewald</author>
+<title>LESTER: Using Paradigm Cases in a Quasi-Precedential Legal Domain.</title>
+<pages>87-92</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74027</ee>
+<url>db/conf/icail/icail89.html#LambertG89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Bench-Capon89">
+<author>Trevor J. M. Bench-Capon</author>
+<title>Deep Models, Normative Reasoning and Legal Expert Systems.</title>
+<pages>37-45</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74020</ee>
+<url>db/conf/icail/icail89.html#Bench-Capon89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/GoldmanDF87">
+<author>Seth R. Goldman</author>
+<author>Michael G. Dyer</author>
+<author>Margot Flowers</author>
+<title>Precedent-Based Legal Reasoning and Knowledge Acquisition in Contract Law: A Process Model.</title>
+<pages>210-221</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41759</ee>
+<url>db/conf/icail/icail87.html#GoldmanDF87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Routen89">
+<author>Tom Routen</author>
+<title>Hierarchically Organised Formalisations.</title>
+<pages>242-250</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74045</ee>
+<url>db/conf/icail/icail89.html#Routen89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Weiner89">
+<author>S. S. Weiner</author>
+<title>CACE: Computer-Assisted Case Evaluation in the Brooklyn District Attorney's Office.</title>
+<pages>215-223</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74042</ee>
+<url>db/conf/icail/icail89.html#Weiner89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Bing87">
+<author>J. Bing</author>
+<title>Designing Text Retrieval Systems for Conceptual Searching.</title>
+<pages>43-51</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41741</ee>
+<url>db/conf/icail/icail87.html#Bing87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Burnstein89">
+<author>D. Burnstein</author>
+<title>``Boyd V. Deaver - Litigation Strategies'' Videodisc: An Opportunity to Improve Curriculum and Prototype Expert Systems.</title>
+<pages>207-214</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74041</ee>
+<url>db/conf/icail/icail89.html#Burnstein89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/SmithD87">
+<author>J. C. Smith</author>
+<author>Cal Deedman</author>
+<title>The Application of Expert Systems Technology to Case-Based Law.</title>
+<pages>84-93</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://www.acm.org/pubs/citations/proceedings/ai/41735/p84-smith/</ee>
+<url>db/conf/icail/icail87.html#SmithD87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/RoseB89">
+<author>Daniel E. Rose</author>
+<author>Richard K. Belew</author>
+<title>Legal Information Retrieval a Hybrid Approach.</title>
+<pages>138-146</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74033</ee>
+<url>db/conf/icail/icail89.html#RoseB89</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/Bench-Capon87">
+<author>Trevor J. M. Bench-Capon</author>
+<title>Support for Policy Makers: Formulating Legislation with the Aid of Logical Models.</title>
+<pages>181-189</pages>
+<year>1987</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/41735.41756</ee>
+<url>db/conf/icail/icail87.html#Bench-Capon87</url>
+</inproceedings>
+<inproceedings mdate="2002-12-17" key="conf/icail/MacCrimmon89">
+<author>M. T. MacCrimmon</author>
+<title>Expert Systems in Case-Based Law: The Hearsay Rule Advisor.</title>
+<pages>68-73</pages>
+<year>1989</year>
+<booktitle>ICAIL</booktitle>
+<ee>http://doi.acm.org/10.1145/74014.74024</ee>
+<url>db/conf/icail/icail89.html#MacCrimmon89</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/ToongSGBAM80">
+<author>Hoo-Min D. Toong</author>
+<author>Svein O. Strommen</author>
+<author>Earl R. Goodrich II</author>
+<author>John F. Buford</author>
+<author>Tarek K. Abdel-Hamid</author>
+<author>J.-F. Mergen</author>
+<title>Parallel Processing Capabilities of Advanced 16-Bit Microprocessors.</title>
+<pages>130-141</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#ToongSGBAM80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/HeldS75">
+<author>Michael Stonebraker</author>
+<author>Gerald Held</author>
+<title>Networks, Hierarchies and Relations in Data Base Management Systems.</title>
+<pages>1-9</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#HeldS75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Apers80">
+<author>Peter M. G. Apers</author>
+<title>Data Allocation and Distributed Query Processing.</title>
+<pages>48-54</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#Apers80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/GibsonT75">
+<author>T. A. Gibson</author>
+<author>P. D. Ting</author>
+<title>A New Report Generator.</title>
+<pages>119-126</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#GibsonT75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/GermanoW75">
+<author>Frank Germano Jr.</author>
+<author>Stephen Weyl</author>
+<title>A Data Base Organization to Support a Time-Oriented Medical Record.</title>
+<pages>93-103</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#GermanoW75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Reynolds75">
+<author>Marilyn M. Reynolds</author>
+<title>Data Management for a Multi-Disciplinary Study of the Impacts of BART.</title>
+<pages>85-92</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#Reynolds75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/GoldsteinL80">
+<author>Barry C. Goldstein</author>
+<author>Harold Lorin</author>
+<title>Inversion of the Memory Hierarchy.</title>
+<pages>154-157</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#GoldsteinL80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Fitzgerald75">
+<author>Jerry FitzGerald</author>
+<title>Auditing EDP Systems: Eight Areas for Control.</title>
+<pages>190-197</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#Fitzgerald75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/WilsonL80">
+<author>Tom B. Wilson</author>
+<author>James A. Larson</author>
+<title>Distribution of Data Administration Authority.</title>
+<pages>24-29</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#WilsonL80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Tukey75">
+<author>Mary Anne Fisherkeller</author>
+<author>Jerome H. Friedman</author>
+<author>John W. Tukey</author>
+<title>PRIM-9: An Interactive Multi-dimensional Data Display and Analysis System.</title>
+<pages>140-145</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#Tukey75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Secrest75">
+<author>Richard D. Secrest</author>
+<title>Data Base Administration.</title>
+<pages>168-173</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#Secrest75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/FusaokaHK80">
+<author>Akira Fusaoka</author>
+<author>Masaharu Hirayama</author>
+<author>Tadashi Kanamori</author>
+<title>A Control Shared Processor MELPIP-1: Design Evaluation.</title>
+<pages>77-85</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#FusaokaHK80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Miller75">
+<author>Stephen W. Miller</author>
+<title>Storage Technology: Overview and Projection.</title>
+<pages>10-15</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#Miller75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Boyle75">
+<author>Brian J. Boyle</author>
+<title>One Technique for the Discrete Analysis of Continuous Data.</title>
+<pages>156-162</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#Boyle75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/HeldS75a">
+<author>Gerald Held</author>
+<author>Michael Stonebraker</author>
+<title>Storage Structures and Access Methods in the Relational Data Base Management System INGRES.</title>
+<pages>26-33</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#HeldS75a</url>
+</inproceedings>
+<inproceedings mdate="2005-05-24" key="conf/pacific/HaysSNS80">
+<author>Bill Hays</author>
+<author>Gordon E. Stokes</author>
+<author>Theodore A. Norman</author>
+<author>Lance Smith</author>
+<title>Design of a Genealogical Record System to be Used in a Distributed Data Base.</title>
+<pages>105-114</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#HaysSNS80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/McPartland75">
+<author>Richard L. McPartland</author>
+<title>A Corporate Data Bank in Action.</title>
+<pages>174-184</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#McPartland75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/LemieuxV75">
+<author>C. Lemieux</author>
+<author>Pramode K. Verma</author>
+<title>Current Status of the Dataroute Network.</title>
+<pages>214-216</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#LemieuxV75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/BenderP75">
+<author>C. F. Bender</author>
+<author>R. H. Pritchard</author>
+<title>Pattern Recognition for Understanding and Modeling Materials Problems.</title>
+<pages>163-167</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#BenderP75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Acklen80">
+<author>Thomas H. Acklen</author>
+<title>Distributed Processing in the Veterans Administration: The VA's ADP Benefits Delivery System.</title>
+<pages>38-47</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#Acklen80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/LorinG80">
+<author>Harold Lorin</author>
+<author>Barry C. Goldstein</author>
+<title>Operating System Structures for Polymorphic Hardware.</title>
+<pages>1-5</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#LorinG80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Pecherer75">
+<author>Robert M. Pecherer</author>
+<title>Efficient Evaluation of Expressions in a Relational Algebra.</title>
+<pages>44-49</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#Pecherer75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/CzarnikST75">
+<author>B. Czarnik</author>
+<author>Stewart A. Schuster</author>
+<author>Dennis Tsichritzis</author>
+<title>ZETA: A Relational Data Base Management System.</title>
+<pages>21-25</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#CzarnikST75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/LamS75">
+<author>Herman Lam</author>
+<author>Stanley Y. W. Su</author>
+<title>A Semi-Automatic Data Base Translation System.</title>
+<pages>71-79</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#LamS75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Beitz75">
+<author>E. Henry Beitz</author>
+<title>Sets as a Model for Data Base Representation: Much Ado About Something.</title>
+<pages>80-84</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#Beitz75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Toan80">
+<author>Gia Toan Nguyen</author>
+<title>Decentralized Dynamic Query Decomposition for Distributed Database Systems.</title>
+<pages>55-60</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#Toan80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/YenF80">
+<author>Wei C. Yen</author>
+<author>King-sun Fu</author>
+<title>Performance Analysis on Multiprocessor Memory Organization.</title>
+<pages>142-153</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#YenF80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Palmer80">
+<author>David F. Palmer</author>
+<title>Resource Requirements Definition in Distributed System Design.</title>
+<pages>70-76</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#Palmer80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Dijkstra75">
+<author>Edsger W. Dijkstra</author>
+<title>Craftsman or Scientist.</title>
+<pages>217-223</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#Dijkstra75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Spector80">
+<author>Alfred Z. Spector</author>
+<title>Extending Local Network Interfaces to Provide More Efficient Interprocessor Communication Facilities.</title>
+<pages>6-13</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#Spector80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Felix80">
+<author>Robert G. Felix</author>
+<title>Organization and Policy Issues in the Implementation of Distributed Systems.</title>
+<pages>30-37</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#Felix80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Parker75">
+<author>Donn B. Parker</author>
+<title>Computer and Data Abuse.</title>
+<pages>185-187</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#Parker75</url>
+</inproceedings>
+<inproceedings mdate="2002-08-29" key="conf/pacific/GerlaGP80">
+<author>Mario Gerla</author>
+<author>Aksenti Grnarov</author>
+<author>Douglas Stott Parker Jr.</author>
+<title>Distributed Travelling Salesman Algorithms for Distributed Database Operation.</title>
+<pages>61-67</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#GerlaGP80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Newton80">
+<author>Martha R. Newton</author>
+<title>Automating the Testing of an Interactive Distributed System.</title>
+<pages>127-129</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#Newton80</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/McDonaldS75">
+<author>Nancy H. McDonald</author>
+<author>Michael Stonebraker</author>
+<title>CUPID - The Friendly Query Language.</title>
+<pages>127-131</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#McDonaldS75</url>
+</inproceedings>
+<inproceedings mdate="2002-01-03" key="conf/pacific/Trapnell75">
+<author>Frederick M. Trapnell Jr.</author>
+<title>Some Lessons on the Design of Real Time Control Programs.</title>
+<pages>198-213</pages>
+<year>1975</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific75.html#Trapnell75</url>
+</inproceedings>
+<inproceedings mdate="2008-06-18" key="conf/pacific/DelcambreABFHLLSV80">
+<author>Lois M. L. Delcambre</author>
+<author>E. Adams</author>
+<author>A. Birjandi</author>
+<author>M. Farooq</author>
+<author>A. Hayatgheyb</author>
+<author>C. Lillie</author>
+<author>Elaine Lisboa</author>
+<author>M. K. Sadagopan</author>
+<author>Don Vines</author>
+<title>Guideline for the Design of Medley: A Distributed Multiple Database System.</title>
+<pages>95-104</pages>
+<year>1980</year>
+<booktitle>ACM Pacific</booktitle>
+<url>db/conf/pacific/pacific80.html#DelcambreABFHLLSV80</url>
+</inproceedings>
+</root>
