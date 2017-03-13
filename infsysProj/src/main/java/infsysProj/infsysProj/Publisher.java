@@ -33,3 +33,4 @@ public class Publisher extends DomainObject {
     }
     
 }
+

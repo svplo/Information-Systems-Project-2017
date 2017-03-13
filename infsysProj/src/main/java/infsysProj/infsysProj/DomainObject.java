@@ -10,13 +10,15 @@ import org.zoodb.api.impl.ZooPC;
  */
 @PersistenceCapable
 public class DomainObject extends ZooPC {
+	
+	String id; 
 
     public String getId(){
-    	return "";
+    	return id;
     }
 
     public void setId(String id){
-    	
+    	this.id = id;
     }
     
 }
