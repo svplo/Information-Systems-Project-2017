@@ -9,43 +9,43 @@ public class InProceedings extends Publication {
 		super(num);
 		// TODO Auto-generated constructor stub
 	}
-	
-	private InProceedings(){
+
+	private InProceedings() {
 		super(1);
 	}
 
 	String note;
 	String pages;
 	Proceedings proceedings;
-	
-    public String getNote(){
-    	zooActivateRead();
-    	return note;
-    }
 
-    public void setNote(String note){
-    	zooActivateWrite();
-    	this.note = note;
-    }
+	public String getNote() {
+		zooActivateRead();
+		return note;
+	}
 
-    public String getPages(){
-    	zooActivateRead();
-    	return pages;
-    }
+	public void setNote(String note) {
+		zooActivateWrite();
+		this.note = note;
+	}
 
-    public void setPages(String pages){
-    	zooActivateWrite();
-    	this.pages = pages;
-    }
+	public String getPages() {
+		zooActivateRead();
+		return pages;
+	}
 
-    public Proceedings getProceedings(){
-    	zooActivateRead();
-    	return proceedings;
-    }
+	public void setPages(String pages) {
+		zooActivateWrite();
+		this.pages = pages;
+	}
 
-    public void setProceedings(Proceedings proceedings){
-    	zooActivateWrite();
-    	this.proceedings = proceedings;
-    }
-    
+	public Proceedings getProceedings() {
+		zooActivateRead();
+		return proceedings;
+	}
+
+	public void setProceedings(Proceedings proceedings) {
+		zooActivateWrite();
+		this.proceedings = proceedings;
+	}
+
 }

@@ -2,42 +2,41 @@ package infsysProj.infsysProj;
 //package ch.ethz.globis.isk.domain;
 
 /**
- * Represents one edition of a conference. It contains a reference
- * to the proceedings published after the conference edition.
+ * Represents one edition of a conference. It contains a reference to the proceedings published after the conference edition.
  */
 public class ConferenceEdition extends DomainObject {
 	Conference conf;
 	int year;
 	Proceedings proceedings;
-	
-    public Conference getConference(){
-    	zooActivateRead();
-    	return conf;
-    }
 
-    public void setConference(Conference conference){
-    	zooActivateWrite();
-    	this.conf = conference;
-    }
+	public Conference getConference() {
+		zooActivateRead();
+		return conf;
+	}
 
-    public int getYear(){
-    	zooActivateRead();
-    	return year;
-    }
+	public void setConference(Conference conference) {
+		zooActivateWrite();
+		this.conf = conference;
+	}
 
-    public void setYear(int year){
-    	zooActivateWrite();
-    	this.year = year;
-    }
+	public int getYear() {
+		zooActivateRead();
+		return year;
+	}
 
-    public Proceedings getProceedings(){
-    	zooActivateRead();
-    	return proceedings;
-    }
+	public void setYear(int year) {
+		zooActivateWrite();
+		this.year = year;
+	}
 
-    public void setProceedings(Proceedings proceedings){
-    	zooActivateWrite();
-    	this.proceedings = proceedings;
-    }
-    
+	public Proceedings getProceedings() {
+		zooActivateRead();
+		return proceedings;
+	}
+
+	public void setProceedings(Proceedings proceedings) {
+		zooActivateWrite();
+		this.proceedings = proceedings;
+	}
+
 }

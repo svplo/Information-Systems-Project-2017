@@ -1,4 +1,5 @@
 package gui;
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -6,70 +7,65 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
- 
+
 //create class and extend with JFrame
-public class NewWindowExample extends JFrame 
-{
-	//declare variable
+public class NewWindowExample extends JFrame {
+	// declare variable
 	private JPanel contentPane;
+
 	/**
 	 * Launch the application.
 	 */
-	//main method
-	public static void main(String[] args) 
-	{
-		/* It posts an event (Runnable)at the end of Swings event list and is
-		processed after all other GUI events are processed.*/
-		EventQueue.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				//try - catch block
-				try 
-				{
-					//Create object of NewWindow
+	// main method
+	public static void main(String[] args) {
+		/*
+		 * It posts an event (Runnable)at the end of Swings event list and is processed after all other GUI events are processed.
+		 */
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				// try - catch block
+				try {
+					// Create object of NewWindow
 					NewWindowExample frame = new NewWindowExample();
-					//set frame visible true
-					frame.setVisible(true);					
-				}
-				catch (Exception e) 
-				{
+					// set frame visible true
+					frame.setVisible(true);
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 	}
- 
+
 	/**
 	 * Create the frame.
 	 */
-	public NewWindowExample() //constructor
+	public NewWindowExample() // constructor
 	{
-		//set frame title
+		// set frame title
 		setTitle("New Frame");
-		//set default close operation
+		// set default close operation
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		//set bounds of the frame
+		// set bounds of the frame
 		setBounds(100, 100, 450, 300);
-		
-		//create object of JPanel
+
+		// create object of JPanel
 		contentPane = new JPanel();
-		//set border
+		// set border
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		//set ContentPane
+		// set ContentPane
 		setContentPane(contentPane);
-		//set null
+		// set null
 		contentPane.setLayout(null);
-		
-		//label in the frame
+
+		// label in the frame
 		JLabel lblWelcome = new JLabel("Welcome this is New Frame");
-		//set fore ground color to the label
+		// set fore ground color to the label
 		lblWelcome.setForeground(Color.RED);
-		//set font to the label
+		// set font to the label
 		lblWelcome.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC, 24));
-		//set bounds of the label
+		// set bounds of the label
 		lblWelcome.setBounds(75, 100, 294, 32);
-		//add label to the contentPane 
+		// add label to the contentPane
 		contentPane.add(lblWelcome);
 	}
 }

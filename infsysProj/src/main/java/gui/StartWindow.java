@@ -65,12 +65,12 @@ public class StartWindow extends JFrame {
 		lblStartWindow.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC, 24));
 		lblStartWindow.setBounds(127, 82, 239, 39);
 		contentPane.add(lblStartWindow);
-		
+
 		final JButton reloadXMLButton = new JButton("Reload XML");
 		reloadXMLButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				XMLParser xmlparser = new XMLParser();
-				xmlparser.parse(); 
+				xmlparser.parse();
 			}
 		});
 		// modify button

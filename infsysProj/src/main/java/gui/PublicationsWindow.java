@@ -36,7 +36,7 @@ public class PublicationsWindow extends JFrame {
 		table = new JTable(tableModel);
 		table.setBounds(0, 0, 2000, 2000);
 		contentPane = new JPanel();
-		
+
 		JButton btnPublicationUpdateFrame = new JButton("Publication Update");
 		btnPublicationUpdateFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -50,7 +50,7 @@ public class PublicationsWindow extends JFrame {
 		btnPublicationUpdateFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
 		btnPublicationUpdateFrame.setBounds(100, 200, 200, 25);
 		contentPane.add(btnPublicationUpdateFrame);
-		
+
 		// insert code for sorting here...
 
 		add(new JScrollPane(table), BorderLayout.CENTER);
@@ -67,18 +67,12 @@ public class PublicationsWindow extends JFrame {
 		return new ArrayList<Publication>(allPublications);
 
 		/*
-		List<Publication> listPublications = new ArrayList<Publication>();
-
-		System.out.println(allPublications);
-		// TODO add real data
-		Publication p1 = new Publication(1);
-		Publication p2 = new Publication(2);
-		Publication p3 = new Publication(3);
-
-		listPublications.add(p1);
-		listPublications.add(p2);
-		listPublications.add(p3);
-*/
+		 * List<Publication> listPublications = new ArrayList<Publication>();
+		 * 
+		 * System.out.println(allPublications); // TODO add real data Publication p1 = new Publication(1); Publication p2 = new Publication(2); Publication p3 = new Publication(3);
+		 * 
+		 * listPublications.add(p1); listPublications.add(p2); listPublications.add(p3);
+		 */
 	}
 
 	public static void main(String[] args) {
