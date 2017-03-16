@@ -221,4 +221,24 @@ public class DatabaseHelper {
 		return allPublications;
 	}
 
+	public static void addInProceedings(List<InProceedings> list){
+		
+		pm.setMultithreaded(true);
+		
+		int length = list.size();
+		for(int i = 0;i<length;i++){
+			pm.currentTransaction().begin();
+			pm.currentTransaction().setRetainValues(true);
+			pm.makePersistent(list.get(i));
+			if(i%500 == 0){
+				pm.currentTransaction().commit();
+
+				System.out.println(i + " / "+ length+" objects added to Database.");
+			}
+			else{
+			pm.currentTransaction().commit();
+			}
+		}
+
+	}
 }
