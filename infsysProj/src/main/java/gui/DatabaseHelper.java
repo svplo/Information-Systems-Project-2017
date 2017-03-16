@@ -34,6 +34,103 @@ public class DatabaseHelper {
 		closeDB(pm);
 	}
 
+	public static void createDB() {
+		// remove database if it exists
+		if (ZooHelper.dbExists(dbStandardName)) {
+
+			ZooHelper.removeDb(dbStandardName);
+		}
+
+		// create database
+		// By default, all database files will be created in %USER_HOME%/zoodb
+		ZooHelper.createDb(dbStandardName);
+	}
+
+	private static void closeDB(PersistenceManager pm) {
+		if (pm.currentTransaction().isActive()) {
+			pm.currentTransaction().rollback();
+		}
+		pm.close();
+		pm.getPersistenceManagerFactory().close();
+	}
+
+	public static Collection<Publication> getAllPublications() {
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+
+		Extent<Publication> ext = pm.getExtent(Publication.class);
+		List<Publication> allPublications = new ArrayList<Publication>();
+		for (Publication p : ext) {
+			allPublications.add(p);
+		}
+		ext.closeAll();
+
+		closeDB(pm);
+		return allPublications;
+	}
+
+	public static void addInProceedings(List<InProceedings> list){
+		
+		pm.setMultithreaded(true);
+		
+		int length = list.size();
+		for(int i = 0;i<length;i++){
+			pm.currentTransaction().begin();
+			pm.currentTransaction().setRetainValues(true);
+			pm.makePersistent(list.get(i));
+			pm.currentTransaction().commit();
+
+			if(i%500 == 0){
+
+				System.out.println(i + " / "+ length+" InProceedings added to Database.");
+			}
+			else{
+			}
+		}
+		System.out.println("All InProceedings added to Database");
+	}
+	
+	public static void addProceedings(List<Proceedings> list){
+		
+		pm.setMultithreaded(true);
+		
+		int length = list.size();
+		for(int i = 0;i<length;i++){
+			pm.currentTransaction().begin();
+			pm.currentTransaction().setRetainValues(true);
+			pm.makePersistent(list.get(i));
+			pm.currentTransaction().commit();
+
+			if(i%500 == 0){
+
+				System.out.println(i + " / "+ length+" Proceedings added to Database.");
+			}
+		}
+		System.out.println("All Proceedings added to Database");
+	}
+
+	public static Collection<Proceedings> getAllPeople(){
+
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+
+		Extent<Proceedings> ext = pm.getExtent(Proceedings.class);
+		List<Proceedings> allPublications = new ArrayList<Proceedings>();
+		for (Proceedings p : ext) {
+			allPublications.add(p);
+		}
+		ext.closeAll();
+
+		closeDB(pm);
+		
+		return allPublications;
+
+	}
+	
+	
+	
+	
+	@Deprecated
 	public static void addInProceeding(InProceedings in, String crossref) {
 		pm.currentTransaction().begin();
 		if (crossref != "") {
@@ -79,9 +176,11 @@ public class DatabaseHelper {
 		pm.makePersistent(in);
 		pm.currentTransaction().commit();
 	}
-
+	@Deprecated
 	public static void addProceeding(Proceedings in, String booktitle, String publisher, String series) {
+		pm.setMultithreaded(true);
 		pm.currentTransaction().begin();
+		pm.currentTransaction().setRetainValues(true);
 		Query query = pm.newQuery(Conference.class, "name == '" + booktitle.replaceAll("'", "&#39") + "'");
 		Collection<Conference> conferences = (Collection<Conference>) query.execute();
 		Conference conf;
@@ -163,7 +262,7 @@ public class DatabaseHelper {
 		pm.makePersistent(in);
 		pm.currentTransaction().commit();
 	}
-
+	@Deprecated
 	public static Proceedings addProceedingwithCrossRef(String crossref, InProceedings inproc) {
 		pm.currentTransaction().begin();
 		Query query = pm.newQuery(Proceedings.class, "id == 'crossref'");
@@ -186,59 +285,4 @@ public class DatabaseHelper {
 		return proc;
 	}
 
-	public static void createDB() {
-		// remove database if it exists
-		if (ZooHelper.dbExists(dbStandardName)) {
-
-			ZooHelper.removeDb(dbStandardName);
-		}
-
-		// create database
-		// By default, all database files will be created in %USER_HOME%/zoodb
-		ZooHelper.createDb(dbStandardName);
-	}
-
-	private static void closeDB(PersistenceManager pm) {
-		if (pm.currentTransaction().isActive()) {
-			pm.currentTransaction().rollback();
-		}
-		pm.close();
-		pm.getPersistenceManagerFactory().close();
-	}
-
-	public static Collection<Publication> getAllPublications() {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
-
-		Extent<Publication> ext = pm.getExtent(Publication.class);
-		List<Publication> allPublications = new ArrayList<Publication>();
-		for (Publication p : ext) {
-			allPublications.add(p);
-		}
-		ext.closeAll();
-
-		closeDB(pm);
-		return allPublications;
-	}
-
-	public static void addInProceedings(List<InProceedings> list){
-		
-		pm.setMultithreaded(true);
-		
-		int length = list.size();
-		for(int i = 0;i<length;i++){
-			pm.currentTransaction().begin();
-			pm.currentTransaction().setRetainValues(true);
-			pm.makePersistent(list.get(i));
-			if(i%500 == 0){
-				pm.currentTransaction().commit();
-
-				System.out.println(i + " / "+ length+" objects added to Database.");
-			}
-			else{
-			pm.currentTransaction().commit();
-			}
-		}
-
-	}
 }

@@ -21,6 +21,7 @@ public class StartWindow extends JFrame {
 		/*
 		 * It posts an event (Runnable)at the end of Swings event list and is processed after all other GUI events are processed.
 		 */
+		System.out.println(DatabaseHelper.getAllPeople().size());
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {

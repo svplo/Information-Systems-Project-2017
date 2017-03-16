@@ -1,14 +1,12 @@
 package gui;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.jdo.Query;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
@@ -47,6 +45,7 @@ public class XMLParser {
 		
 		DatabaseHelper.createDB();
 		DatabaseHelper.openDB();
+		DatabaseHelper.addProceedings(readProceedings);
 		DatabaseHelper.addInProceedings(readInProceedings);
 		DatabaseHelper.closeDB();
 		
@@ -214,14 +213,12 @@ public class XMLParser {
 				String title = "";
 				int year;
 				String pages = "";
-				String booktitle = "";
 				String crossref = "";
 				String ee = "";
 				boolean inAuthor = false;
 				boolean inTitle = false;
 				boolean inPages = false;
 				boolean inYear = false;
-				boolean inBooktitle = false;
 				boolean inCrossRef = false;
 				boolean inEE = false;
 
@@ -232,7 +229,6 @@ public class XMLParser {
 						title = "";
 						year = 0;
 						pages = "";
-						booktitle = "";
 						crossref = "";
 						ee = "";
 
@@ -254,10 +250,7 @@ public class XMLParser {
 					} else if (qName.equalsIgnoreCase("year")) {
 						inYear = true;
 					}
-
-					else if (qName.equalsIgnoreCase("booktitle")) {
-						inBooktitle = true;
-					} else if (qName.equalsIgnoreCase("crossref")) {
+					else if (qName.equalsIgnoreCase("crossref")) {
 						inCrossRef = true;
 					} else if (qName.equalsIgnoreCase("ee")) {
 						inEE = true;
@@ -287,8 +280,6 @@ public class XMLParser {
 						inPages = false;
 					} else if (qName.equalsIgnoreCase("year")) {
 						inYear = false;
-					} else if (qName.equalsIgnoreCase("booktitle")) {
-						inBooktitle = false;
 					} else if (qName.equalsIgnoreCase("crossref")) {
 						inCrossRef = false;
 					} else if (qName.equalsIgnoreCase("ee")) {
@@ -311,8 +302,6 @@ public class XMLParser {
 							pages = new String(ch, start, length);
 						} else if (inYear) {
 							year = Integer.parseInt(new String(ch, start, length));
-						} else if (inBooktitle) {
-							booktitle = new String(ch, start, length);
 						} else if (inCrossRef) {
 							crossref = new String(ch, start, length);
 						} else if (inEE) {
