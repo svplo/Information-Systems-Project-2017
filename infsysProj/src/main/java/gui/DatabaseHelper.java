@@ -2,7 +2,10 @@ package gui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -126,6 +129,114 @@ public class DatabaseHelper {
 		return allPublications;
 
 	}
+	
+	public static void query1(String id){
+		System.out.println("Query 1:");
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Publication.class, "id == '" + id.replaceAll("'", "&#39") + "'");
+		Collection<Publication> proceedings = (Collection<Publication>) query.execute();
+		Publication proc;
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + id);
+
+		} else {
+			proc = proceedings.iterator().next();
+			System.out.println(proc.getTitle());
+		}
+
+		DatabaseHelper.closeDB();
+
+	}
+	public static void query2(String title, int startOffset, int endOffset){
+		System.out.println("Query 2:");
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Publication.class, "title.contains('" + title.replaceAll("'", "&#39") + "')");
+		Collection<Publication> proceedings = (Collection<Publication>) query.execute();
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + title + " in range: " + startOffset + "-" + endOffset);
+
+		} else {
+			Iterator<Publication> itr = proceedings.iterator();
+
+			for(int i = 0; itr.hasNext(); i++) {
+			    if (i >= startOffset && i< endOffset) {
+			    	System.out.println(itr.next().getTitle());
+			    }
+			    else{
+			    	itr.next();
+			    }
+			}
+		}
+
+		DatabaseHelper.closeDB();
+
+	}
+	public static void query3(String title, int startOffset, int endOffset){
+		System.out.println("Query 3:");
+
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Publication.class, "title.contains('" + title.replaceAll("'", "&#39") + "')");
+		Collection<Publication> proceedings = (Collection<Publication>) query.execute();
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + title + " in range: " + startOffset + "-" + endOffset);
+
+		} else {
+			
+			Iterator<Publication> itr = proceedings.iterator();
+			List<Publication> listOfPublications = new ArrayList<Publication>();
+			for(int i = 0; itr.hasNext(); i++) {
+			    if (i >= startOffset && i< endOffset) {
+			    	listOfPublications.add(itr.next());
+			    }
+			    else{
+			    	itr.next();
+			    }
+			}
+			
+			Collections.sort(listOfPublications, new Comparator<Publication>() {
+				
+			    public int compare(Publication s1, Publication s2) {
+			        return s1.getTitle().compareToIgnoreCase(s2.getTitle());
+			    }
+			});
+			for(Publication p: listOfPublications){
+				System.out.println(p.getTitle());
+			}
+		}
+
+		DatabaseHelper.closeDB();
+		
+	}
+	public static void query4(){
+		
+	}
+	public static void query5(){
+		
+	}
+	public static void query6(){
+		
+	}
+	public static void query7(){
+		
+	}
+	public static void query8(){
+		
+	}
+	public static void query9(){
+		
+	}
+
+	
+	
+	
+	
+	
 	
 	
 	
@@ -285,4 +396,6 @@ public class DatabaseHelper {
 		return proc;
 	}
 
+	
+	
 }
