@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -262,6 +263,8 @@ public class DatabaseHelper {
 
 	}
 
+	//global average of authors / publication (InProceedings + Proceedings)
+	//TODO: In our case Publications = InProceedings + Proceedings?
 	public static void query6() {
 		System.out.println("Query 6:");
 		DatabaseHelper.openDB();
@@ -284,8 +287,44 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 	}
 
-	public static void query7() {
+	public static void query7(int year1, int year2) {
+		System.out.println("Query 7:");
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
 
+		Query q1 = pm.newQuery(Publication.class);
+		Collection<Publication> publications = (Collection<Publication>) q1.execute();
+		double total = publications.size();
+		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+		if (publications.isEmpty()) {
+			System.out.println("Error: No publications available.");
+
+		} else {
+			Iterator<Publication> itr = publications.iterator();
+			Publication p;
+			int currYear;
+			while (itr.hasNext()){
+				p = itr.next();
+				currYear = p.getYear();
+				if(currYear < year1 || currYear > year2){
+					continue;
+				}
+				if (map.containsKey(currYear)){
+					int current = map.get(currYear);
+					map.put(currYear, current+1);
+				} else {
+					map.put(currYear, 1);
+				}
+			}
+		}
+		DatabaseHelper.closeDB();
+		//print Hashtable
+		System.out.printf("%-12s%-17s\n","Year","No. Publications");
+		for (int i = year1; i <= year2; i++){
+			if (map.containsKey(i)){
+		        System.out.printf("%-12d%-12d\n",i,map.get(i));
+			}
+		}
 	}
 
 	public static void query8() {
