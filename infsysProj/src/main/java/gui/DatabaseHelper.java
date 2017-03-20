@@ -263,7 +263,25 @@ public class DatabaseHelper {
 	}
 
 	public static void query6() {
+		System.out.println("Query 6:");
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
 
+		Query q1 = pm.newQuery(Publication.class);
+		Collection<Publication> publications = (Collection<Publication>) q1.execute();
+		double sum = 0.;
+		double total = publications.size();
+		if (publications.isEmpty()) {
+			System.out.println("Error: No publications available.");
+
+		} else {
+			Iterator<Publication> itr = publications.iterator();
+			while (itr.hasNext()){
+				sum += itr.next().getAuthors().size();
+			}
+			System.out.println("Average authors "+ (double)(sum/total) +".");
+		}
+		DatabaseHelper.closeDB();
 	}
 
 	public static void query7() {

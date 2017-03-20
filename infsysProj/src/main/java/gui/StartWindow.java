@@ -34,8 +34,9 @@ public class StartWindow extends JFrame {
 					
 				//	DatabaseHelper.query3("expert system", 0, 3);
 					
-					DatabaseHelper.query4("J. Thomas Haigh");
+				//	DatabaseHelper.query4("J. Thomas Haigh");
 
+					DatabaseHelper.query6();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
