@@ -25,7 +25,7 @@ public class Proceedings extends Publication {
 	String isbn;
 	Series series;
 	ConferenceEdition confEdition;
-	Set<InProceedings> publications = new HashSet<InProceedings>();
+	Set<InProceedings> inProceedings = new HashSet<InProceedings>();
 
 	public String getNote() {
 		zooActivateRead();
@@ -102,14 +102,14 @@ public class Proceedings extends Publication {
 		this.confEdition = conferenceEdition;
 	}
 
-	public Set<InProceedings> getPublications() {
+	public Set<InProceedings> getInProceedings() {
 		zooActivateRead();
-		return publications;
+		return inProceedings;
 	}
 
-	public void setPublications(Set<InProceedings> publications) {
+	public void setInProceedings(Set<InProceedings> inProceedings) {
 		zooActivateWrite();
-		this.publications = publications;
+		this.inProceedings = inProceedings;
 	}
 
 }

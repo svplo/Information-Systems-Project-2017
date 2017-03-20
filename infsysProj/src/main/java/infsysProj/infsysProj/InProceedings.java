@@ -2,7 +2,7 @@ package infsysProj.infsysProj;
 //package ch.ethz.globis.isk.domain;
 
 /**
- * A type of article that was published as part of a conference proceedings.
+ * A type of article that was published as part of a conference proceedings (one conference proceeding features many in proceedings).
  */
 public class InProceedings extends Publication {
 	public InProceedings(Integer num) {

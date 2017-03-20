@@ -445,9 +445,9 @@ public class XMLParser {
 			} else {
 				proc = proceedings.iterator().next();
 				in.setProceedings(proc);
-				Set<InProceedings> publications = proc.getPublications();
+				Set<InProceedings> publications = proc.getInProceedings();
 				publications.add(in);
-				proc.setPublications(publications);
+				proc.setInProceedings(publications);
 			}
 		}
 

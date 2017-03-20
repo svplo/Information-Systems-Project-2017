@@ -130,6 +130,7 @@ public class DatabaseHelper {
 
 	}
 
+	// find publication by id
 	public static void query1(String id) {
 		System.out.println("Query 1:");
 		DatabaseHelper.openDB();
@@ -150,6 +151,7 @@ public class DatabaseHelper {
 
 	}
 
+	//Find publications by title, returning only a subset of all found publications
 	public static void query2(String title, int startOffset, int endOffset) {
 		System.out.println("Query 2:");
 		DatabaseHelper.openDB();
@@ -176,6 +178,7 @@ public class DatabaseHelper {
 
 	}
 
+	//Find publications by title, returning only a subset of all found publications ORDERED by title
 	public static void query3(String title, int startOffset, int endOffset) {
 		System.out.println("Query 3:");
 
@@ -215,6 +218,7 @@ public class DatabaseHelper {
 	}
 
 	//TODO: use == or contains for query?
+	//returns name of the co-authors of a given author
 	public static void query4(String author) {
 		System.out.println("Query 4:");
 
@@ -287,6 +291,7 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 	}
 
+	// Returns the number of publications per year between the interval year1 and year 2
 	public static void query7(int year1, int year2) {
 		System.out.println("Query 7:");
 		DatabaseHelper.openDB();
@@ -294,7 +299,6 @@ public class DatabaseHelper {
 
 		Query q1 = pm.newQuery(Publication.class);
 		Collection<Publication> publications = (Collection<Publication>) q1.execute();
-		double total = publications.size();
 		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
 		if (publications.isEmpty()) {
 			System.out.println("Error: No publications available.");
@@ -327,11 +331,57 @@ public class DatabaseHelper {
 		}
 	}
 
-	public static void query8() {
+	//No of all publications of a conference, except proceedings
+	//That is counting only the inproceedings?
+	public static void query8(String conferenceName) {
+		System.out.println("Query 8:");
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		int result = 0;
+		Query q1 = pm.newQuery(Conference.class, "name == '" + conferenceName.replaceAll("'", "&#39") + "'");
+		Collection<Conference> conferences = (Collection<Conference>) q1.execute();
+		if(conferences.isEmpty()){
+			System.out.println("No conference found with name " + conferenceName);
+		} else if (conferences.size() > 1){
+			System.out.println("Multiple conferences found with name " + conferenceName);
+		} else {
+			//only interested in 1 conference
+			Iterator<Conference> itr = conferences.iterator();
+			Collection<ConferenceEdition> editions = itr.next().getEditions();
+			Iterator<ConferenceEdition> itrEditions = editions.iterator();
+			while (itrEditions.hasNext()){
+				ConferenceEdition e = itrEditions.next();
+				Proceedings proceedings = e.getProceedings();
+				result += proceedings.getInProceedings().size();
+			}	
+		}
+		DatabaseHelper.closeDB();
+		System.out.println("The number of in proceedings presented at the conference "+ conferenceName + " was " + result +".");
+	}
+
+	//count all people involved in a given conference
+	public static void query9() {
+
+	}
+	
+	public static void query10() {
+
+	}
+	
+	public static void query11() {
 
 	}
 
-	public static void query9() {
+	public static void query12() {
+
+	}
+	
+	public static void query13() {
+
+	}
+	
+	public static void query14() {
 
 	}
 
@@ -480,12 +530,12 @@ public class DatabaseHelper {
 			proc.setId(crossref);
 			Set<InProceedings> inprocs = new HashSet<InProceedings>();
 			inprocs.add(inproc);
-			proc.setPublications(inprocs);
+			proc.setInProceedings(inprocs);
 		} else {
 			proc = proceedings.iterator().next();
-			Set<InProceedings> publications = proc.getPublications();
+			Set<InProceedings> publications = proc.getInProceedings();
 			publications.add(inproc);
-			proc.setPublications(publications);
+			proc.setInProceedings(publications);
 		}
 		pm.makePersistent(proc);
 		pm.currentTransaction().commit();
