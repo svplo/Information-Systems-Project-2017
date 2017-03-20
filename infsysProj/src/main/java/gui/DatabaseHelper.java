@@ -227,6 +227,7 @@ public class DatabaseHelper {
 		if (auth.size() == 1) {
 			for (Person p : auth) {
 				Collection<Publication> publications = p.getAuthoredPublications();
+				publications.addAll(p.getEditedPublications());
 				result.add(p);
 				if (publications.isEmpty()) {
 					System.out.println("Error: Did not find any publication with an author named: " + author);
