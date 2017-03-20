@@ -72,47 +72,46 @@ public class DatabaseHelper {
 		return allPublications;
 	}
 
-	public static void addInProceedings(List<InProceedings> list){
-		
+	public static void addInProceedings(List<InProceedings> list) {
+
 		pm.setMultithreaded(true);
-		
+
 		int length = list.size();
-		for(int i = 0;i<length;i++){
+		for (int i = 0; i < length; i++) {
 			pm.currentTransaction().begin();
 			pm.currentTransaction().setRetainValues(true);
 			pm.makePersistent(list.get(i));
 			pm.currentTransaction().commit();
 
-			if(i%500 == 0){
+			if (i % 500 == 0) {
 
-				System.out.println(i + " / "+ length+" InProceedings added to Database.");
-			}
-			else{
+				System.out.println(i + " / " + length + " InProceedings added to Database.");
+			} else {
 			}
 		}
 		System.out.println("All InProceedings added to Database");
 	}
-	
-	public static void addProceedings(List<Proceedings> list){
-		
+
+	public static void addProceedings(List<Proceedings> list) {
+
 		pm.setMultithreaded(true);
-		
+
 		int length = list.size();
-		for(int i = 0;i<length;i++){
+		for (int i = 0; i < length; i++) {
 			pm.currentTransaction().begin();
 			pm.currentTransaction().setRetainValues(true);
 			pm.makePersistent(list.get(i));
 			pm.currentTransaction().commit();
 
-			if(i%500 == 0){
+			if (i % 500 == 0) {
 
-				System.out.println(i + " / "+ length+" Proceedings added to Database.");
+				System.out.println(i + " / " + length + " Proceedings added to Database.");
 			}
 		}
 		System.out.println("All Proceedings added to Database");
 	}
 
-	public static Collection<Proceedings> getAllPeople(){
+	public static Collection<Proceedings> getAllPeople() {
 
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -125,12 +124,12 @@ public class DatabaseHelper {
 		ext.closeAll();
 
 		closeDB(pm);
-		
+
 		return allPublications;
 
 	}
-	
-	public static void query1(String id){
+
+	public static void query1(String id) {
 		System.out.println("Query 1:");
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
@@ -149,7 +148,8 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 
 	}
-	public static void query2(String title, int startOffset, int endOffset){
+
+	public static void query2(String title, int startOffset, int endOffset) {
 		System.out.println("Query 2:");
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
@@ -162,20 +162,20 @@ public class DatabaseHelper {
 		} else {
 			Iterator<Publication> itr = proceedings.iterator();
 
-			for(int i = 0; itr.hasNext(); i++) {
-			    if (i >= startOffset && i< endOffset) {
-			    	System.out.println(itr.next().getTitle());
-			    }
-			    else{
-			    	itr.next();
-			    }
+			for (int i = 0; itr.hasNext(); i++) {
+				if (i >= startOffset && i < endOffset) {
+					System.out.println(itr.next().getTitle());
+				} else {
+					itr.next();
+				}
 			}
 		}
 
 		DatabaseHelper.closeDB();
 
 	}
-	public static void query3(String title, int startOffset, int endOffset){
+
+	public static void query3(String title, int startOffset, int endOffset) {
 		System.out.println("Query 3:");
 
 		DatabaseHelper.openDB();
@@ -187,60 +187,96 @@ public class DatabaseHelper {
 			System.out.println("Error: Did not find a publication with ID: " + title + " in range: " + startOffset + "-" + endOffset);
 
 		} else {
-			
+
 			Iterator<Publication> itr = proceedings.iterator();
 			List<Publication> listOfPublications = new ArrayList<Publication>();
-			for(int i = 0; itr.hasNext(); i++) {
-			    if (i >= startOffset && i< endOffset) {
-			    	listOfPublications.add(itr.next());
-			    }
-			    else{
-			    	itr.next();
-			    }
+			for (int i = 0; itr.hasNext(); i++) {
+				if (i >= startOffset && i < endOffset) {
+					listOfPublications.add(itr.next());
+				} else {
+					itr.next();
+				}
 			}
-			
+
 			Collections.sort(listOfPublications, new Comparator<Publication>() {
-				
-			    public int compare(Publication s1, Publication s2) {
-			        return s1.getTitle().compareToIgnoreCase(s2.getTitle());
-			    }
+
+				public int compare(Publication s1, Publication s2) {
+					return s1.getTitle().compareToIgnoreCase(s2.getTitle());
+				}
 			});
-			for(Publication p: listOfPublications){
+			for (Publication p : listOfPublications) {
 				System.out.println(p.getTitle());
 			}
 		}
 
 		DatabaseHelper.closeDB();
-		
-	}
-	public static void query4(){
-		
-	}
-	public static void query5(){
-		
-	}
-	public static void query6(){
-		
-	}
-	public static void query7(){
-		
-	}
-	public static void query8(){
-		
-	}
-	public static void query9(){
-		
+
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	//TODO: use == or contains for query?
+	public static void query4(String author) {
+		System.out.println("Query 4:");
+
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+		Collection<Person> result = new HashSet<Person>();
+
+		Query query = pm.newQuery(Person.class);
+		query.setFilter("name == ('" + author.replaceAll("'", "&#39") + "')");
+		Collection<Person> auth = (Collection<Person>) query.execute();
+		if (auth.size() == 1) {
+			for (Person p : auth) {
+				Collection<Publication> publications = p.getAuthoredPublications();
+				result.add(p);
+				if (publications.isEmpty()) {
+					System.out.println("Error: Did not find any publication with an author named: " + author);
+				} else {
+					Iterator<Publication> itr1 = publications.iterator();
+					Publication currentPub;
+					while (itr1.hasNext()) {
+						currentPub = itr1.next();
+						Iterator<Person> itr2 = currentPub.getAuthors().iterator();
+						while (itr2.hasNext()) {
+							Person currentPers = itr2.next();
+							if (!result.contains(currentPers)) {
+								// no duplicate values
+								result.add(currentPers);
+								System.out.println(currentPers.getName());
+							} else {
+								// don't print author's name or any duplicates
+							}
+						}
+					}
+				}
+			}
+		} else if (auth.size() > 1) {
+			System.out.println("Error: There are several persons whose name contain: " + author);
+		} else {
+			System.out.println("Error: Did not find any person named: " + author);
+		}
+		DatabaseHelper.closeDB();
+	}
+
+	public static void query5() {
+
+	}
+
+	public static void query6() {
+
+	}
+
+	public static void query7() {
+
+	}
+
+	public static void query8() {
+
+	}
+
+	public static void query9() {
+
+	}
+
 	@Deprecated
 	public static void addInProceeding(InProceedings in, String crossref) {
 		pm.currentTransaction().begin();
@@ -287,6 +323,7 @@ public class DatabaseHelper {
 		pm.makePersistent(in);
 		pm.currentTransaction().commit();
 	}
+
 	@Deprecated
 	public static void addProceeding(Proceedings in, String booktitle, String publisher, String series) {
 		pm.setMultithreaded(true);
@@ -373,6 +410,7 @@ public class DatabaseHelper {
 		pm.makePersistent(in);
 		pm.currentTransaction().commit();
 	}
+
 	@Deprecated
 	public static Proceedings addProceedingwithCrossRef(String crossref, InProceedings inproc) {
 		pm.currentTransaction().begin();
@@ -396,6 +434,4 @@ public class DatabaseHelper {
 		return proc;
 	}
 
-	
-	
 }

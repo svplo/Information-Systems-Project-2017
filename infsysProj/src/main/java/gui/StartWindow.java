@@ -28,11 +28,13 @@ public class StartWindow extends JFrame {
 					frame.setVisible(true);
 					
 					//Run the queries required for task 1.3
-					DatabaseHelper.query1("conf/acm/ColeMM87");
+				//	DatabaseHelper.query1("conf/acm/ColeMM87");
 					
-					DatabaseHelper.query2("expert system", 0, 3);
+				//	DatabaseHelper.query2("expert system", 0, 3);
 					
-					DatabaseHelper.query3("expert system", 0, 3);
+				//	DatabaseHelper.query3("expert system", 0, 3);
+					
+					DatabaseHelper.query4("J. Thomas Haigh");
 
 				} catch (Exception e) {
 					e.printStackTrace();
