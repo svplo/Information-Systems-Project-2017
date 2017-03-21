@@ -40,8 +40,18 @@ public class StartWindow extends JFrame {
 					
 				//	DatabaseHelper.query7(1980,1990);
 					
-					DatabaseHelper.query8("Microcomputing");
+				//	DatabaseHelper.query8("Microcomputing");
 					
+				//	DatabaseHelper.query9("Microcomputing");
+
+				//	DatabaseHelper.query10("Microcomputing");
+					
+				//	DatabaseHelper.query11("Microcomputing");
+
+				//	DatabaseHelper.query12();
+
+					DatabaseHelper.query13("Robert Noel");
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
