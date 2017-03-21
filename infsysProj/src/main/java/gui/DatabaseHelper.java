@@ -151,7 +151,7 @@ public class DatabaseHelper {
 
 	}
 
-	//Find publications by title, returning only a subset of all found publications
+	// Find publications by title, returning only a subset of all found publications
 	public static void query2(String title, int startOffset, int endOffset) {
 		System.out.println("Query 2:");
 		DatabaseHelper.openDB();
@@ -178,7 +178,7 @@ public class DatabaseHelper {
 
 	}
 
-	//Find publications by title, returning only a subset of all found publications ORDERED by title
+	// Find publications by title, returning only a subset of all found publications ORDERED by title
 	public static void query3(String title, int startOffset, int endOffset) {
 		System.out.println("Query 3:");
 
@@ -217,8 +217,8 @@ public class DatabaseHelper {
 
 	}
 
-	//TODO: use == or contains for query?
-	//returns name of the co-authors of a given author
+	// TODO: use == or contains for query?
+	// returns name of the co-authors of a given author
 	public static void query4(String author) {
 		System.out.println("Query 4:");
 
@@ -263,12 +263,37 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 	}
 
-	public static void query5() {
+	public static void query5(String author1, String author2) {
+		System.out.println("Query 5:");
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
 
+		Query q1 = pm.newQuery(Person.class);
+		q1.setFilter("name == ('" + author1.replaceAll("'", "&#39") + "')");
+		Collection<Person> authors = (Collection<Person>) q1.execute();
+		HashMap<String, Integer> distances = new HashMap<String, Integer>();
+		if (authors.isEmpty()) {
+			System.out.println("Error: No author with name " + author1 + "found.");
+		} else if (authors.size() > 1) {
+			System.out.println("Error: Several authors with name " + author1 + "found.");
+		} else {
+			Iterator<Person> itr = authors.iterator();
+			Person author = itr.next(); // get author
+			Set<Publication> publications = author.getAuthoredPublications();
+			Iterator<Publication> itrPub = publications.iterator();
+
+			Set<Person> coAuthors = new HashSet<Person>();
+			while (itrPub.hasNext()) {
+				// if (!distances.contains(itrPub.))
+				// distance.add()
+			}
+		}
+		System.out.println("The distance between the authors " + author1 + " and " + author2 + " is " + distances.get(author2));
+		DatabaseHelper.closeDB();
 	}
 
-	//global average of authors / publication (InProceedings + Proceedings)
-	//TODO: In our case Publications = InProceedings + Proceedings?
+	// global average of authors / publication (InProceedings + Proceedings)
+	// TODO: In our case Publications = InProceedings + Proceedings?
 	public static void query6() {
 		System.out.println("Query 6:");
 		DatabaseHelper.openDB();
@@ -283,10 +308,10 @@ public class DatabaseHelper {
 
 		} else {
 			Iterator<Publication> itr = publications.iterator();
-			while (itr.hasNext()){
+			while (itr.hasNext()) {
 				sum += itr.next().getAuthors().size();
 			}
-			System.out.println("Average authors "+ (double)(sum/total) +".");
+			System.out.println("Average authors " + (double) (sum / total) + ".");
 		}
 		DatabaseHelper.closeDB();
 	}
@@ -298,41 +323,42 @@ public class DatabaseHelper {
 		pm.currentTransaction().begin();
 
 		Query q1 = pm.newQuery(Publication.class);
-		Collection<Publication> publications = (Collection<Publication>) q1.execute();
+		q1.setFilter("(this.year >= year1) && (this.year <= year2)");
+		// TODO: is not supported?
+		// q1.setGrouping("this.year");
+		q1.declareParameters("int year1, int year2");
+		Collection<Publication> publications = (Collection<Publication>) q1.execute(year1, year2);
 		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
 		if (publications.isEmpty()) {
 			System.out.println("Error: No publications available.");
-
 		} else {
+			//group by year
 			Iterator<Publication> itr = publications.iterator();
 			Publication p;
 			int currYear;
-			while (itr.hasNext()){
+			while (itr.hasNext()) {
 				p = itr.next();
 				currYear = p.getYear();
-				if(currYear < year1 || currYear > year2){
-					continue;
-				}
-				if (map.containsKey(currYear)){
+				if (map.containsKey(currYear)) {
 					int current = map.get(currYear);
-					map.put(currYear, current+1);
+					map.put(currYear, current + 1);
 				} else {
 					map.put(currYear, 1);
 				}
 			}
+
+			// print Hashtable
+			System.out.printf("%-12s%-17s\n", "Year", "No. Publications");
+			for (int i = year1; i <= year2; i++) {
+				System.out.printf("%-12d%-12d\n", i, map.get(i));
+			}
+
 		}
 		DatabaseHelper.closeDB();
-		//print Hashtable
-		System.out.printf("%-12s%-17s\n","Year","No. Publications");
-		for (int i = year1; i <= year2; i++){
-			if (map.containsKey(i)){
-		        System.out.printf("%-12d%-12d\n",i,map.get(i));
-			}
-		}
 	}
 
-	//No of all publications of a conference, except proceedings
-	//That is counting only the inproceedings?
+	// No of all publications of a conference, except proceedings
+	// That is counting only the inproceedings?
 	public static void query8(String conferenceName) {
 		System.out.println("Query 8:");
 		DatabaseHelper.openDB();
@@ -341,26 +367,26 @@ public class DatabaseHelper {
 		int result = 0;
 		Query q1 = pm.newQuery(Conference.class, "name == '" + conferenceName.replaceAll("'", "&#39") + "'");
 		Collection<Conference> conferences = (Collection<Conference>) q1.execute();
-		if(conferences.isEmpty()){
+		if (conferences.isEmpty()) {
 			System.out.println("No conference found with name " + conferenceName);
-		} else if (conferences.size() > 1){
+		} else if (conferences.size() > 1) {
 			System.out.println("Multiple conferences found with name " + conferenceName);
 		} else {
-			//only interested in 1 conference
+			// only interested in 1 conference
 			Iterator<Conference> itr = conferences.iterator();
 			Collection<ConferenceEdition> editions = itr.next().getEditions();
 			Iterator<ConferenceEdition> itrEditions = editions.iterator();
-			while (itrEditions.hasNext()){
+			while (itrEditions.hasNext()) {
 				ConferenceEdition e = itrEditions.next();
 				Proceedings proceedings = e.getProceedings();
 				result += proceedings.getInProceedings().size();
-			}	
+			}
 		}
 		DatabaseHelper.closeDB();
-		System.out.println("The number of in proceedings presented at the conference "+ conferenceName + " was " + result +".");
+		System.out.println("The number of in proceedings presented at the conference " + conferenceName + " was " + result + ".");
 	}
 
-	//count all people involved in a given conference
+	// count all people involved in a given conference
 	public static void query9(String conferenceName) {
 		System.out.println("Query 9:");
 		DatabaseHelper.openDB();
@@ -368,43 +394,43 @@ public class DatabaseHelper {
 
 		Query q1 = pm.newQuery(Conference.class, "name == '" + conferenceName.replaceAll("'", "&#39") + "'");
 		Collection<Conference> conferences = (Collection<Conference>) q1.execute();
-		if(conferences.isEmpty()){
+		if (conferences.isEmpty()) {
 			System.out.println("No conference found with name " + conferenceName);
-		} else if (conferences.size() > 1){
+		} else if (conferences.size() > 1) {
 			System.out.println("Multiple conferences found with name " + conferenceName);
 		} else {
-			//only interested in 1 conference
+			// only interested in 1 conference
 			List<Person> authors = new ArrayList<Person>();
 			List<Person> editors = new ArrayList<Person>();
 			Iterator<Conference> itr = conferences.iterator();
 			Collection<ConferenceEdition> editions = itr.next().getEditions();
 			Iterator<ConferenceEdition> itrEditions = editions.iterator();
-			while (itrEditions.hasNext()){
+			while (itrEditions.hasNext()) {
 				ConferenceEdition e = itrEditions.next();
 				Proceedings proc = e.getProceedings();
 				editors.addAll(proc.getAuthors());
 				Set<InProceedings> inproceedings = proc.getInProceedings();
 				Iterator<InProceedings> inProcItr = inproceedings.iterator();
-				while(inProcItr.hasNext()){
+				while (inProcItr.hasNext()) {
 					InProceedings inProc = inProcItr.next();
 					Iterator<Person> inProcAuthorsItr = inProc.getAuthors().iterator();
-					while(inProcAuthorsItr.hasNext()){
+					while (inProcAuthorsItr.hasNext()) {
 						Person auth = inProcAuthorsItr.next();
-						if(!authors.contains(auth)){
+						if (!authors.contains(auth)) {
 							authors.add(auth);
 						}
 					}
 
 				}
 			}
-			int result = authors.size()+editors.size();
-			System.out.println("Number of authors and editors at the conference "+ conferenceName + " was " + result +".");
+			int result = authors.size() + editors.size();
+			System.out.println("Number of authors and editors at the conference " + conferenceName + " was " + result + ".");
 
 		}
 		DatabaseHelper.closeDB();
 
 	}
-	
+
 	public static void query10(String conferenceName) {
 		System.out.println("Query 10:");
 		DatabaseHelper.openDB();
@@ -412,42 +438,42 @@ public class DatabaseHelper {
 
 		Query q1 = pm.newQuery(Conference.class, "name == '" + conferenceName.replaceAll("'", "&#39") + "'");
 		Collection<Conference> conferences = (Collection<Conference>) q1.execute();
-		if(conferences.isEmpty()){
+		if (conferences.isEmpty()) {
 			System.out.println("No conference found with name " + conferenceName);
-		} else if (conferences.size() > 1){
+		} else if (conferences.size() > 1) {
 			System.out.println("Multiple conferences found with name " + conferenceName);
 		} else {
-			//only interested in 1 conference
+			// only interested in 1 conference
 			List<Person> authors = new ArrayList<Person>();
 			List<Person> editors = new ArrayList<Person>();
 			Iterator<Conference> itr = conferences.iterator();
 			Collection<ConferenceEdition> editions = itr.next().getEditions();
 			Iterator<ConferenceEdition> itrEditions = editions.iterator();
-			while (itrEditions.hasNext()){
+			while (itrEditions.hasNext()) {
 				ConferenceEdition e = itrEditions.next();
 				Proceedings proc = e.getProceedings();
 				editors.addAll(proc.getAuthors());
 				Set<InProceedings> inproceedings = proc.getInProceedings();
 				Iterator<InProceedings> inProcItr = inproceedings.iterator();
-				while(inProcItr.hasNext()){
+				while (inProcItr.hasNext()) {
 					InProceedings inProc = inProcItr.next();
 					Iterator<Person> inProcAuthorsItr = inProc.getAuthors().iterator();
-					while(inProcAuthorsItr.hasNext()){
+					while (inProcAuthorsItr.hasNext()) {
 						Person auth = inProcAuthorsItr.next();
-						if(!authors.contains(auth)){
+						if (!authors.contains(auth)) {
 							authors.add(auth);
 						}
 					}
 
 				}
 			}
-			System.out.println("List of all authors and editors at the conference "+ conferenceName + ":");
+			System.out.println("List of all authors and editors at the conference " + conferenceName + ":");
 			System.out.println("\nAuthors:");
-			for(Person p: authors){
+			for (Person p : authors) {
 				System.out.println(p.getName());
 			}
 			System.out.println("\nEditors:");
-			for(Person p: editors){
+			for (Person p : editors) {
 				System.out.println(p.getName());
 			}
 
@@ -455,7 +481,7 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 
 	}
-	
+
 	public static void query11(String conferenceName) {
 		System.out.println("Query 11:");
 		DatabaseHelper.openDB();
@@ -463,24 +489,24 @@ public class DatabaseHelper {
 
 		Query q1 = pm.newQuery(Conference.class, "name == '" + conferenceName.replaceAll("'", "&#39") + "'");
 		Collection<Conference> conferences = (Collection<Conference>) q1.execute();
-		if(conferences.isEmpty()){
+		if (conferences.isEmpty()) {
 			System.out.println("No conference found with name " + conferenceName);
-		} else if (conferences.size() > 1){
+		} else if (conferences.size() > 1) {
 			System.out.println("Multiple conferences found with name " + conferenceName);
 		} else {
-			//only interested in 1 conference
+			// only interested in 1 conference
 			Iterator<Conference> itr = conferences.iterator();
 			Collection<ConferenceEdition> editions = itr.next().getEditions();
 			Iterator<ConferenceEdition> itrEditions = editions.iterator();
 			List<InProceedings> allPublications = new ArrayList<InProceedings>();
-			while (itrEditions.hasNext()){
+			while (itrEditions.hasNext()) {
 				ConferenceEdition e = itrEditions.next();
 				Proceedings proc = e.getProceedings();
 				Set<InProceedings> inproceedings = proc.getInProceedings();
 				allPublications.addAll(inproceedings);
 			}
-			System.out.println("List of all Publications at the conference "+ conferenceName + ":");
-			for(InProceedings p: allPublications){
+			System.out.println("List of all Publications at the conference " + conferenceName + ":");
+			for (InProceedings p : allPublications) {
 				System.out.println(p.getTitle());
 			}
 
@@ -499,58 +525,58 @@ public class DatabaseHelper {
 		List<Person> editorAndAuthor = new ArrayList<Person>();
 		for (Proceedings p : ext) {
 			List<Person> authors = p.getAuthors();
-			for(InProceedings inP : p.getInProceedings()){
-				for(Person editor : inP.getAuthors()){
-					if(authors.contains(editor) && !editorAndAuthor.contains(editor)){
-						
+			for (InProceedings inP : p.getInProceedings()) {
+				for (Person editor : inP.getAuthors()) {
+					if (authors.contains(editor) && !editorAndAuthor.contains(editor)) {
+
 						editorAndAuthor.add(editor);
 					}
 				}
 			}
-			
+
 		}
 		ext.closeAll();
 		System.out.println("List of " + editorAndAuthor.size() + " authors that are also editor in the corresponding proceeding.");
-		for(Person p: editorAndAuthor){
+		for (Person p : editorAndAuthor) {
 			System.out.println(p.getName());
 		}
-		
+
 		DatabaseHelper.closeDB();
 
 	}
-	
+
 	public static void query13(String authorName) {
 		System.out.println("Query 13:");
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
-		
+
 		Query q1 = pm.newQuery(Person.class, "name =='" + authorName.replaceAll("'", "&#39") + "'");
 		Collection<Person> authors = (Collection<Person>) q1.execute();
-		if(authors.isEmpty()){
+		if (authors.isEmpty()) {
 			System.out.println("No author found with name " + authorName);
-		} else if (authors.size() > 1){
+		} else if (authors.size() > 1) {
 			System.out.println("Multiple authors found with name " + authorName);
 		} else {
 			List<Publication> result = new ArrayList<Publication>();
 			Person author = authors.iterator().next();
-			for(Publication i:author.getAuthoredPublications()){
-				
-				Person lastAuthor = i.getAuthors().get(i.getAuthors().size()-1);
-				if(lastAuthor.equals(author)){
+			for (Publication i : author.getAuthoredPublications()) {
+
+				Person lastAuthor = i.getAuthors().get(i.getAuthors().size() - 1);
+				if (lastAuthor.equals(author)) {
 					result.add(i);
 				}
 			}
-			System.out.println("List of " + result.size() + " publications where " + authorName + " was listed as last author.");		
-			for(Publication p: result){
+			System.out.println("List of " + result.size() + " publications where " + authorName + " was listed as last author.");
+			for (Publication p : result) {
 				System.out.println(p.getTitle());
 			}
 
 		}
-		
+
 		DatabaseHelper.closeDB();
 
 	}
-	
+
 	public static void query14() {
 
 	}

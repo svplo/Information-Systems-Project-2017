@@ -38,7 +38,7 @@ public class StartWindow extends JFrame {
 
 				//	DatabaseHelper.query6();
 					
-				//	DatabaseHelper.query7(1980,1990);
+					DatabaseHelper.query7(1980,1990);
 					
 				//	DatabaseHelper.query8("Microcomputing");
 					
@@ -50,7 +50,7 @@ public class StartWindow extends JFrame {
 
 				//	DatabaseHelper.query12();
 
-					DatabaseHelper.query13("Robert Noel");
+				//	DatabaseHelper.query13("Robert Noel");
 
 				} catch (Exception e) {
 					e.printStackTrace();
