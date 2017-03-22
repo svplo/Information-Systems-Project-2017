@@ -164,9 +164,8 @@ public class PublicationsWindow extends JFrame {
 	    petList.addActionListener( new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 JComboBox combo = (JComboBox)e.getSource();
-                pageNumber = (int)Math.ceil(pageNumber * itemsPerPageIndex.getNumber() / ItemsPerPage.getEnumForInt(combo.getSelectedIndex()).getNumber());
+                pageNumber = 0;
                 itemsPerPageIndex = ItemsPerPage.getEnumForInt(combo.getSelectedIndex());
-                pageTextField.setText(String.valueOf(pageNumber + 1));
                 reloadTable();
                 }
         }            
@@ -187,7 +186,6 @@ public class PublicationsWindow extends JFrame {
 				if(pageNumber > 0){
 					
 					pageNumber--;
-					pageTextField.setText(String.valueOf(pageNumber+1));
 					reloadTable();
 				}
 			}
@@ -219,7 +217,7 @@ public class PublicationsWindow extends JFrame {
 
             		int newPage = Integer.parseInt(pageTextField.getText());
                     if(newPage>0 && numberOfPages()>=newPage){
-                    	pageNumber = newPage;
+                    	pageNumber = newPage-1;
                     	reloadTable();
                     }
                     else{
@@ -253,11 +251,9 @@ public class PublicationsWindow extends JFrame {
 	    BasicArrowButton nextPageButton = new BasicArrowButton(BasicArrowButton.EAST);
 	    nextPageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(numberOfPages()> pageNumber){
+				if(numberOfPages()> pageNumber+1){
 
 					pageNumber++;
-					pageTextField.setText(String.valueOf(pageNumber+1));
-
 					reloadTable();
 				}
 			}
@@ -356,7 +352,7 @@ public class PublicationsWindow extends JFrame {
 		else{
         numberOfPagesLabel.setText("of " + String.valueOf(numberOfPages()));
         numberOfItemsLabel.setText(String.valueOf(pageNumber*itemsPerPageIndex.getNumber() + 1) + " - " + String.valueOf((int)Math.min(size,(pageNumber +1)*itemsPerPageIndex.getNumber())) + " of " + String.valueOf(allPublications.size()) + " items");
-		pageTextField.setText(String.valueOf(pageNumber + 1));
+		pageTextField.setText(String.valueOf(pageNumber+1));
 		}
         currentPublications = allPublications.subList(itemsPerPageIndex.getNumber()*pageNumber, Math.min(itemsPerPageIndex.getNumber()*(pageNumber+1),size));
 		tableModel.changeData(currentPublications);
@@ -368,7 +364,7 @@ public class PublicationsWindow extends JFrame {
 			return 1;
 		}
 		else{
-			return (int) Math.ceil(allPublications.size()/itemsPerPageIndex.getNumber());
+			return (int) Math.floor(allPublications.size()/itemsPerPageIndex.getNumber())+1;
 		}
 	}
 
