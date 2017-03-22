@@ -256,13 +256,14 @@ public class DatabaseHelper {
 				}
 			}
 		} else if (auth.size() > 1) {
-			System.out.println("Error: There are several persons whose name contain: " + author);
+			System.out.println("Error: There are several persons whose name equals: " + author);
 		} else {
 			System.out.println("Error: Did not find any person named: " + author);
 		}
 		DatabaseHelper.closeDB();
 	}
 
+	//distance between 2 authors
 	public static void query5(String author1, String author2) {
 		System.out.println("Query 5:");
 		DatabaseHelper.openDB();
@@ -356,7 +357,6 @@ public class DatabaseHelper {
 	}
 
 	// No of all publications of a conference, except proceedings
-	// That is counting only the inproceedings?
 	public static void query8(String conferenceName) {
 		System.out.println("Query 8:");
 		DatabaseHelper.openDB();
@@ -426,6 +426,7 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 	}
 
+	//all authors of conferenceName
 	public static void query10(String conferenceName) {
 		System.out.println("Query 10:");
 		DatabaseHelper.openDB();
@@ -476,6 +477,7 @@ public class DatabaseHelper {
 
 	}
 
+	//all publications of conferenceName
 	public static void query11(String conferenceName) {
 		System.out.println("Query 11:");
 		DatabaseHelper.openDB();
@@ -508,8 +510,8 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 	}
 
+	//list of persons which were authors of an in proceeding and editor of the corresponding proceeding.
 	public static void query12() {
-
 		System.out.println("Query 12:");
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
@@ -535,6 +537,7 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 	}
 
+	//list of in proceedings where the given author appears as the last author
 	public static void query13(String authorName) {
 		System.out.println("Query 13:");
 		DatabaseHelper.openDB();
@@ -573,8 +576,41 @@ public class DatabaseHelper {
 
 	}
 
-	public static void query14() {
+	public static void query14(int year1, int year2) {
+		System.out.println("Query 14:");
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
 
+		Query q1 = pm.newQuery(InProceedings.class);
+		q1.setFilter("(this.year >= year1) && (this.year <= year2)");
+		q1.declareParameters("int year1, int year2");
+		Collection<InProceedings> inProcs = (Collection<InProceedings>) q1.execute(year1, year2);
+		HashSet<Person> setOfAuthors = new HashSet<Person>();
+		if (inProcs.isEmpty()) {
+			System.out.println("Error: No in proceedings available.");
+		} else {
+			// create list of authors
+			Iterator<InProceedings> itr = inProcs.iterator();
+			InProceedings inP;
+			while (itr.hasNext()) {
+				inP = itr.next();
+				setOfAuthors.addAll(inP.getAuthors());
+			}
+			// result set
+			HashSet<Publisher> result = new HashSet<Publisher>();
+			Extent<Proceedings> proceedings = pm.getExtent(Proceedings.class);
+			for (Proceedings proc : proceedings){
+				if(setOfAuthors.containsAll(proc.getAuthors())){
+					result.add(proc.getPublisher());
+				}
+			}
+			// print list of publishers
+			System.out.println("List of publishers of proceedings whose authors appear in any in proceedings which were published between "+ year1 +" and "+year2+".");
+			for (Publisher p : result) {
+				System.out.println(p.getName());
+			}
+		}
+		DatabaseHelper.closeDB();
 	}
 
 	@Deprecated
