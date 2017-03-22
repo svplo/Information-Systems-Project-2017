@@ -34,10 +34,11 @@ public class StartWindow extends JFrame {
 					
 				//	DatabaseHelper.query3("expert system", 0, 3);
 					
-				//	DatabaseHelper.query4("J. Thomas Haigh");
+				//	DatabaseHelper.query4("William D. Young");
 					
-					DatabaseHelper.query5("Todd Fine", "J. Thomas Haigh"); //co-authors
-
+				//	DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
+					//William D. Young --> William R. Bevier --> J. Thomas Haigh = 2
+					
 				//	DatabaseHelper.query6();
 					
 				//	DatabaseHelper.query7(1980,1990);
