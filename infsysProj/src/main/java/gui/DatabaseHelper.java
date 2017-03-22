@@ -216,26 +216,16 @@ public class DatabaseHelper {
 			}
 		}
 		DatabaseHelper.closeDB();
-		}
+	}
 
-	//our own sorting algorithm
-/*		Iterator<Publication> itr = proceedings.iterator();
-*		List<Publication> listOfPublications = new ArrayList<Publication>();
-*		for (int i = 0; itr.hasNext(); i++) {
-*				listOfPublications.add(itr.next());
-*		}
-*
-*		Collections.sort(listOfPublications, new Comparator<Publication>() {
-*
-*			public int compare(Publication s1, Publication s2) {
-*				return s1.getTitle().compareToIgnoreCase(s2.getTitle());
-*			}
-*		});
-*		for (Publication p : listOfPublications) {
-*			System.out.println(p.getTitle());
-*		}
-*	}
-*/
+	// our own sorting algorithm
+	/*
+	 * Iterator<Publication> itr = proceedings.iterator(); List<Publication> listOfPublications = new ArrayList<Publication>(); for (int i = 0; itr.hasNext(); i++) { listOfPublications.add(itr.next()); }
+	 *
+	 * Collections.sort(listOfPublications, new Comparator<Publication>() {
+	 *
+	 * public int compare(Publication s1, Publication s2) { return s1.getTitle().compareToIgnoreCase(s2.getTitle()); } }); for (Publication p : listOfPublications) { System.out.println(p.getTitle()); } }
+	 */
 
 	// returns name of the co-authors of a given author
 	public static void query4(String author) {
@@ -283,33 +273,96 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 	}
 
-	//distance between 2 authors
+	// distance between 2 authors
 	public static void query5(String author1, String author2) {
 		System.out.println("Query 5:");
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
 
 		Query q1 = pm.newQuery(Person.class);
-		q1.setFilter("name == ('" + author1.replaceAll("'", "&#39") + "')");
-		Collection<Person> authors = (Collection<Person>) q1.execute();
-		HashMap<String, Integer> distances = new HashMap<String, Integer>();
-		if (authors.isEmpty()) {
+		q1.declareParameters("String authorName");
+		q1.setFilter("name == authorName");
+		Collection<Person> authors1 = (Collection<Person>) q1.execute(author1);
+		Query q2 = pm.newQuery(Person.class);
+		q2.declareParameters("String authorName");
+		q2.setFilter("name == authorName");
+		Collection<Person> authors2 = (Collection<Person>) q2.execute(author2);
+		// map to store distances
+		HashMap<Person, Integer> distancesMap = new HashMap<Person, Integer>();
+		// indicates if we found a path
+		Boolean found = false;
+		// stores object of author2
+		Person authorTwo = null;
+		if (authors1.isEmpty()) {
 			System.out.println("Error: No author with name " + author1 + "found.");
-		} else if (authors.size() > 1) {
+		} else if (authors1.size() > 1) {
 			System.out.println("Error: Several authors with name " + author1 + "found.");
+		} else if (authors2.isEmpty()) {
+			System.out.println("Error: No author found with name " + author2 + ".");
+		} else if (authors2.size() > 1) {
+			System.out.println("Error: Several authors with name " + author2 + "found.");
 		} else {
-			Iterator<Person> itr = authors.iterator();
-			Person author = itr.next(); // get author
-			Set<Publication> publications = author.getAuthoredPublications();
-			Iterator<Publication> itrPub = publications.iterator();
+			Iterator<Person> itr1 = authors1.iterator();
+			Person authorOne = itr1.next(); // get corresponding object of author1
+			Iterator<Person> itr2 = authors2.iterator();
+			authorTwo = itr2.next(); // get author2
 
-			Set<Person> coAuthors = new HashSet<Person>();
-			while (itrPub.hasNext()) {
-				// if (!distances.contains(itrPub.))
-				// distance.add()
+			Set<Publication> pubOfAuthor1 = authorOne.getAuthoredPublications();
+			HashSet<Publication> visitedPublications = new HashSet<Publication>();
+			HashSet<Publication> toVisitPublications = new HashSet<Publication>();
+			HashSet<Publication> tempPublications = new HashSet<Publication>();
+			toVisitPublications.addAll(pubOfAuthor1);
+			Iterator<Publication> itrPub = toVisitPublications.iterator();
+			int distance = 1;
+			List<Person> coAuthors = new ArrayList<Person>();
+			Publication currentPub = null;
+			//hint: this loop can take very long
+			//	int no = 0;
+			while ((!toVisitPublications.isEmpty())) {
+			//	no++;
+			//	if (no == 10){
+			//		break;
+			//	}
+				//reset itrPub, because toVisitPublications has changed
+				itrPub = toVisitPublications.iterator();
+				while (itrPub.hasNext()) {
+					currentPub = itrPub.next();
+					coAuthors.addAll(currentPub.getAuthors());
+					for (Person a : coAuthors) {
+						distancesMap.putIfAbsent(a, distance);
+						if (a == authorTwo) {
+							found = true;
+							break;
+						}
+						for (Publication p : a.getAuthoredPublications()) {
+							if ((!visitedPublications.contains(p)) || (!toVisitPublications.contains(p))) {
+								tempPublications.add(p);
+							}
+						}
+					}
+					if (found == true) {
+						break;
+					}
+					visitedPublications.add(currentPub);
+				}
+				if (found == true) {
+					break;
+				}
+				//add publications of co-authors
+				toVisitPublications.addAll(tempPublications);
+				tempPublications.clear();
+				//remove the publications we have already visited (--> avoid loops)
+				for (Publication p : visitedPublications) {
+					toVisitPublications.remove(p);
+				}
+				distance++;
 			}
 		}
-		System.out.println("The distance between the authors " + author1 + " and " + author2 + " is " + distances.get(author2));
+		if (found == true) {
+			System.out.println("The distance between the authors " + author1 + " and " + author2 + " is " + distancesMap.get(authorTwo) + ".");
+		} else {
+			System.out.println("The authors " + author1 + " and " + author2 + " are not connected.");
+		}
 		DatabaseHelper.closeDB();
 	}
 
@@ -319,7 +372,7 @@ public class DatabaseHelper {
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
 
-		Extent <Publication> ext = pm.getExtent(Publication.class);
+		Extent<Publication> ext = pm.getExtent(Publication.class);
 		double sum = 0.;
 		double total = 0.;
 		Iterator<Publication> itr = ext.iterator();
@@ -436,7 +489,7 @@ public class DatabaseHelper {
 					Iterator<Person> inProcAuthorsItr = inProc.getAuthors().iterator();
 					while (inProcAuthorsItr.hasNext()) {
 						Person auth = inProcAuthorsItr.next();
-							authors.add(auth);
+						authors.add(auth);
 					}
 				}
 			}
@@ -446,7 +499,7 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 	}
 
-	//all authors of conferenceName
+	// all authors of conferenceName
 	public static void query10(String conferenceName) {
 		System.out.println("Query 10:");
 		DatabaseHelper.openDB();
@@ -477,7 +530,7 @@ public class DatabaseHelper {
 					Iterator<Person> inProcAuthorsItr = inProc.getAuthors().iterator();
 					while (inProcAuthorsItr.hasNext()) {
 						Person auth = inProcAuthorsItr.next();
-							authors.add(auth);
+						authors.add(auth);
 					}
 
 				}
@@ -497,7 +550,7 @@ public class DatabaseHelper {
 
 	}
 
-	//all publications of conferenceName
+	// all publications of conferenceName
 	public static void query11(String conferenceName) {
 		System.out.println("Query 11:");
 		DatabaseHelper.openDB();
@@ -530,7 +583,7 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 	}
 
-	//list of persons which were authors of an in proceeding and editor of the corresponding proceeding.
+	// list of persons which were authors of an in proceeding and editor of the corresponding proceeding.
 	public static void query12() {
 		System.out.println("Query 12:");
 		DatabaseHelper.openDB();
@@ -557,7 +610,7 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 	}
 
-	//list of in proceedings where the given author appears as the last author
+	// list of in proceedings where the given author appears as the last author
 	public static void query13(String authorName) {
 		System.out.println("Query 13:");
 		DatabaseHelper.openDB();
@@ -619,13 +672,13 @@ public class DatabaseHelper {
 			// result set
 			HashSet<Publisher> result = new HashSet<Publisher>();
 			Extent<Proceedings> proceedings = pm.getExtent(Proceedings.class);
-			for (Proceedings proc : proceedings){
-				if(setOfAuthors.containsAll(proc.getAuthors())){
+			for (Proceedings proc : proceedings) {
+				if (setOfAuthors.containsAll(proc.getAuthors())) {
 					result.add(proc.getPublisher());
 				}
 			}
 			// print list of publishers
-			System.out.println("List of publishers of proceedings whose authors appear in any in proceedings which were published between "+ year1 +" and "+year2+".");
+			System.out.println("List of publishers of proceedings whose authors appear in any in proceedings which were published between " + year1 + " and " + year2 + ".");
 			for (Publisher p : result) {
 				System.out.println(p.getName());
 			}
