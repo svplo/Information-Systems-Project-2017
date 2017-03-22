@@ -84,10 +84,8 @@ public class DatabaseHelper {
 		if (proceedings.isEmpty()) {
 			System.out.println("Error: Did not find a publication with ID: " + search);
 
-		} else {
-			proc = proceedings.iterator().next();
-			System.out.println(proc.getTitle());
-		}
+		} 
+		
 		pm.currentTransaction().rollback();
 		closeDB(pm);
 

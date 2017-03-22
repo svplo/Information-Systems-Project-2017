@@ -38,11 +38,9 @@ public class PublicationTableModel extends AbstractTableModel {
 
 	private List<Publication> listPublication;
 
-	public PublicationTableModel() {
-		Collection<Publication> allPublications = DatabaseHelper.getAllPublications();
-		
+	public PublicationTableModel(List<Publication> allPublications) {		
 
-		this.listPublication = new ArrayList<Publication>(allPublications);
+		this.listPublication = allPublications;
 
 	}
 
@@ -62,7 +60,6 @@ public class PublicationTableModel extends AbstractTableModel {
 	public String getValueAt(int rowIndex, int columnIndex) {
 		Publication publications = listPublication.get(rowIndex);
 		String returnValue = "";
-		System.out.print("e");
 		switch (columnIndex) {
 		case COLUMN_TITLE:
 			returnValue = publications.getTitle();

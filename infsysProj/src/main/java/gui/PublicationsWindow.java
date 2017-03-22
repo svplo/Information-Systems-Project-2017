@@ -40,9 +40,54 @@ import infsysProj.infsysProj.Publication;
 public class PublicationsWindow extends JFrame {
 	private JTable table;
 	private JPanel contentPane;
+	private ItemsPerPage itemsPerPageIndex = ItemsPerPage.FIFTY;
+	List<Publication> allPublications;
+	List<Publication> currentPublications;
+	PublicationTableModel tableModel;
+
+	public static enum ItemsPerPage {
+	    TWENTY("20 items per page",20,0), 
+	    FIFTY("50 items per page",50,1),
+	    HUNDRED("100 items per page",100,2),
+	    TWOHUNDRED("200 items per page",200,3),
+	    FIVEHUNDRED("500 items per page",500,4),
+	    THOUSAND("1000 items per page",1000,5),
+	    ALL("All items",Integer.MAX_VALUE,6);
+
+	    private final String string;
+	    private final int number;
+	    private final int index;
+
+	    private ItemsPerPage(String string, int number, int index) {
+	        this.string = string;
+	        this.number = number;
+	        this.index = index;
+	    }
+
+	    public String getString() {
+	        return string;
+	    }
+
+	    public int getNumber() {
+	        return number;
+	    }
+	    public int getIndex() {
+	        return index;
+	    }
+	    public static ItemsPerPage getEnumForInt(int legIndex) {
+	        for (ItemsPerPage l : ItemsPerPage.values()) {
+	            if (l.index == legIndex) return l;
+	        }
+	        throw new IllegalArgumentException("Leg not found. Amputated?");
+	     }
+
+
+	}
+
 
 	public PublicationsWindow() {
 		super("Publications Window");
+		
 
 				
 		contentPane = new JPanel(new GridBagLayout());
@@ -62,8 +107,9 @@ public class PublicationsWindow extends JFrame {
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add( searchTextField, c );
 	    
-		//List<Publication> listPublications = createListPublications();
-		PublicationTableModel tableModel = new PublicationTableModel();
+		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllPublications());
+		currentPublications = allPublications.subList(0, itemsPerPageIndex.getNumber());
+		tableModel = new PublicationTableModel(currentPublications);
 		table = new JTable(tableModel);
 
 		JScrollPane scrollPane = new JScrollPane(table);		
@@ -81,8 +127,8 @@ public class PublicationsWindow extends JFrame {
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println(searchTextField.getText());
-				List<Publication> filteredList = DatabaseHelper.searchFor(searchTextField.getText());
-				tableModel.changeData(filteredList);
+				allPublications = DatabaseHelper.searchFor(searchTextField.getText());
+				reloadTable();
 			}
 		});
 
@@ -107,11 +153,18 @@ public class PublicationsWindow extends JFrame {
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add(label1, c);
 
-	    String[] petStrings = { "100 items per page", "200 items per page", "300 items per page", "400 items per page", "500 items per page" };
 
-	    JComboBox petList = new JComboBox(petStrings);
-	    petList.setSelectedIndex(4);
-	    //petList.addActionListener(this);
+	    JComboBox petList = new JComboBox(getItemsPerPageArray());
+	    petList.setSelectedIndex(itemsPerPageIndex.getIndex());
+	    petList.addActionListener( new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                JComboBox combo = (JComboBox)e.getSource();
+                itemsPerPageIndex = ItemsPerPage.getEnumForInt(combo.getSelectedIndex());
+                reloadTable();
+                }
+        }            
+);
+
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 1;
 	    c.weighty = 0;
@@ -232,6 +285,18 @@ public class PublicationsWindow extends JFrame {
 		table.setAutoCreateRowSorter(true);
 		*/
 	}
+	
+	public static String[] getItemsPerPageArray() {
+	    ItemsPerPage[] states = ItemsPerPage.values();
+	    String[] names = new String[states.length];
+
+	    for (int i = 0; i < states.length; i++) {
+	        names[i] = states[i].getString();
+	    }
+
+	    return names;
+	}
+
 
 	public List<Publication> createListPublications() {
 
@@ -245,6 +310,12 @@ public class PublicationsWindow extends JFrame {
 		 * 
 		 * listPublications.add(p1); listPublications.add(p2); listPublications.add(p3);
 		 */
+	}
+	
+	public void reloadTable(){
+		currentPublications = allPublications.subList(0, itemsPerPageIndex.getNumber());
+		tableModel.changeData(currentPublications);
+
 	}
 
 	public static void main(String[] args) {
