@@ -35,10 +35,12 @@ public class StartWindow extends JFrame {
 				//	DatabaseHelper.query3("expert system", 0, 3);
 					
 				//	DatabaseHelper.query4("J. Thomas Haigh");
+					
+					DatabaseHelper.query5("Todd Fine", "J. Thomas Haigh"); //co-authors
 
 				//	DatabaseHelper.query6();
 					
-					DatabaseHelper.query7(1980,1990);
+				//	DatabaseHelper.query7(1980,1990);
 					
 				//	DatabaseHelper.query8("Microcomputing");
 					
@@ -51,6 +53,8 @@ public class StartWindow extends JFrame {
 				//	DatabaseHelper.query12();
 
 				//	DatabaseHelper.query13("Robert Noel");
+					
+				//	DatabaseHelper.query14(1989, 1990);
 
 				} catch (Exception e) {
 					e.printStackTrace();
