@@ -72,6 +72,28 @@ public class DatabaseHelper {
 		closeDB(pm);
 		return allPublications;
 	}
+	
+	public static List<Publication> searchFor(String search){
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Publication.class, "title.contains('" + search.replaceAll("'", "&#39") + "')");
+		Collection<Publication> proceedings = (Collection<Publication>) query.execute();
+		List<Publication> allPublications = new ArrayList<Publication>(proceedings);
+		Publication proc;
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + search);
+
+		} else {
+			proc = proceedings.iterator().next();
+			System.out.println(proc.getTitle());
+		}
+		pm.currentTransaction().rollback();
+		closeDB(pm);
+
+		return allPublications;
+
+	}
 
 	public static void addInProceedings(List<InProceedings> list) {
 

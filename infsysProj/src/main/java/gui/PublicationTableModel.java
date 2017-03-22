@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -36,13 +38,12 @@ public class PublicationTableModel extends AbstractTableModel {
 
 	private List<Publication> listPublication;
 
-	public PublicationTableModel(List<Publication> listPublication) {
-		this.listPublication = listPublication;
+	public PublicationTableModel() {
+		Collection<Publication> allPublications = DatabaseHelper.getAllPublications();
+		
 
-		Integer indexCount = 1;
-		for (Publication p : listPublication) {
-			p.setId((indexCount++).toString());
-		}
+		this.listPublication = new ArrayList<Publication>(allPublications);
+
 	}
 
 	@Override
@@ -61,7 +62,7 @@ public class PublicationTableModel extends AbstractTableModel {
 	public String getValueAt(int rowIndex, int columnIndex) {
 		Publication publications = listPublication.get(rowIndex);
 		String returnValue = "";
-
+		System.out.print("e");
 		switch (columnIndex) {
 		case COLUMN_TITLE:
 			returnValue = publications.getTitle();
@@ -80,6 +81,13 @@ public class PublicationTableModel extends AbstractTableModel {
 		}
 
 		return returnValue;
+	}
+	
+	
+	public void changeData(List<Publication> newList){
+		
+		this.listPublication = newList;
+		fireTableDataChanged();
 	}
 
 	// needed for sorting

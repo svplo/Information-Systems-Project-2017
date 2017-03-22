@@ -441,7 +441,7 @@ public class XMLParser {
 			Proceedings proc;
 			if (proceedings.isEmpty()) {
 				System.out.println("Error: Did not find corresponding Proceeding while attempting to add InProceeding to Database. Crossref: " + crossref);
-
+				in.setNote("missing Proceedings reference");
 			} else {
 				proc = proceedings.iterator().next();
 				in.setProceedings(proc);
