@@ -44,6 +44,10 @@ public class PublicationsWindow extends JFrame {
 	List<Publication> allPublications;
 	List<Publication> currentPublications;
 	PublicationTableModel tableModel;
+	private int pageNumber = 0;
+	JTextField pageTextField;
+	JLabel numberOfPagesLabel;
+	JLabel numberOfItemsLabel;
 
 	public static enum ItemsPerPage {
 	    TWENTY("20 items per page",20,0), 
@@ -128,6 +132,7 @@ public class PublicationsWindow extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println(searchTextField.getText());
 				allPublications = DatabaseHelper.searchFor(searchTextField.getText());
+				pageNumber = 0;
 				reloadTable();
 			}
 		});
@@ -143,7 +148,7 @@ public class PublicationsWindow extends JFrame {
 
 
 	    
-	    JLabel label1 = new JLabel("44000-44100 of 66801 items");
+	    numberOfItemsLabel = new JLabel("1-50 of " + String.valueOf(allPublications.size())+ " items");
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 1;
 	    c.weighty = 0;
@@ -151,7 +156,7 @@ public class PublicationsWindow extends JFrame {
 	    c.gridx = 1;
 	    c.gridy = 3;
 	    c.insets = new Insets(5,5,5,5);
-	    contentPane.add(label1, c);
+	    contentPane.add(numberOfItemsLabel, c);
 
 
 	    JComboBox petList = new JComboBox(getItemsPerPageArray());
@@ -159,7 +164,9 @@ public class PublicationsWindow extends JFrame {
 	    petList.addActionListener( new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 JComboBox combo = (JComboBox)e.getSource();
+                pageNumber = (int)Math.ceil(pageNumber * itemsPerPageIndex.getNumber() / ItemsPerPage.getEnumForInt(combo.getSelectedIndex()).getNumber());
                 itemsPerPageIndex = ItemsPerPage.getEnumForInt(combo.getSelectedIndex());
+                pageTextField.setText(String.valueOf(pageNumber + 1));
                 reloadTable();
                 }
         }            
@@ -177,7 +184,12 @@ public class PublicationsWindow extends JFrame {
 	    BasicArrowButton prevPageButton = new BasicArrowButton(BasicArrowButton.WEST);
 	    prevPageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(searchTextField.getText());
+				if(pageNumber > 0){
+					
+					pageNumber--;
+					pageTextField.setText(String.valueOf(pageNumber+1));
+					reloadTable();
+				}
 			}
 		});
 	    c.fill = GridBagConstraints.HORIZONTAL;
@@ -199,7 +211,22 @@ public class PublicationsWindow extends JFrame {
 	    contentPane.add(label2, c);
 
 
-		JTextField pageTextField = new JTextField();
+		pageTextField = new JTextField();
+		pageTextField.setText("1");
+		pageTextField.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent e){
+
+            		int newPage = Integer.parseInt(pageTextField.getText());
+                    if(newPage>0 && numberOfPages()>=newPage){
+                    	pageNumber = newPage;
+                    	reloadTable();
+                    }
+                    else{
+                    	pageTextField.setText(String.valueOf(pageNumber+1));
+                    }
+
+            }});
 
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.ipadx = 10;
@@ -212,7 +239,7 @@ public class PublicationsWindow extends JFrame {
 
 	    
 	    
-	    JLabel label3 = new JLabel("of 840");
+	    numberOfPagesLabel = new JLabel("of " + String.valueOf(numberOfPages()));
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 1;
 	    c.weighty = 0;
@@ -220,13 +247,19 @@ public class PublicationsWindow extends JFrame {
 	    c.gridx = 6;
 	    c.gridy = 3;
 	    c.insets = new Insets(5,5,5,5);
-	    contentPane.add(label3, c);
+	    contentPane.add(numberOfPagesLabel, c);
 
 	    
 	    BasicArrowButton nextPageButton = new BasicArrowButton(BasicArrowButton.EAST);
-	    prevPageButton.addActionListener(new ActionListener() {
+	    nextPageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(searchTextField.getText());
+				if(numberOfPages()> pageNumber){
+
+					pageNumber++;
+					pageTextField.setText(String.valueOf(pageNumber+1));
+
+					reloadTable();
+				}
 			}
 		});
 	    c.fill = GridBagConstraints.HORIZONTAL;
@@ -313,9 +346,30 @@ public class PublicationsWindow extends JFrame {
 	}
 	
 	public void reloadTable(){
-		currentPublications = allPublications.subList(0, itemsPerPageIndex.getNumber());
+		int size = allPublications.size();
+		if(itemsPerPageIndex == ItemsPerPage.ALL){
+	        numberOfPagesLabel.setText("of 1");
+	        numberOfItemsLabel.setText("1 - " + size + " of " + size + " items");
+	        pageTextField.setText("1");
+
+		}
+		else{
+        numberOfPagesLabel.setText("of " + String.valueOf(numberOfPages()));
+        numberOfItemsLabel.setText(String.valueOf(pageNumber*itemsPerPageIndex.getNumber() + 1) + " - " + String.valueOf((int)Math.min(size,(pageNumber +1)*itemsPerPageIndex.getNumber())) + " of " + String.valueOf(allPublications.size()) + " items");
+		pageTextField.setText(String.valueOf(pageNumber + 1));
+		}
+        currentPublications = allPublications.subList(itemsPerPageIndex.getNumber()*pageNumber, Math.min(itemsPerPageIndex.getNumber()*(pageNumber+1),size));
 		tableModel.changeData(currentPublications);
 
+	}
+	
+	private int numberOfPages(){
+		if(allPublications.size()< itemsPerPageIndex.getNumber()){
+			return 1;
+		}
+		else{
+			return (int) Math.ceil(allPublications.size()/itemsPerPageIndex.getNumber());
+		}
 	}
 
 	public static void main(String[] args) {
