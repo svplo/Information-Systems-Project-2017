@@ -73,7 +73,39 @@ public class DatabaseHelper {
 		return allPublications;
 	}
 	
-	public static List<Publication> searchFor(String search){
+	public static Collection<Proceedings> getAllProceedings() {
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+
+		Extent<Proceedings> ext = pm.getExtent(Proceedings.class);
+		List<Proceedings> allPublications = new ArrayList<Proceedings>();
+		for (Proceedings p : ext) {
+			allPublications.add(p);
+		}
+		ext.closeAll();
+
+		closeDB(pm);
+		return allPublications;
+	}
+	
+	public static Collection<InProceedings> getAllInProceedings() {
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+
+		Extent<InProceedings> ext = pm.getExtent(InProceedings.class);
+		List<InProceedings> allPublications = new ArrayList<InProceedings>();
+		for (InProceedings p : ext) {
+			allPublications.add(p);
+		}
+		ext.closeAll();
+
+		closeDB(pm);
+		return allPublications;
+	}
+
+
+	
+	public static List<Publication> searchForPublication(String search){
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -92,6 +124,47 @@ public class DatabaseHelper {
 		return allPublications;
 
 	}
+	
+	public static List<Publication> searchForProceedings(String search){
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Proceedings.class, "title.contains('" + search.replaceAll("'", "&#39") + "')");
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute();
+		List<Publication> allPublications = new ArrayList<Publication>(proceedings);
+		Proceedings proc;
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + search);
+
+		} 
+		
+		pm.currentTransaction().rollback();
+		closeDB(pm);
+
+		return allPublications;
+
+	}
+
+	public static List<Publication> searchForInProceedings(String search){
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(InProceedings.class, "title.contains('" + search.replaceAll("'", "&#39") + "')");
+		Collection<InProceedings> proceedings = (Collection<InProceedings>) query.execute();
+		List<Publication> allPublications = new ArrayList<Publication>(proceedings);
+		InProceedings proc;
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + search);
+
+		} 
+		
+		pm.currentTransaction().rollback();
+		closeDB(pm);
+
+		return allPublications;
+
+	}
+
 
 	public static void addInProceedings(List<InProceedings> list) {
 

@@ -37,7 +37,7 @@ import infsysProj.infsysProj.Publication;
  * 
  * @author www.codejava.net resource: http://www.codejava.net/java-se/swing/6-techniques-for-sorting-jtable-you-should-know
  */
-public class PublicationsWindow extends JFrame {
+public class ProceedingsWindow extends JFrame {
 	private JTable table;
 	private JPanel contentPane;
 	private ItemsPerPage itemsPerPageIndex = ItemsPerPage.FIFTY;
@@ -89,8 +89,8 @@ public class PublicationsWindow extends JFrame {
 	}
 
 
-	public PublicationsWindow() {
-		super("Publications Window");
+	public ProceedingsWindow() {
+		super("Proceedings Window");
 		
 
 				
@@ -111,7 +111,7 @@ public class PublicationsWindow extends JFrame {
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add( searchTextField, c );
 	    
-		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllPublications());
+		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllProceedings());
 		currentPublications = allPublications.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new PublicationTableModel(currentPublications);
 		table = new JTable(tableModel);
@@ -131,7 +131,7 @@ public class PublicationsWindow extends JFrame {
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println(searchTextField.getText());
-				allPublications = DatabaseHelper.searchForPublication(searchTextField.getText());
+				allPublications = DatabaseHelper.searchForProceedings(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
 			}

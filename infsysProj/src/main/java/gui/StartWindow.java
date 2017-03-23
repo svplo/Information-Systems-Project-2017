@@ -70,7 +70,7 @@ public class StartWindow extends JFrame {
 	public StartWindow() {
 		setTitle("Start Frame");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -89,6 +89,36 @@ public class StartWindow extends JFrame {
 		btnPublicationTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
 		btnPublicationTableFrame.setBounds(100, 200, 200, 25);
 		contentPane.add(btnPublicationTableFrame);
+		
+		JButton btnProceedingsTableFrame = new JButton("Proceedings Table");
+		btnProceedingsTableFrame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// call the object of PublicationsWindow and set visible true
+				ProceedingsWindow frame = new ProceedingsWindow();
+				frame.setVisible(true);
+				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			}
+		});
+		// modify button
+		btnProceedingsTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
+		btnProceedingsTableFrame.setBounds(100, 250, 200, 25);
+		contentPane.add(btnProceedingsTableFrame);
+		
+		JButton btnInProceedingsTableFrame = new JButton("InProceedings Table");
+		btnInProceedingsTableFrame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// call the object of PublicationsWindow and set visible true
+				InProceedingsWindow frame = new InProceedingsWindow();
+				frame.setVisible(true);
+				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			}
+		});
+		// modify button
+		btnInProceedingsTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
+		btnInProceedingsTableFrame.setBounds(100, 300, 200, 25);
+		contentPane.add(btnInProceedingsTableFrame);
+
+
 
 		// modify label
 		JLabel lblStartWindow = new JLabel("Welcome!");
