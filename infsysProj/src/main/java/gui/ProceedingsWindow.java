@@ -11,6 +11,10 @@ import java.awt.Insets;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicArrowButton;
@@ -30,6 +35,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import infsysProj.infsysProj.InProceedings;
+import infsysProj.infsysProj.Proceedings;
 import infsysProj.infsysProj.Publication;
 
 /**
@@ -114,8 +120,32 @@ public class ProceedingsWindow extends JFrame {
 		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllProceedings());
 		currentPublications = allPublications.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new PublicationTableModel(currentPublications);
-		table = new JTable(tableModel);
+		table = new JTable(tableModel){
+	         public boolean editCellAt(int row, int column, java.util.EventObject e) {
+	             return false;
+	          }
+	       };
+	      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+	      addWindowListener(new WindowAdapter() {
+	          public void windowClosing(WindowEvent we) {
+	             System.exit(0);
+	          }
+	       });
+	      
+	      table.addMouseListener(new MouseAdapter() {
+	          public void mouseClicked(MouseEvent e) {
+	             if (e.getClickCount() == 2) {
+	            	 JTable target = (JTable) e.getSource();
+	                 int row = target.getSelectedRow();
+	            	 Publication publications = currentPublications.get(row);
+	                ProceedingDetail textFrame = new ProceedingDetail((Proceedings) publications);
+	                textFrame.setVisible(true);
+	             }
+	          }
+	       });
+	      
+	      
 		JScrollPane scrollPane = new JScrollPane(table);		
 	    c.fill = GridBagConstraints.BOTH;
 	    c.weightx = 1;
@@ -267,10 +297,10 @@ public class ProceedingsWindow extends JFrame {
 	    contentPane.add(nextPageButton, c);
 
 
+		setContentPane(contentPane);
 		pack();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
-		table.setAutoCreateRowSorter(true);
 
 
 		/*
@@ -291,10 +321,8 @@ public class ProceedingsWindow extends JFrame {
 		*/
 	    
 	    
-		setContentPane(contentPane);
-		pack();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
+
+
 
 /*
 		// insert code for sorting here...
@@ -371,7 +399,7 @@ public class ProceedingsWindow extends JFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new PublicationsWindow().setVisible(true);
+				new ProceedingsWindow().setVisible(true);
 			}
 		});
 
