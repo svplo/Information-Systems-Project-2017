@@ -88,6 +88,82 @@ public class DatabaseHelper {
 		return allPublications;
 	}
 	
+	public static String getPublisherName(String proceedingsID){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Proceedings.class, "id == '" + proceedingsID.replaceAll("'", "&#39") + "'");
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute();
+		String result = null;
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + proceedingsID);
+
+		} else {
+			result = proceedings.iterator().next().getPublisher().getName();
+		}
+
+		DatabaseHelper.closeDB();
+		return result;
+	}
+	
+	public static String getSeriesName(String proceedingsID){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Proceedings.class, "id == '" + proceedingsID.replaceAll("'", "&#39") + "'");
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute();
+		String result = null;
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + proceedingsID);
+
+		} else {
+			result = proceedings.iterator().next().getSeries().getName();
+		}
+
+		DatabaseHelper.closeDB();
+		return result;
+	}
+
+	public static String getConferenceName(String proceedingsID){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Proceedings.class, "id == '" + proceedingsID.replaceAll("'", "&#39") + "'");
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute();
+		String result = null;
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + proceedingsID);
+
+		} else {
+			result = proceedings.iterator().next().getConferenceEdition().getConference().getName();
+		}
+
+		DatabaseHelper.closeDB();
+		return result;
+	}
+	
+	public static List<String> getInProceedingsOfProceedings(String proceedingsID){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Proceedings.class, "id == '" + proceedingsID.replaceAll("'", "&#39") + "'");
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute();
+		List<String> result = new ArrayList<String>();
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + proceedingsID);
+
+		} else {
+			for(InProceedings i : proceedings.iterator().next().getInProceedings()){
+				result.add(i.getTitle());
+			}
+		}
+
+		DatabaseHelper.closeDB();
+		return result;
+	}
+
+
+	
 	public static Collection<InProceedings> getAllInProceedings() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();

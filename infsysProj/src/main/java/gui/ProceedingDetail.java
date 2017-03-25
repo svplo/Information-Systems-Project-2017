@@ -215,7 +215,7 @@ public class ProceedingDetail extends JFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(txtNumber, c);
 
-/*		JLabel lblPublisher = new JLabel("Publisher");
+		JLabel lblPublisher = new JLabel("Publisher");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
 		c.weighty = 0;
@@ -227,7 +227,7 @@ public class ProceedingDetail extends JFrame {
 
 		JTextField txtPublisher = new JTextField();
 		txtPublisher.setEditable(false);
-		txtPublisher.setText(proceeding.getPublisher().getName());
+		txtPublisher.setText(DatabaseHelper.getPublisherName(proceeding.getId()));
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -236,7 +236,7 @@ public class ProceedingDetail extends JFrame {
 		c.gridx = 1;
 		c.gridy = 6;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(txtPublisher, c);*/
+		contentPane.add(txtPublisher, c);
 
 		JLabel lblVolume = new JLabel("Volume");
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -282,7 +282,7 @@ public class ProceedingDetail extends JFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(txtISBN, c);
 
-		/*JLabel lblSeries = new JLabel("Series");
+		JLabel lblSeries = new JLabel("Series");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
 		c.weighty = 0;
@@ -294,7 +294,7 @@ public class ProceedingDetail extends JFrame {
 
 		JTextField txtSeries = new JTextField();
 		txtSeries.setEditable(false);
-		txtSeries.setText(proceeding.getSeries().getName());
+		txtSeries.setText(DatabaseHelper.getSeriesName(proceeding.getID()));
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
 		c.weighty = 0;
@@ -302,9 +302,9 @@ public class ProceedingDetail extends JFrame {
 		c.gridx = 1;
 		c.gridy = 9;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(txtSeries, c);*/
+		contentPane.add(txtSeries, c);
 
-/*		JLabel lblConfEdition = new JLabel("Conference edition");
+		JLabel lblConfEdition = new JLabel("Conference edition");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
 		c.weighty = 0;
@@ -316,7 +316,7 @@ public class ProceedingDetail extends JFrame {
 
 		JTextField txtConfEdition = new JTextField();
 		txtConfEdition.setEditable(false);
-		txtConfEdition.setText(proceeding.getConferenceEdition().getConference().getName());
+		txtConfEdition.setText(DatabaseHelper.getConferenceName(proceeding.getID()));
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
 		c.weighty = 0;
@@ -324,9 +324,12 @@ public class ProceedingDetail extends JFrame {
 		c.gridx = 1;
 		c.gridy = 10;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(txtConfEdition, c);*/
+		contentPane.add(txtConfEdition, c);
 
-/*		JLabel lblInProceedings = new JLabel("InProceedings");
+        //load names of InProceedings from Database
+        List<String> inProcNames = DatabaseHelper.getInProceedingsOfProceedings(proceeding.getId());
+
+		JLabel lblInProceedings = new JLabel("InProceedings(" + inProcNames.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
 		c.weighty = 0;
@@ -336,9 +339,20 @@ public class ProceedingDetail extends JFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(lblInProceedings, c);
 
-		JTextField txtInProceedings = new JTextField();
-		txtInProceedings.setEditable(false);
-		txtInProceedings.setText(format(proceeding.getInProceedings()));
+		 //headers for the table
+        String[] columns = new String[] {
+            "Title"
+        };
+         
+        String[][] data = new String[inProcNames.size()][1];
+        for(int i = 0; i < inProcNames.size(); i++){
+        	data[i][0] = inProcNames.get(i);
+        }
+        //create table with data
+        JTable table = new JTable(data, columns);
+         
+        //add the table to the frame
+        
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
 		c.weighty = 5;
@@ -346,7 +360,9 @@ public class ProceedingDetail extends JFrame {
 		c.gridx = 1;
 		c.gridy = 11;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(txtInProceedings, c);*/
+		//contentPane.add(txtInProceedings, c);
+        contentPane.add(new JScrollPane(table),c);
+
 		
 		ActiveUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -388,7 +404,7 @@ public class ProceedingDetail extends JFrame {
 
 	}
 	String format(Collection<?> c) {
-		  String s = c.stream().map(Object::toString).collect(Collectors.joining(","));
+		  String s = c.stream().map(Object::toString).collect(Collectors.joining("\n"));
 		  return String.format("[%s]", s);
 		}
 
