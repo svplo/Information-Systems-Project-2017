@@ -38,6 +38,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import infsysProj.infsysProj.InProceedings;
+import infsysProj.infsysProj.Person;
 import infsysProj.infsysProj.Proceedings;
 import infsysProj.infsysProj.Publication;
 
@@ -46,19 +47,19 @@ import infsysProj.infsysProj.Publication;
  * 
  * @author www.codejava.net resource: http://www.codejava.net/java-se/swing/6-techniques-for-sorting-jtable-you-should-know
  */
-public class InProceedingsWindow extends JFrame {
+public class PersonWindow extends JFrame {
 	private JTable table;
 	private JPanel contentPane;
 	private ItemsPerPage itemsPerPageIndex = ItemsPerPage.FIFTY;
-	List<Publication> allPublications;
-	List<Publication> currentPublications;
-	PublicationTableModel tableModel;
+	List<Person> allPeople;
+	List<Person> currentPeople;
+	PersonTableModel tableModel;
 	private int pageNumber = 0;
 	JTextField pageTextField;
 	JLabel numberOfPagesLabel;
 	JLabel numberOfItemsLabel;
-	int nTitleClicked = 0;
-	int nYearClicked = 0;
+	int nNameClicked = 0;
+	int nAuthoredPublicationsClicked = 0;
 	int nEEClicked = 0;
 
 	public static enum ItemsPerPage {
@@ -101,8 +102,8 @@ public class InProceedingsWindow extends JFrame {
 	}
 
 
-	public InProceedingsWindow() {
-		super("InProceedings Window");
+	public PersonWindow() {
+		super("Person Window");
 		
 
 				
@@ -115,12 +116,11 @@ public class InProceedingsWindow extends JFrame {
 
             public void actionPerformed(ActionEvent e){
 				System.out.println(searchTextField.getText());
-				allPublications = DatabaseHelper.searchForInProceedings(searchTextField.getText());
+				allPeople = DatabaseHelper.searchForPeople(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
             	
             }});
-
 
 
 	    GridBagConstraints c = new GridBagConstraints();
@@ -133,31 +133,29 @@ public class InProceedingsWindow extends JFrame {
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add( searchTextField, c );
 	    
-		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
-		currentPublications = allPublications.subList(0, itemsPerPageIndex.getNumber());
-		tableModel = new PublicationTableModel(currentPublications);
-		
-
-		table = new JTable(tableModel);
-		/* {
+		allPeople = new ArrayList<Person>(DatabaseHelper.getAllPeople());
+		currentPeople = allPeople.subList(0, itemsPerPageIndex.getNumber());
+		tableModel = new PersonTableModel(currentPeople);
+		table = new JTable(tableModel){
 	         public boolean editCellAt(int row, int column, java.util.EventObject e) {
 	             return false;
 	          }
 	       };
 	      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+	      
 	      table.addMouseListener(new MouseAdapter() {
 	          public void mouseClicked(MouseEvent e) {
 	             if (e.getClickCount() == 2) {
 	            	 JTable target = (JTable) e.getSource();
 	                 int row = target.getSelectedRow();
-	            	 Publication publications = currentPublications.get(row);
-	            	 ProceedingDetail textFrame = new ProceedingDetail((Proceedings)publications);
+	            	 Person person = currentPeople.get(row);
+	            	 PersonDetail textFrame = new PersonDetail(person);
 	                textFrame.setVisible(true);
 	             }
 	          }
 	       });
-*/
+
 
 		JScrollPane scrollPane = new JScrollPane(table);		
 	    c.fill = GridBagConstraints.BOTH;
@@ -174,7 +172,7 @@ public class InProceedingsWindow extends JFrame {
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println(searchTextField.getText());
-				allPublications = DatabaseHelper.searchForInProceedings(searchTextField.getText());
+				allPeople = DatabaseHelper.searchForPeople(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
 			}
@@ -191,7 +189,7 @@ public class InProceedingsWindow extends JFrame {
 
 
 	    
-	    numberOfItemsLabel = new JLabel("1-50 of " + String.valueOf(allPublications.size())+ " items");
+	    numberOfItemsLabel = new JLabel("1-50 of " + String.valueOf(allPeople.size())+ " items");
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 1;
 	    c.weighty = 0;
@@ -323,64 +321,69 @@ public class InProceedingsWindow extends JFrame {
 		        String name = table.getColumnName(col);
 		        	switch(col){
 		        		case 0:
-		        			nTitleClicked++;
-		        			if(nTitleClicked%2 == 0){
-						        Collections.sort(allPublications, new Comparator<Publication>() {
+		        			nNameClicked++;
+		        			if(nNameClicked%2 == 0){
+						        Collections.sort(allPeople, new Comparator<Person>() {
 						            @Override
-						            public int compare(Publication o1, Publication o2) {
-						                return o1.getTitle().compareTo(o2.getTitle());
+						            public int compare(Person o1, Person o2) {
+						                return o1.getName().compareTo(o2.getName());
 						            }
 						        });
 		        			}
 		        			else{
-						        Collections.sort(allPublications, new Comparator<Publication>() {
+						        Collections.sort(allPeople, new Comparator<Person>() {
 						            @Override
-						            public int compare(Publication o1, Publication o2) {
-						                return o2.getTitle().compareTo(o1.getTitle());
+						            public int compare(Person o1, Person o2) {
+						                return o2.getName().compareTo(o1.getName());
 						            }
 						        });
 
 		        			}
 					        break;
 		        		case 1 :
-		        			nYearClicked++;
-		        			if(nYearClicked%2 == 0){
-						        Collections.sort(allPublications, new Comparator<Publication>() {
+		        			nAuthoredPublicationsClicked++;
+		        		
+		        			if(nAuthoredPublicationsClicked%2 == 0){
+						        Collections.sort(allPeople, new Comparator<Person>() {
 						            @Override
-						            public int compare(Publication o1, Publication o2) {
-						                return o1.getYear().compareTo(o2.getYear());
+						            public int compare(Person o1, Person o2) {
+						                return ((Integer)o1.getAuthoredPublications().size()).compareTo((Integer)o2.getAuthoredPublications().size());
 						            }
 						        });
 		        			}
 		        			else{
-						        Collections.sort(allPublications, new Comparator<Publication>() {
+						        Collections.sort(allPeople, new Comparator<Person>() {
 						            @Override
-						            public int compare(Publication o1, Publication o2) {
-						                return o2.getYear().compareTo(o1.getYear());
+						            public int compare(Person o1, Person o2) {
+						                return ((Integer)o2.getAuthoredPublications().size()).compareTo((Integer)o1.getAuthoredPublications().size());
 						            }
 						        });
 
 		        			}
+
 		        			break;
 		        		case 2 :
-		        			nEEClicked++;
-		        			if(nEEClicked%2 == 0){
-						        Collections.sort(allPublications, new Comparator<Publication>() {
+		        			nAuthoredPublicationsClicked++;
+			        		
+		        			if(nAuthoredPublicationsClicked%2 == 0){
+						        Collections.sort(allPeople, new Comparator<Person>() {
 						            @Override
-						            public int compare(Publication o1, Publication o2) {
-						                return o1.getElectronicEdition().compareTo(o2.getElectronicEdition());
+						            public int compare(Person o1, Person o2) {
+						                return ((Integer)o1.getEditedPublications().size()).compareTo((Integer)o2.getEditedPublications().size());
 						            }
 						        });
 		        			}
 		        			else{
-						        Collections.sort(allPublications, new Comparator<Publication>() {
+						        Collections.sort(allPeople, new Comparator<Person>() {
 						            @Override
-						            public int compare(Publication o1, Publication o2) {
-						                return o2.getElectronicEdition().compareTo(o1.getElectronicEdition());
+						            public int compare(Person o1, Person o2) {
+						                return ((Integer)o2.getEditedPublications().size()).compareTo((Integer)o1.getEditedPublications().size());
 						            }
 						        });
 
 		        			}
+
+
 		        			break;
 
 		        		default :
@@ -449,7 +452,7 @@ public class InProceedingsWindow extends JFrame {
 
 	public List<Publication> createListPublications() {
 
-		Collection<Publication> allPublications = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
+		Collection<Publication> allPublications = new ArrayList<Publication>(DatabaseHelper.getAllProceedings());
 		return new ArrayList<Publication>(allPublications);
 
 		/*
@@ -462,7 +465,7 @@ public class InProceedingsWindow extends JFrame {
 	}
 	
 	public void reloadTable(){
-		int size = allPublications.size();
+		int size = allPeople.size();
 		if(itemsPerPageIndex == ItemsPerPage.ALL){
 	        numberOfPagesLabel.setText("of 1");
 	        numberOfItemsLabel.setText("1 - " + size + " of " + size + " items");
@@ -471,20 +474,20 @@ public class InProceedingsWindow extends JFrame {
 		}
 		else{
         numberOfPagesLabel.setText("of " + String.valueOf(numberOfPages()));
-        numberOfItemsLabel.setText(String.valueOf(pageNumber*itemsPerPageIndex.getNumber() + 1) + " - " + String.valueOf((int)Math.min(size,(pageNumber +1)*itemsPerPageIndex.getNumber())) + " of " + String.valueOf(allPublications.size()) + " items");
+        numberOfItemsLabel.setText(String.valueOf(pageNumber*itemsPerPageIndex.getNumber() + 1) + " - " + String.valueOf((int)Math.min(size,(pageNumber +1)*itemsPerPageIndex.getNumber())) + " of " + String.valueOf(allPeople.size()) + " items");
 		pageTextField.setText(String.valueOf(pageNumber+1));
 		}
-        currentPublications = allPublications.subList(itemsPerPageIndex.getNumber()*pageNumber, Math.min(itemsPerPageIndex.getNumber()*(pageNumber+1),size));
-		tableModel.changeData(currentPublications);
+        currentPeople = allPeople.subList(itemsPerPageIndex.getNumber()*pageNumber, Math.min(itemsPerPageIndex.getNumber()*(pageNumber+1),size));
+		tableModel.changeData(currentPeople);
 
 	}
 	
 	private int numberOfPages(){
-		if(allPublications.size()< itemsPerPageIndex.getNumber()){
+		if(allPeople.size()< itemsPerPageIndex.getNumber()){
 			return 1;
 		}
 		else{
-			return (int) Math.floor(allPublications.size()/itemsPerPageIndex.getNumber())+1;
+			return (int) Math.floor(allPeople.size()/itemsPerPageIndex.getNumber())+1;
 		}
 	}
 

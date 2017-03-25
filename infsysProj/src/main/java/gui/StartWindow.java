@@ -118,6 +118,21 @@ public class StartWindow extends JFrame {
 		btnInProceedingsTableFrame.setBounds(100, 300, 200, 25);
 		contentPane.add(btnInProceedingsTableFrame);
 
+		
+		JButton btnPersonTableFrame = new JButton("Person Table");
+		btnPersonTableFrame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// call the object of PublicationsWindow and set visible true
+				PersonWindow frame = new PersonWindow();
+				frame.setVisible(true);
+				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			}
+		});
+		// modify button
+		btnPersonTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
+		btnPersonTableFrame.setBounds(100, 350, 200, 25);
+		contentPane.add(btnPersonTableFrame);
+
 
 
 		// modify label

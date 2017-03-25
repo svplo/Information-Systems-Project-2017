@@ -195,6 +195,47 @@ public class DatabaseHelper {
 		return result;
 	}
 
+	public static List<String> getAuthoredPublicationsForPerson(String personName){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Person.class, "name == '" + personName.replaceAll("'", "&#39") + "'");
+		Collection<Person> persons = (Collection<Person>) query.execute();
+		List<String> result = new ArrayList<String>();
+		if (persons.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + personName);
+
+		} else {
+			for(Publication i : persons.iterator().next().getAuthoredPublications()){
+				result.add(i.getTitle());
+			}
+		}
+
+		DatabaseHelper.closeDB();
+		return result;
+	}
+	
+	public static List<String> getEditedPublicationsForPerson(String personName){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Person.class, "name == '" + personName.replaceAll("'", "&#39") + "'");
+		Collection<Person> persons = (Collection<Person>) query.execute();
+		List<String> result = new ArrayList<String>();
+		if (persons.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + personName);
+
+		} else {
+			for(Publication i : persons.iterator().next().getEditedPublications()){
+				result.add(i.getTitle());
+			}
+		}
+
+		DatabaseHelper.closeDB();
+		return result;
+	}
+
+
 
 	
 	public static Collection<InProceedings> getAllInProceedings() {
@@ -233,6 +274,26 @@ public class DatabaseHelper {
 		return allPublications;
 
 	}
+	
+	public static List<Person> searchForPeople(String search){
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Person.class, "name.contains('" + search.replaceAll("'", "&#39") + "')");
+		Collection<Person> proceedings = (Collection<Person>) query.execute();
+		List<Person> allPublications = new ArrayList<Person>(proceedings);
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + search);
+
+		} 
+		
+		pm.currentTransaction().rollback();
+		closeDB(pm);
+
+		return allPublications;
+
+	}
+
 	
 	public static List<Publication> searchForProceedings(String search){
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
@@ -314,22 +375,19 @@ public class DatabaseHelper {
 		System.out.println("All Proceedings added to Database");
 	}
 
-	public static Collection<Proceedings> getAllPeople() {
-
+	public static Collection<Person> getAllPeople() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
-		Extent<Proceedings> ext = pm.getExtent(Proceedings.class);
-		List<Proceedings> allPublications = new ArrayList<Proceedings>();
-		for (Proceedings p : ext) {
-			allPublications.add(p);
+		Extent<Person> ext = pm.getExtent(Person.class);
+		List<Person> allPeople = new ArrayList<Person>();
+		for (Person p : ext) {
+			allPeople.add(p);
 		}
 		ext.closeAll();
 
 		closeDB(pm);
-
-		return allPublications;
-
+		return allPeople;
 	}
 
 	// find publication by id

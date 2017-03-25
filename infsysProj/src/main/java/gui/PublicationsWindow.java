@@ -15,6 +15,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.awt.event.*;
 import javax.swing.*;
@@ -54,6 +56,9 @@ public class PublicationsWindow extends JFrame {
 	JTextField pageTextField;
 	JLabel numberOfPagesLabel;
 	JLabel numberOfItemsLabel;
+	int nTitleClicked = 0;
+	int nYearClicked = 0;
+	int nEEClicked = 0;
 
 	public static enum ItemsPerPage {
 	    TWENTY("20 items per page",20,0), 
@@ -105,6 +110,16 @@ public class PublicationsWindow extends JFrame {
 		contentPane.setPreferredSize(new Dimension(1000,600));
 		JTextField searchTextField = new JTextField();
 		searchTextField.setBorder(new EmptyBorder(5, 5, 5, 5));
+		searchTextField.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent e){
+				System.out.println(searchTextField.getText());
+				allPublications = DatabaseHelper.searchForPublication(searchTextField.getText());
+				pageNumber = 0;
+				reloadTable();
+            	
+            }});
+
 
 
 	    GridBagConstraints c = new GridBagConstraints();
@@ -273,11 +288,92 @@ public class PublicationsWindow extends JFrame {
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add(nextPageButton, c);
 
+	    
 		setContentPane(contentPane);
 		pack();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
-		table.setAutoCreateRowSorter(true);
+		//table.setAutoCreateRowSorter(true);
+		table.getTableHeader().addMouseListener(new MouseAdapter() {
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+		    	
+		        int col = table.columnAtPoint(e.getPoint());
+		        String name = table.getColumnName(col);
+		        	switch(col){
+		        		case 0:
+		        			nTitleClicked++;
+		        			if(nTitleClicked%2 == 0){
+						        Collections.sort(allPublications, new Comparator<Publication>() {
+						            @Override
+						            public int compare(Publication o1, Publication o2) {
+						                return o1.getTitle().compareTo(o2.getTitle());
+						            }
+						        });
+		        			}
+		        			else{
+						        Collections.sort(allPublications, new Comparator<Publication>() {
+						            @Override
+						            public int compare(Publication o1, Publication o2) {
+						                return o2.getTitle().compareTo(o1.getTitle());
+						            }
+						        });
+
+		        			}
+					        break;
+		        		case 1 :
+		        			nYearClicked++;
+		        			if(nYearClicked%2 == 0){
+						        Collections.sort(allPublications, new Comparator<Publication>() {
+						            @Override
+						            public int compare(Publication o1, Publication o2) {
+						                return o1.getYear().compareTo(o2.getYear());
+						            }
+						        });
+		        			}
+		        			else{
+						        Collections.sort(allPublications, new Comparator<Publication>() {
+						            @Override
+						            public int compare(Publication o1, Publication o2) {
+						                return o2.getYear().compareTo(o1.getYear());
+						            }
+						        });
+
+		        			}
+		        			break;
+		        		case 2 :
+		        			nEEClicked++;
+		        			if(nEEClicked%2 == 0){
+						        Collections.sort(allPublications, new Comparator<Publication>() {
+						            @Override
+						            public int compare(Publication o1, Publication o2) {
+						                return o1.getElectronicEdition().compareTo(o2.getElectronicEdition());
+						            }
+						        });
+		        			}
+		        			else{
+						        Collections.sort(allPublications, new Comparator<Publication>() {
+						            @Override
+						            public int compare(Publication o1, Publication o2) {
+						                return o2.getElectronicEdition().compareTo(o1.getElectronicEdition());
+						            }
+						        });
+
+		        			}
+		        			break;
+
+		        		default :
+		        			
+		        			break;
+		        	}
+		        	System.out.println("reload");
+			        reloadTable();
+
+		        
+
+		        System.out.println("Column index selected " + col + " " + name);
+		    }
+		});
 
 
 
@@ -369,6 +465,13 @@ public class PublicationsWindow extends JFrame {
 		else{
 			return (int) Math.floor(allPublications.size()/itemsPerPageIndex.getNumber())+1;
 		}
+	}
+
+	public class PublicationComparatorTitleAscend implements Comparator<Publication> {
+	    @Override
+	    public int compare(Publication o1, Publication o2) {
+	        return o1.getTitle().compareTo(o2.getTitle());
+	    }
 	}
 
 	public static void main(String[] args) {
