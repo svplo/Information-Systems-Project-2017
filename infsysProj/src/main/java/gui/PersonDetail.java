@@ -54,7 +54,7 @@ public class PersonDetail extends JFrame {
 
 	}
 
-	public PersonDetail(Person person) {
+	public PersonDetail(Person person, PersonWindow caller) {
 		super("Detailed Person");
 		this.person = person;
 
@@ -101,6 +101,7 @@ public class PersonDetail extends JFrame {
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				DatabaseHelper.deletePerson(person.getName());
+				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
 		});

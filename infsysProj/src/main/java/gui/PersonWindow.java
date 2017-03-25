@@ -150,7 +150,7 @@ public class PersonWindow extends JFrame {
 	            	 JTable target = (JTable) e.getSource();
 	                 int row = target.getSelectedRow();
 	            	 Person person = currentPeople.get(row);
-	            	 PersonDetail textFrame = new PersonDetail(person);
+	            	 PersonDetail textFrame = new PersonDetail(person, getMe());
 	                textFrame.setVisible(true);
 	             }
 	          }
@@ -464,6 +464,11 @@ public class PersonWindow extends JFrame {
 		 */
 	}
 	
+	public void reloadDataFromDatabase(){
+		allPeople = new ArrayList<Person>(DatabaseHelper.getAllPeople());
+		reloadTable();
+	}
+	
 	public void reloadTable(){
 		int size = allPeople.size();
 		if(itemsPerPageIndex == ItemsPerPage.ALL){
@@ -496,6 +501,9 @@ public class PersonWindow extends JFrame {
 	    public int compare(Publication o1, Publication o2) {
 	        return o1.getTitle().compareTo(o2.getTitle());
 	    }
+	}
+	public PersonWindow getMe(){
+		return this;
 	}
 
 	public static void main(String[] args) {
