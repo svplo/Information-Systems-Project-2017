@@ -301,6 +301,51 @@ public class DatabaseHelper {
 		return allPublications;
 
 	}
+	
+	public static void deletePerson(String personName){
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+		
+		Query query = pm.newQuery(Person.class, "name == '" + personName.replaceAll("'", "&#39") + "'");
+		Collection<Person> proceedings = (Collection<Person>) query.execute();
+		List<Person> allPublications = new ArrayList<Person>(proceedings);
+		Person p;
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + personName);
+		} 
+		else{
+			p = allPublications.iterator().next();
+			pm.deletePersistent(p);
+		}
+		
+		pm.currentTransaction().commit();
+		closeDB(pm);
+
+	}
+	
+	public static void updatePerson(String personName, Person newPerson){
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+		
+		Query query = pm.newQuery(Person.class, "name == '" + personName.replaceAll("'", "&#39") + "'");
+		Collection<Person> proceedings = (Collection<Person>) query.execute();
+		List<Person> allPublications = new ArrayList<Person>(proceedings);
+		Person p;
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + personName);
+		} 
+		else{
+			p = allPublications.iterator().next();
+			p.setName(newPerson.getName());
+			
+			pm.makePersistent(p);
+		}
+		
+		pm.currentTransaction().commit();
+		closeDB(pm);
+
+	}
+
 
 
 	public static void addInProceedings(List<InProceedings> list) {
