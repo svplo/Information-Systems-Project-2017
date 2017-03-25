@@ -162,6 +162,47 @@ public class DatabaseHelper {
 		return result;
 	}
 
+	public static List<String> getAuthoredPublicationsForPerson(String personName){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Person.class, "name == '" + personName.replaceAll("'", "&#39") + "'");
+		Collection<Person> persons = (Collection<Person>) query.execute();
+		List<String> result = new ArrayList<String>();
+		if (persons.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + personName);
+
+		} else {
+			for(Publication i : persons.iterator().next().getAuthoredPublications()){
+				result.add(i.getTitle());
+			}
+		}
+
+		DatabaseHelper.closeDB();
+		return result;
+	}
+	
+	public static List<String> getEditedPublicationsForPerson(String personName){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Person.class, "name == '" + personName.replaceAll("'", "&#39") + "'");
+		Collection<Person> persons = (Collection<Person>) query.execute();
+		List<String> result = new ArrayList<String>();
+		if (persons.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + personName);
+
+		} else {
+			for(Publication i : persons.iterator().next().getEditedPublications()){
+				result.add(i.getTitle());
+			}
+		}
+
+		DatabaseHelper.closeDB();
+		return result;
+	}
+
+
 
 	
 	public static Collection<InProceedings> getAllInProceedings() {

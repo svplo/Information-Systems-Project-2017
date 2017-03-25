@@ -143,19 +143,19 @@ public class PersonWindow extends JFrame {
 	       };
 	      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-	      /*
+	      
 	      table.addMouseListener(new MouseAdapter() {
 	          public void mouseClicked(MouseEvent e) {
 	             if (e.getClickCount() == 2) {
 	            	 JTable target = (JTable) e.getSource();
 	                 int row = target.getSelectedRow();
 	            	 Person person = currentPeople.get(row);
-	            	 ProceedingDetail textFrame = new ProceedingDetail((Person)person);
+	            	 PersonDetail textFrame = new PersonDetail(person);
 	                textFrame.setVisible(true);
 	             }
 	          }
 	       });
-*/
+
 
 		JScrollPane scrollPane = new JScrollPane(table);		
 	    c.fill = GridBagConstraints.BOTH;
