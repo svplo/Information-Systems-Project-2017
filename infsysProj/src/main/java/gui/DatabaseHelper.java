@@ -90,6 +90,25 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 		
 	}
+	
+	public static void DeleteProceeding(String proceedingsID){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+		
+		Query query = pm.newQuery(Proceedings.class, "id == '" + proceedingsID.replaceAll("'", "&#39") + "'");
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute();
+		Proceedings proc;
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + proceedingsID);
+
+		} else {
+			proc = proceedings.iterator().next();
+			pm.deletePersistent(proc);
+		}
+		pm.currentTransaction().commit();
+
+		DatabaseHelper.closeDB();
+	}
 
 	public static Collection<Publication> getAllPublications() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);

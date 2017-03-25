@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -421,6 +422,16 @@ public class ProceedingDetail extends JFrame {
 				
 				DatabaseHelper.UpdateProceedings(proceeding.getId(), title, year, elect, note, number, publisher, volume, isbn, series, confEdition);
 				
+				}
+
+		});
+		
+		Delete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+					
+				DatabaseHelper.DeleteProceeding(proceeding.getId());
+				JOptionPane.showMessageDialog(null, "Proceeding successfully deleted");
+				dispose();
 				}
 
 		});
