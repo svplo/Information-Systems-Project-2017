@@ -39,6 +39,7 @@ public class ProceedingDetail extends JFrame {
 
 	private JPanel contentPane;
 	private Proceedings proceeding;
+	private Proceedings updated;
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -75,6 +76,7 @@ public class ProceedingDetail extends JFrame {
 
 		JButton Update = new JButton("Update");
 		Update.setEnabled(false);
+
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -367,29 +369,60 @@ public class ProceedingDetail extends JFrame {
 		ActiveUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(ActiveUpdate.isSelected()){
-/*					Update.setEnabled(true);
+					Update.setEnabled(true);
+					txtTitle.setEditable(true);
+					txtYear.setEditable(true);
+					txtElect.setEditable(true);
 					txtNote.setEditable(true);
 					txtNumber.setEditable(true);
 					txtPublisher.setEditable(true);
 					txtVolume.setEditable(true);
-					txtISBN.setEditable(true);*/
-/*					txtSeries.setEditable(true);
+					txtISBN.setEditable(true);
+					txtSeries.setEditable(true);
 					txtConfEdition.setEditable(true);
-//					txtInProceedings.setEditable(true);
-*/				}
+
+				}
 				else{
-/*					Update.setEnabled(false);
+					Update.setEnabled(false);
+  					txtTitle.setEditable(false);
+					txtYear.setEditable(false);
+					txtElect.setEditable(false);
 					txtNote.setEditable(false);
 					txtNumber.setEditable(false);
 					txtPublisher.setEditable(false);
 					txtVolume.setEditable(false);
-					txtISBN.setEditable(false);*/
-/*					txtSeries.setEditable(false);
+					txtISBN.setEditable(false);
+					txtSeries.setEditable(false);
 					txtConfEdition.setEditable(false);
-//					txtInProceedings.setEditable(false);
-*/				}
+
+				}
 
 			}
+		});
+		
+		Update.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				//Proceedings Update Fields
+				 String title = txtTitle.getText();
+				 int year = Integer.parseInt(txtYear.getText());
+				 //List<String> authors;
+				 String elect = txtElect.getText();
+				 String note = txtNote.getText();
+				 int number = Integer.parseInt(txtNumber.getText());
+				 String publisher = txtPublisher.getText();
+				 String volume = txtVolume.getText();
+				 String isbn = txtISBN.getText();
+				 String series = txtSeries.getText();
+				 String confEdition = txtConfEdition.getText();
+				 //List<String> inProceedings;
+				
+
+				
+				DatabaseHelper.UpdateProceedings(proceeding.getId(), title, year, elect, note, number, publisher, volume, isbn, series, confEdition);
+				
+				}
+
 		});
 
 		setContentPane(contentPane);
@@ -403,9 +436,10 @@ public class ProceedingDetail extends JFrame {
 	       });
 
 	}
-	String format(Collection<?> c) {
+/*	String format(Collection<?> c) {
 		  String s = c.stream().map(Object::toString).collect(Collectors.joining("\n"));
 		  return String.format("[%s]", s);
 		}
+*/
 
 }
