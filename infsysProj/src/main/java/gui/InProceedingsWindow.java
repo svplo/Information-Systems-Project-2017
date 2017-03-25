@@ -11,9 +11,16 @@ import java.awt.Insets;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.awt.event.*;
+import javax.swing.*;
+import java.awt.*;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicArrowButton;
@@ -30,6 +38,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import infsysProj.infsysProj.InProceedings;
+import infsysProj.infsysProj.Proceedings;
 import infsysProj.infsysProj.Publication;
 
 /**
@@ -48,6 +57,9 @@ public class InProceedingsWindow extends JFrame {
 	JTextField pageTextField;
 	JLabel numberOfPagesLabel;
 	JLabel numberOfItemsLabel;
+	int nTitleClicked = 0;
+	int nYearClicked = 0;
+	int nEEClicked = 0;
 
 	public static enum ItemsPerPage {
 	    TWENTY("20 items per page",20,0), 
@@ -114,7 +126,28 @@ public class InProceedingsWindow extends JFrame {
 		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
 		currentPublications = allPublications.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new PublicationTableModel(currentPublications);
+		
+
 		table = new JTable(tableModel);
+		/* {
+	         public boolean editCellAt(int row, int column, java.util.EventObject e) {
+	             return false;
+	          }
+	       };
+	      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+	      table.addMouseListener(new MouseAdapter() {
+	          public void mouseClicked(MouseEvent e) {
+	             if (e.getClickCount() == 2) {
+	            	 JTable target = (JTable) e.getSource();
+	                 int row = target.getSelectedRow();
+	            	 Publication publications = currentPublications.get(row);
+	            	 ProceedingDetail textFrame = new ProceedingDetail((Proceedings)publications);
+	                textFrame.setVisible(true);
+	             }
+	          }
+	       });
+*/
 
 		JScrollPane scrollPane = new JScrollPane(table);		
 	    c.fill = GridBagConstraints.BOTH;
@@ -266,11 +299,94 @@ public class InProceedingsWindow extends JFrame {
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add(nextPageButton, c);
 
-
+	    
+		setContentPane(contentPane);
 		pack();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
-		table.setAutoCreateRowSorter(true);
+		//table.setAutoCreateRowSorter(true);
+		table.getTableHeader().addMouseListener(new MouseAdapter() {
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+		    	
+		        int col = table.columnAtPoint(e.getPoint());
+		        String name = table.getColumnName(col);
+		        if(itemsPerPageIndex != ItemsPerPage.ALL){
+		        	switch(col){
+		        		case 0:
+		        			nTitleClicked++;
+		        			if(nTitleClicked%2 == 0){
+						        Collections.sort(allPublications, new Comparator<Publication>() {
+						            @Override
+						            public int compare(Publication o1, Publication o2) {
+						                return o1.getTitle().compareTo(o2.getTitle());
+						            }
+						        });
+		        			}
+		        			else{
+						        Collections.sort(allPublications, new Comparator<Publication>() {
+						            @Override
+						            public int compare(Publication o1, Publication o2) {
+						                return o2.getTitle().compareTo(o1.getTitle());
+						            }
+						        });
+
+		        			}
+					        break;
+		        		case 1 :
+		        			nYearClicked++;
+		        			if(nYearClicked%2 == 0){
+						        Collections.sort(allPublications, new Comparator<Publication>() {
+						            @Override
+						            public int compare(Publication o1, Publication o2) {
+						                return o1.getYear().compareTo(o2.getYear());
+						            }
+						        });
+		        			}
+		        			else{
+						        Collections.sort(allPublications, new Comparator<Publication>() {
+						            @Override
+						            public int compare(Publication o1, Publication o2) {
+						                return o2.getYear().compareTo(o1.getYear());
+						            }
+						        });
+
+		        			}
+		        			break;
+		        		case 2 :
+		        			nEEClicked++;
+		        			if(nEEClicked%2 == 0){
+						        Collections.sort(allPublications, new Comparator<Publication>() {
+						            @Override
+						            public int compare(Publication o1, Publication o2) {
+						                return o1.getElectronicEdition().compareTo(o2.getElectronicEdition());
+						            }
+						        });
+		        			}
+		        			else{
+						        Collections.sort(allPublications, new Comparator<Publication>() {
+						            @Override
+						            public int compare(Publication o1, Publication o2) {
+						                return o2.getElectronicEdition().compareTo(o1.getElectronicEdition());
+						            }
+						        });
+
+		        			}
+		        			break;
+
+		        		default :
+		        			
+		        			break;
+		        	}
+		        	System.out.println("reload");
+			        reloadTable();
+
+		        }
+
+		        System.out.println("Column index selected " + col + " " + name);
+		    }
+		});
+
 
 
 		/*
@@ -290,11 +406,6 @@ public class InProceedingsWindow extends JFrame {
 		
 		*/
 	    
-	    
-		setContentPane(contentPane);
-		pack();
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setLocationRelativeTo(null);
 
 /*
 		// insert code for sorting here...
@@ -329,7 +440,7 @@ public class InProceedingsWindow extends JFrame {
 
 	public List<Publication> createListPublications() {
 
-		Collection<Publication> allPublications = DatabaseHelper.getAllPublications();
+		Collection<Publication> allPublications = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
 		return new ArrayList<Publication>(allPublications);
 
 		/*
@@ -366,6 +477,13 @@ public class InProceedingsWindow extends JFrame {
 		else{
 			return (int) Math.floor(allPublications.size()/itemsPerPageIndex.getNumber())+1;
 		}
+	}
+
+	public class PublicationComparatorTitleAscend implements Comparator<Publication> {
+	    @Override
+	    public int compare(Publication o1, Publication o2) {
+	        return o1.getTitle().compareTo(o2.getTitle());
+	    }
 	}
 
 	public static void main(String[] args) {
