@@ -57,6 +57,58 @@ public class DatabaseHelper {
 		pm.close();
 		pm.getPersistenceManagerFactory().close();
 	}
+	
+	public static void UpdateProceedings(String proceedingsID, String title, int year, String elect, String note, int number, String publisher, String volume, String isbn, String series, String confEdition){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+		
+		Query query = pm.newQuery(Proceedings.class, "id == '" + proceedingsID.replaceAll("'", "&#39") + "'");
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute();
+		Proceedings proc;
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + proceedingsID);
+
+		} else {
+			proc = proceedings.iterator().next();
+			proc.setTitle(title);
+			proc.setYear(year);
+			//authors
+			proc.setElectronicEdition(elect);
+			proc.setNote(note);
+			proc.setNumber(number);
+			proc.getPublisher().setName(publisher);
+			proc.setVolume(volume);
+			proc.setIsbn(isbn);
+			proc.getSeries().setName(series);
+			proc.getConferenceEdition().getConference().setName(confEdition);	
+			//InProceedings
+
+			pm.makePersistent(proc);
+		}
+		pm.currentTransaction().commit();
+
+		DatabaseHelper.closeDB();
+		
+	}
+	
+	public static void DeleteProceeding(String proceedingsID){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+		
+		Query query = pm.newQuery(Proceedings.class, "id == '" + proceedingsID.replaceAll("'", "&#39") + "'");
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute();
+		Proceedings proc;
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + proceedingsID);
+
+		} else {
+			proc = proceedings.iterator().next();
+			pm.deletePersistent(proc);
+		}
+		pm.currentTransaction().commit();
+
+		DatabaseHelper.closeDB();
+	}
 
 	public static Collection<Publication> getAllPublications() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);

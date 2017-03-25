@@ -496,7 +496,7 @@ public class ProceedingsWindow extends JFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new PublicationsWindow().setVisible(true);
+				new ProceedingsWindow().setVisible(true);
 			}
 		});
 
