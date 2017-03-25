@@ -40,6 +40,7 @@ public class PersonDetail extends JFrame {
 
 	private JPanel contentPane;
 	private Person person;
+	JTextField txtTitle;
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -74,8 +75,18 @@ public class PersonDetail extends JFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(ActiveUpdate, c);
 
-		JButton Update = new JButton("Update");
-		Update.setEnabled(false);
+		JButton updateButton = new JButton("Update");
+		updateButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Person newPerson = new Person(txtTitle.getText());
+				newPerson.setAuthoredPublications(person.getAuthoredPublications());
+				newPerson.setEditedPublications(person.getEditedPublications());
+				DatabaseHelper.updatePerson(person.getName(),newPerson);
+				closeWindow();
+			}
+		});
+
+		updateButton.setEnabled(false);
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -84,9 +95,16 @@ public class PersonDetail extends JFrame {
 		c.gridx = 1;
 		c.gridy = 0;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(Update, c);
+		contentPane.add(updateButton, c);
 
-		JButton Delete = new JButton("Delete");
+		JButton deleteButton = new JButton("Delete");
+		deleteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DatabaseHelper.deletePerson(person.getName());
+				closeWindow();
+			}
+		});
+
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -95,7 +113,7 @@ public class PersonDetail extends JFrame {
 		c.gridx = 2;
 		c.gridy = 0;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(Delete, c);
+		contentPane.add(deleteButton, c);
 		
 		JLabel lblTitle = new JLabel("Name");
 		c.fill = GridBagConstraints.BOTH;
@@ -108,7 +126,7 @@ public class PersonDetail extends JFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(lblTitle, c);
 
-		JTextField txtTitle = new JTextField();
+		txtTitle = new JTextField();
 		txtTitle.setEditable(false);
 		txtTitle.setText(person.getName());
 		c.fill = GridBagConstraints.BOTH;
@@ -200,11 +218,11 @@ public class PersonDetail extends JFrame {
 		ActiveUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(ActiveUpdate.isSelected()){
-					Update.setEnabled(true);
+					updateButton.setEnabled(true);
 					txtTitle.setEditable(true);
 				}
 				else{
-					Update.setEnabled(false);
+					updateButton.setEnabled(false);
 					txtTitle.setEditable(false);
 				}
 
@@ -226,5 +244,10 @@ public class PersonDetail extends JFrame {
 		  String s = c.stream().map(Object::toString).collect(Collectors.joining("\n"));
 		  return String.format("[%s]", s);
 		}
+	
+	private void closeWindow(){
+		dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+
+	}
 
 }
