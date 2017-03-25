@@ -82,6 +82,7 @@ public class PersonDetail extends JFrame {
 				newPerson.setAuthoredPublications(person.getAuthoredPublications());
 				newPerson.setEditedPublications(person.getEditedPublications());
 				DatabaseHelper.updatePerson(person.getName(),newPerson);
+				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
 		});
