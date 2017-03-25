@@ -111,6 +111,16 @@ public class ProceedingsWindow extends JFrame {
 		contentPane.setPreferredSize(new Dimension(1000,600));
 		JTextField searchTextField = new JTextField();
 		searchTextField.setBorder(new EmptyBorder(5, 5, 5, 5));
+		searchTextField.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent e){
+				System.out.println(searchTextField.getText());
+				allPublications = DatabaseHelper.searchForProceedings(searchTextField.getText());
+				pageNumber = 0;
+				reloadTable();
+            	
+            }});
+
 
 
 	    GridBagConstraints c = new GridBagConstraints();
@@ -309,7 +319,6 @@ public class ProceedingsWindow extends JFrame {
 		    	
 		        int col = table.columnAtPoint(e.getPoint());
 		        String name = table.getColumnName(col);
-		        if(itemsPerPageIndex != ItemsPerPage.ALL){
 		        	switch(col){
 		        		case 0:
 		        			nTitleClicked++;
@@ -379,7 +388,7 @@ public class ProceedingsWindow extends JFrame {
 		        	System.out.println("reload");
 			        reloadTable();
 
-		        }
+		        
 
 		        System.out.println("Column index selected " + col + " " + name);
 		    }
