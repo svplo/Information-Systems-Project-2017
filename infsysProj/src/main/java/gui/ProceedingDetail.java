@@ -19,13 +19,16 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicArrowButton;
@@ -352,7 +355,31 @@ public class ProceedingDetail extends JFrame {
         }
         //create table with data
         JTable table = new JTable(data, columns);
-         
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        final JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem deleteItem = new JMenuItem("Delete");
+        deleteItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose DELETE");
+          /*      JTable target = (JTable) e.getSource();
+                int row = target.getSelectedRow();
+                inProcNames.remove(row);*/
+            }
+        });
+        popupMenu.add(deleteItem);
+        
+        JMenuItem addItem = new JMenuItem("Add");
+        addItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose Add");
+            }
+        });
+        popupMenu.add(addItem);
+        table.setComponentPopupMenu(popupMenu);
         //add the table to the frame
         
 		c.fill = GridBagConstraints.BOTH;

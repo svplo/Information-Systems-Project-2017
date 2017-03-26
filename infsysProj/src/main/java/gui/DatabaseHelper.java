@@ -118,6 +118,7 @@ public class DatabaseHelper {
 			//InProceedings
 
 			pm.makePersistent(proc);
+
 		}
 		pm.currentTransaction().commit();
 
@@ -204,7 +205,7 @@ public class DatabaseHelper {
 			System.out.println("Error: Did not find a publication with ID: " + inProceedingID);
 
 		} else {
-			result = inProceedings.iterator().next().getProceedings().getID();
+			//result = inProceedings.iterator().next().getProceedings().getTitle();
 		}
 
 		DatabaseHelper.closeDB();
