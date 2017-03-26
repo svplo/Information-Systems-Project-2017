@@ -43,7 +43,7 @@ import infsysProj.infsysProj.Person;
 import infsysProj.infsysProj.Publication;
 import infsysProj.infsysProj.Proceedings;
 
-public class InProceedingDetail extends MyJFrame {
+public class AddInProceeding extends MyJFrame {
 
 	/**
 	 * 
@@ -75,9 +75,9 @@ public class InProceedingDetail extends MyJFrame {
 
 	}
 
-	public InProceedingDetail(InProceedings inProceeding, InProceedingsWindow caller) {
-		super("Detailed InProceeding");
-		this.inProceeding = inProceeding;
+	public AddInProceeding(InProceedingsWindow caller) {
+		super("Add InProceeding");
+		this.inProceeding = new InProceedings();
 
 		contentPane = new JPanel(new GridBagLayout());
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -85,18 +85,8 @@ public class InProceedingDetail extends MyJFrame {
 
 		GridBagConstraints c = new GridBagConstraints();
 
-		JRadioButton ActiveUpdate = new JRadioButton("Activate update");
 
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1;
-		c.weighty = 0;
-		c.gridwidth = 1;
-		c.gridx = 0;
-		c.gridy = 0;
-		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(ActiveUpdate, c);
-
-		JButton updateButton = new JButton("Update");
+		JButton updateButton = new JButton("Save");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String newName = txtTitle.getText();
@@ -106,13 +96,13 @@ public class InProceedingDetail extends MyJFrame {
 				newInProc.setNote(txtNote.getText());
 				newInProc.setPages(txtPages.getText());
 				newInProc.setYear(Integer.parseInt(txtYear.getText()));
-				DatabaseHelper.updateInProceeding(inProceeding.getTitle(),newInProc,txtProceeding.getText(),authors);
+				DatabaseHelper.addInProceeding(newInProc,txtProceeding.getText(),authors);
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
 		});
 
-		updateButton.setEnabled(false);
+		updateButton.setEnabled(true);
 
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
@@ -124,12 +114,9 @@ public class InProceedingDetail extends MyJFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(updateButton, c);
 
-		JButton deleteButton = new JButton("Delete");
+		JButton deleteButton = new JButton("Cancel");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DatabaseHelper.deleteInProceeding(inProceeding.getTitle());
-				caller.reloadDataFromDatabase();
-				//JOptionPane.showMessageDialog(null, "Inproceeding successfully deleted");
 				closeWindow();
 			}
 		});
@@ -156,7 +143,7 @@ public class InProceedingDetail extends MyJFrame {
 		contentPane.add(lblTitle, c);
 
 		txtTitle = new JTextField();
-		txtTitle.setEditable(false);
+		txtTitle.setEditable(true);
 		txtTitle.setText(inProceeding.getTitle());
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
@@ -180,7 +167,7 @@ public class InProceedingDetail extends MyJFrame {
 		contentPane.add(lblYear, c);
 
 		txtYear = new JTextField();
-		txtYear.setEditable(false);
+		txtYear.setEditable(true);
 		txtYear.setText(inProceeding.getYear().toString());
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
@@ -204,7 +191,7 @@ public class InProceedingDetail extends MyJFrame {
 		contentPane.add(lblElect, c);
 
 		txtElect = new JTextField();
-		txtElect.setEditable(false);
+		txtElect.setEditable(true);
 		txtElect.setText(inProceeding.getElectronicEdition());
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
@@ -228,7 +215,7 @@ public class InProceedingDetail extends MyJFrame {
 		contentPane.add(lblNote, c);
 
 		txtNote = new JTextField();
-		txtNote.setEditable(false);
+		txtNote.setEditable(true);
 		txtNote.setText(inProceeding.getNote());
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
@@ -251,7 +238,7 @@ public class InProceedingDetail extends MyJFrame {
 		contentPane.add(lblPages, c);
 
 		txtPages = new JTextField();
-		txtPages.setEditable(false);
+		txtPages.setEditable(true);
 		txtPages.setText(inProceeding.getPages());
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
@@ -275,12 +262,7 @@ public class InProceedingDetail extends MyJFrame {
 
 		txtProceeding = new JTextField();
 		txtProceeding.setEditable(false);
-<<<<<<< HEAD
-		//txtProceeding.setText(DatabaseHelper.getProceedingName(inProceeding.getId()));
-=======
-		proceedingsName = DatabaseHelper.getProceedingsName(this.inProceeding.getTitle());
 		txtProceeding.setText(proceedingsName);
->>>>>>> 35ff0785046c55f27d289e18be66c105f0f9612f
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -292,10 +274,10 @@ public class InProceedingDetail extends MyJFrame {
 		contentPane.add(txtProceeding, c);
 
 		JButton editProceeding = new JButton("Edit");
-		editProceeding.setEnabled(false);
+		editProceeding.setEnabled(true);
 		editProceeding.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.PROCEEDINGS, InProceedingDetail.this, 1);
+				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.PROCEEDINGS, AddInProceeding.this, 1);
 				frame.setVisible(true);
 				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			}
@@ -311,8 +293,6 @@ public class InProceedingDetail extends MyJFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(editProceeding, c);
 
-		authors = DatabaseHelper.getAuthorsOfInProceeding(this.inProceeding.getTitle());
-
 		lblAuthors = new JLabel("Authors (" + authors.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
@@ -324,10 +304,10 @@ public class InProceedingDetail extends MyJFrame {
 		contentPane.add(lblAuthors, c);
 
 		JButton addAuthor = new JButton("Add");
-		addAuthor.setEnabled(false);
+		addAuthor.setEnabled(true);
 		addAuthor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.PERSON, InProceedingDetail.this, 2);
+				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.PERSON, AddInProceeding.this, 2);
 				frame.setVisible(true);
 				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -376,7 +356,7 @@ public class InProceedingDetail extends MyJFrame {
 
 			}
 		});
-		deleteItem.setEnabled(false);
+		deleteItem.setEnabled(true);
 		popupMenu.add(deleteItem);
 
 		popupMenu.addPopupMenuListener(new PopupMenuListener() {
@@ -420,36 +400,6 @@ public class InProceedingDetail extends MyJFrame {
 		// contentPane.add(txtInProceedings, c);
 		contentPane.add(new JScrollPane(authorsTable), c);
 
-		ActiveUpdate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (ActiveUpdate.isSelected()) {
-					updateButton.setEnabled(true);
-					txtTitle.setEditable(true);
-					txtYear.setEditable(true);
-					txtElect.setEditable(true);
-					txtNote.setEditable(true);
-					txtPages.setEditable(true);
-					editProceeding.setEnabled(true);
-					addAuthor.setEnabled(true);
-					deleteItem.setEnabled(true);
-
-
-
-				} else {
-					updateButton.setEnabled(false);
-					txtTitle.setEditable(false);
-					txtYear.setEditable(false);
-					txtElect.setEditable(false);
-					txtNote.setEditable(false);
-					txtPages.setEditable(false);
-					editProceeding.setEnabled(false);
-					addAuthor.setEnabled(false);
-					deleteItem.setEnabled(false);
-
-				}
-
-			}
-		});
 
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -465,27 +415,9 @@ public class InProceedingDetail extends MyJFrame {
 
 				// List<String> inProceedings;
 
-<<<<<<< HEAD
-				
-			//	DatabaseHelper.UpdateProceedings(inProceeding.getId(), title, year, elect, note, pages, proceeding);
-				dispose();
-				}
-
-		});
-		
-		Delete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-					
-			//	DatabaseHelper.DeleteInProceeding(inProceeding.getId());
-				JOptionPane.showMessageDialog(null, "Inproceeding successfully deleted");
-				caller.reloadDataFromDatabase();
-				dispose();
-				}
-=======
 				// DatabaseHelper.UpdateProceedings(inProceeding.getId(), title, year, elect, note, pages, proceeding);
 				dispose();
 			}
->>>>>>> 35ff0785046c55f27d289e18be66c105f0f9612f
 
 		});
 

@@ -123,7 +123,7 @@ public class InProceedingsWindow extends JFrame {
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.ipadx = 10;
 	    c.weightx = 1;
-	    c.gridwidth = 6;
+	    c.gridwidth = 5;
 	    c.gridx = 0;
 	    c.gridy = 1;
 	    c.insets = new Insets(5,5,5,5);
@@ -174,11 +174,30 @@ public class InProceedingsWindow extends JFrame {
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 1;
 	    c.weighty = 0;
-	    c.gridwidth = 3;
-	    c.gridx = 6;
+	    c.gridwidth = 2;
+	    c.gridx = 5;
 	    c.gridy = 1;
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add(searchButton, c);
+
+	    JButton addButton = new JButton("Add");
+	    addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+	        	 AddInProceeding textFrame = new AddInProceeding(getMe());
+	        	 textFrame.setVisible(true);
+
+			}
+		});
+
+	    c.fill = GridBagConstraints.HORIZONTAL;
+	    c.weightx = 1;
+	    c.weighty = 0;
+	    c.gridwidth = 1;
+	    c.gridx = 7;
+	    c.gridy = 1;
+	    c.insets = new Insets(5,5,5,5);
+	    contentPane.add(addButton, c);
 
 
 	    

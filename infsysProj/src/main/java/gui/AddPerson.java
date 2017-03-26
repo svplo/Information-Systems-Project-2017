@@ -71,6 +71,7 @@ public class AddPerson extends MyJFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				String newName = txtTitle.getText();
 				DatabaseHelper.addPerson(newName, authoredPublications, editedPublications);
+				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
 		});

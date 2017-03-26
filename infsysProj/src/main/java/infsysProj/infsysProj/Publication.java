@@ -14,12 +14,7 @@ public class Publication extends DomainObject {
 	String electronicEdition;
 
 	public Publication(Integer num) {
-		this.title = "title " + num.toString();
-		List<Person> authors = new LinkedList<Person>();
-		authors.add(new Person("Lisa"));
-		authors.add(new Person("Malte"));
-		this.year = num;
-		this.electronicEdition = num.toString();
+		
 	}
 
 	public String getTitle() {
