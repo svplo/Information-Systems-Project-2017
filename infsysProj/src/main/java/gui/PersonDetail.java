@@ -38,7 +38,6 @@ public class PersonDetail extends MyJFrame {
 	private Person person;
 	JTextField txtTitle;
 	List<String> authoredPublications;
-	List<String> removedAuthoredPublications = new ArrayList<String>();
 	List<String> editedPublications = new ArrayList<String>();
 	JTable authoredPublicationsTable;
 	JLabel lblauthoredPublications;
