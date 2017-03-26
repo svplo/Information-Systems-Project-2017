@@ -9,10 +9,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Label;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -136,29 +132,24 @@ public class InProceedingsWindow extends JFrame {
 		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
 		currentPublications = allPublications.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new PublicationTableModel(currentPublications);
-		
-
-		table = new JTable(tableModel);
-		/* {
+		table = new JTable(tableModel){
 	         public boolean editCellAt(int row, int column, java.util.EventObject e) {
 	             return false;
 	          }
 	       };
 	      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
+	      
 	      table.addMouseListener(new MouseAdapter() {
 	          public void mouseClicked(MouseEvent e) {
 	             if (e.getClickCount() == 2) {
 	            	 JTable target = (JTable) e.getSource();
 	                 int row = target.getSelectedRow();
 	            	 Publication publications = currentPublications.get(row);
-	            	 ProceedingDetail textFrame = new ProceedingDetail((Proceedings)publications);
+	            	 InProceedingDetail textFrame = new InProceedingDetail((InProceedings)publications, getMe());
 	                textFrame.setVisible(true);
 	             }
 	          }
 	       });
-*/
-
 		JScrollPane scrollPane = new JScrollPane(table);		
 	    c.fill = GridBagConstraints.BOTH;
 	    c.weightx = 1;
@@ -459,6 +450,14 @@ public class InProceedingsWindow extends JFrame {
 		 * 
 		 * listPublications.add(p1); listPublications.add(p2); listPublications.add(p3);
 		 */
+	}
+	public InProceedingsWindow getMe(){
+		return this;
+	}
+	
+	public void reloadDataFromDatabase(){
+		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
+		reloadTable();
 	}
 	
 	public void reloadTable(){

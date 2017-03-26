@@ -38,6 +38,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import infsysProj.infsysProj.InProceedings;
+import infsysProj.infsysProj.Person;
 import infsysProj.infsysProj.Proceedings;
 import infsysProj.infsysProj.Publication;
 
@@ -142,7 +143,6 @@ public class ProceedingsWindow extends JFrame {
 	          }
 	       };
 	      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
 	      
 	      table.addMouseListener(new MouseAdapter() {
 	          public void mouseClicked(MouseEvent e) {
@@ -150,7 +150,7 @@ public class ProceedingsWindow extends JFrame {
 	            	 JTable target = (JTable) e.getSource();
 	                 int row = target.getSelectedRow();
 	            	 Publication publications = currentPublications.get(row);
-	            	 ProceedingDetail textFrame = new ProceedingDetail((Proceedings)publications);
+	            	 ProceedingDetail textFrame = new ProceedingDetail((Proceedings)publications, getMe());
 	                textFrame.setVisible(true);
 	             }
 	          }
@@ -459,6 +459,11 @@ public class ProceedingsWindow extends JFrame {
 		 */
 	}
 	
+	public void reloadDataFromDatabase(){
+		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllProceedings());
+		reloadTable();
+	}
+	
 	public void reloadTable(){
 		int size = allPublications.size();
 		if(itemsPerPageIndex == ItemsPerPage.ALL){
@@ -491,6 +496,10 @@ public class ProceedingsWindow extends JFrame {
 	    public int compare(Publication o1, Publication o2) {
 	        return o1.getTitle().compareTo(o2.getTitle());
 	    }
+	}
+	
+	public ProceedingsWindow getMe(){
+		return this;
 	}
 
 	public static void main(String[] args) {
