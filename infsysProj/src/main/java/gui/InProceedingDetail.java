@@ -231,7 +231,7 @@ public class InProceedingDetail extends JFrame {
 
 		JTextField txtProceeding = new JTextField();
 		txtProceeding.setEditable(false);
-		txtProceeding.setText(DatabaseHelper.getProceedingName(inProceeding.getId()));
+		//txtProceeding.setText(DatabaseHelper.getProceedingName(inProceeding.getId()));
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -286,7 +286,7 @@ public class InProceedingDetail extends JFrame {
 				
 
 				
-				DatabaseHelper.UpdateProceedings(inProceeding.getId(), title, year, elect, note, pages, proceeding);
+			//	DatabaseHelper.UpdateProceedings(inProceeding.getId(), title, year, elect, note, pages, proceeding);
 				dispose();
 				}
 
@@ -295,7 +295,7 @@ public class InProceedingDetail extends JFrame {
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					
-				DatabaseHelper.DeleteInProceeding(inProceeding.getId());
+			//	DatabaseHelper.DeleteInProceeding(inProceeding.getId());
 				JOptionPane.showMessageDialog(null, "Inproceeding successfully deleted");
 				caller.reloadDataFromDatabase();
 				dispose();
