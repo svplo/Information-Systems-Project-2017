@@ -32,12 +32,12 @@ import infsysProj.infsysProj.InProceedings;
 import infsysProj.infsysProj.Person;
 import infsysProj.infsysProj.Proceedings;
 
-public class PersonDetail extends MyJFrame {
+public class AddPerson extends MyJFrame {
 
 	private JPanel contentPane;
-	private Person person;
+	private Person person = new Person();
 	JTextField txtTitle;
-	List<String> authoredPublications;
+	List<String> authoredPublications = new ArrayList<String>();
 	List<String> editedPublications = new ArrayList<String>();
 	JTable authoredPublicationsTable;
 	JLabel lblauthoredPublications;
@@ -57,9 +57,8 @@ public class PersonDetail extends MyJFrame {
 
 	}
 
-	public PersonDetail(Person person, PersonWindow caller) {
-		super("Detailed Person");
-		this.person = person;
+	public AddPerson(PersonWindow caller) {
+		super("Add Person");
 
 		contentPane = new JPanel(new GridBagLayout());
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -67,28 +66,16 @@ public class PersonDetail extends MyJFrame {
 
 		GridBagConstraints c = new GridBagConstraints();
 
-		JRadioButton ActiveUpdate = new JRadioButton("Activate update");
-
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1;
-		c.weighty = 0;
-		c.gridwidth = 1;
-		c.gridx = 0;
-		c.gridy = 0;
-		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(ActiveUpdate, c);
-
-		JButton updateButton = new JButton("Update");
+		JButton updateButton = new JButton("Save");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String newName = txtTitle.getText();
-				DatabaseHelper.updatePerson(person.getName(),newName, authoredPublications, editedPublications);
-				caller.reloadDataFromDatabase();
+				DatabaseHelper.addPerson(newName, authoredPublications, editedPublications);
 				closeWindow();
 			}
 		});
 
-		updateButton.setEnabled(false);
+		updateButton.setEnabled(true);
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -99,11 +86,9 @@ public class PersonDetail extends MyJFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(updateButton, c);
 
-		JButton deleteButton = new JButton("Delete");
+		JButton deleteButton = new JButton("Cancel");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DatabaseHelper.deletePerson(person.getName());
-				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
 		});
@@ -130,7 +115,7 @@ public class PersonDetail extends MyJFrame {
 		contentPane.add(lblTitle, c);
 
 		txtTitle = new JTextField();
-		txtTitle.setEditable(false);
+		txtTitle.setEditable(true);
 		txtTitle.setText(person.getName());
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
@@ -143,9 +128,6 @@ public class PersonDetail extends MyJFrame {
 		contentPane.add(txtTitle, c);
 		
 
-        //load names of InProceedings from Database
-        authoredPublications = DatabaseHelper.getAuthoredPublicationsForPerson(person.getName());
-
 		lblauthoredPublications = new JLabel("Authored Publications (" + authoredPublications.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
@@ -157,10 +139,10 @@ public class PersonDetail extends MyJFrame {
 		contentPane.add(lblauthoredPublications, c);
 
 		JButton addAuthoredPublicationButton = new JButton("Add");
-		addAuthoredPublicationButton.setEnabled(false);
+		addAuthoredPublicationButton.setEnabled(true);
 		addAuthoredPublicationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.INPROCEEDINGS,PersonDetail.this,1);
+				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.INPROCEEDINGS,AddPerson.this,1);
 				frame.setVisible(true);
 				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -259,10 +241,10 @@ public class PersonDetail extends MyJFrame {
         contentPane.add(new JScrollPane(authoredPublicationsTable),c);
 
 		JButton addEditedPublicationButton = new JButton("Add");
-		addEditedPublicationButton.setEnabled(false);
+		addEditedPublicationButton.setEnabled(true);
 		addEditedPublicationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.PROCEEDINGS,PersonDetail.this,2);
+				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.PROCEEDINGS,AddPerson.this,2);
 				frame.setVisible(true);
 				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -280,7 +262,6 @@ public class PersonDetail extends MyJFrame {
 		contentPane.add(addEditedPublicationButton, c);
 
         //load names of InProceedings from Database
-        editedPublications = DatabaseHelper.getEditedPublicationsForPerson(person.getName());
 
 		lblEditedPublications = new JLabel("Edited Publications (" + editedPublications.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -375,30 +356,6 @@ public class PersonDetail extends MyJFrame {
         contentPane.add(new JScrollPane(editedPublicationsTable),c);
 
 		
-		ActiveUpdate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(ActiveUpdate.isSelected()){
-					updateButton.setEnabled(true);
-					txtTitle.setEditable(true);
-					deleteItem.setEnabled(true);
-					deleteItem2.setEnabled(true);
-					addAuthoredPublicationButton.setEnabled(true);
-					addEditedPublicationButton.setEnabled(true);
-
-				}
-				else{
-					updateButton.setEnabled(false);
-					txtTitle.setEditable(false);
-					deleteItem.setEnabled(false);
-					deleteItem2.setEnabled(false);
-					addAuthoredPublicationButton.setEnabled(false);
-					addEditedPublicationButton.setEnabled(false);
-
-				}
-
-			}
-		});
-
 		setContentPane(contentPane);
 		pack();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

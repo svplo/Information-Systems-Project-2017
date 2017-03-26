@@ -347,7 +347,7 @@ public class XMLParser {
 			edition.setConference(conf);
 			edition.setYear(in.getYear());
 			edition.setProceedings(in);
-			Set<ConferenceEdition> conferenceEditions = new HashSet<ConferenceEdition>();
+			Set<ConferenceEdition> conferenceEditions = conf.getEditions();
 			conferenceEditions.add(edition);
 			conf.setEditions(conferenceEditions);
 			readConferences.add(conf);
