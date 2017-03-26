@@ -275,8 +275,12 @@ public class InProceedingDetail extends MyJFrame {
 
 		txtProceeding = new JTextField();
 		txtProceeding.setEditable(false);
+<<<<<<< HEAD
+		//txtProceeding.setText(DatabaseHelper.getProceedingName(inProceeding.getId()));
+=======
 		proceedingsName = DatabaseHelper.getProceedingsName(this.inProceeding.getTitle());
 		txtProceeding.setText(proceedingsName);
+>>>>>>> 35ff0785046c55f27d289e18be66c105f0f9612f
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -461,9 +465,27 @@ public class InProceedingDetail extends MyJFrame {
 
 				// List<String> inProceedings;
 
+<<<<<<< HEAD
+				
+			//	DatabaseHelper.UpdateProceedings(inProceeding.getId(), title, year, elect, note, pages, proceeding);
+				dispose();
+				}
+
+		});
+		
+		Delete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+					
+			//	DatabaseHelper.DeleteInProceeding(inProceeding.getId());
+				JOptionPane.showMessageDialog(null, "Inproceeding successfully deleted");
+				caller.reloadDataFromDatabase();
+				dispose();
+				}
+=======
 				// DatabaseHelper.UpdateProceedings(inProceeding.getId(), title, year, elect, note, pages, proceeding);
 				dispose();
 			}
+>>>>>>> 35ff0785046c55f27d289e18be66c105f0f9612f
 
 		});
 

@@ -9,10 +9,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Label;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,17 +33,14 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import gui.InProceedingsWindow.ItemsPerPage;
+import gui.SelectPublication.ObjectMode;
 import infsysProj.infsysProj.InProceedings;
-import infsysProj.infsysProj.Person;
 import infsysProj.infsysProj.Proceedings;
 import infsysProj.infsysProj.Publication;
 
-/**
- * This program demonstrates how to sort rows in a table.
- * 
- * @author www.codejava.net resource: http://www.codejava.net/java-se/swing/6-techniques-for-sorting-jtable-you-should-know
- */
-public class ProceedingsWindow extends JFrame {
+public class SelectInProceedings extends JFrame {
+
 	private JTable table;
 	private JPanel contentPane;
 	private ItemsPerPage itemsPerPageIndex = ItemsPerPage.FIFTY;
@@ -62,6 +55,23 @@ public class ProceedingsWindow extends JFrame {
 	int nYearClicked = 0;
 	int nEEClicked = 0;
 
+	public static enum ObjectMode {
+	    PUBLICATION(""), 
+	    PROCEEDINGS(""),
+	    INPROCEEDINGS("");
+
+	    private final String string;
+
+	    private ObjectMode(String string) {
+	        this.string = string;
+	    }
+
+	    public String getString() {
+	        return string;
+	    }
+
+	}
+	
 	public static enum ItemsPerPage {
 	    TWENTY("20 items per page",20,0), 
 	    FIFTY("50 items per page",50,1),
@@ -102,8 +112,8 @@ public class ProceedingsWindow extends JFrame {
 	}
 
 
-	public ProceedingsWindow() {
-		super("Proceedings Window");
+	public SelectInProceedings(ObjectMode mode, MyJFrame caller, int id) {
+		super("Select a Proceeding");
 		
 
 				
@@ -116,7 +126,7 @@ public class ProceedingsWindow extends JFrame {
 
             public void actionPerformed(ActionEvent e){
 				System.out.println(searchTextField.getText());
-				allPublications = DatabaseHelper.searchForProceedings(searchTextField.getText());
+				allPublications = DatabaseHelper.searchForInProceedings(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
             	
@@ -128,13 +138,13 @@ public class ProceedingsWindow extends JFrame {
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.ipadx = 10;
 	    c.weightx = 1;
-	    c.gridwidth = 5;
+	    c.gridwidth = 6;
 	    c.gridx = 0;
 	    c.gridy = 1;
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add( searchTextField, c );
 	    
-		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllProceedings());
+		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
 		currentPublications = allPublications.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new PublicationTableModel(currentPublications);
 		table = new JTable(tableModel){
@@ -150,13 +160,12 @@ public class ProceedingsWindow extends JFrame {
 	            	 JTable target = (JTable) e.getSource();
 	                 int row = target.getSelectedRow();
 	            	 Publication publications = currentPublications.get(row);
-	            	 ProceedingDetail textFrame = new ProceedingDetail((Proceedings)publications, getMe());
-	                textFrame.setVisible(true);
+	            	 caller.selectedObject(publications, id);
+	            	 SelectInProceedings.this.dispatchEvent(new WindowEvent(SelectInProceedings.this, WindowEvent.WINDOW_CLOSING));
+	                
 	             }
 	          }
 	       });
-
-
 		JScrollPane scrollPane = new JScrollPane(table);		
 	    c.fill = GridBagConstraints.BOTH;
 	    c.weightx = 1;
@@ -172,7 +181,7 @@ public class ProceedingsWindow extends JFrame {
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println(searchTextField.getText());
-				allPublications = DatabaseHelper.searchForProceedings(searchTextField.getText());
+				allPublications = DatabaseHelper.searchForInProceedings(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
 			}
@@ -181,29 +190,12 @@ public class ProceedingsWindow extends JFrame {
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 1;
 	    c.weighty = 0;
-	    c.gridwidth = 2;
-	    c.gridx = 5;
+	    c.gridwidth = 3;
+	    c.gridx = 6;
 	    c.gridy = 1;
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add(searchButton, c);
 
-	    JButton addButton = new JButton("Add");
-		addButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-        	 AddProceedings textFrame = new AddProceedings(getMe());
-        	 textFrame.setVisible(true);
-
-			}
-		});
-
-	    c.fill = GridBagConstraints.HORIZONTAL;
-	    c.weightx = 1;
-	    c.weighty = 0;
-	    c.gridwidth = 1;
-	    c.gridx = 7;
-	    c.gridy = 1;
-	    c.insets = new Insets(5,5,5,5);
-	    contentPane.add(addButton, c);
 
 	    
 	    numberOfItemsLabel = new JLabel("1-50 of " + String.valueOf(allPublications.size())+ " items");
@@ -464,7 +456,7 @@ public class ProceedingsWindow extends JFrame {
 
 	public List<Publication> createListPublications() {
 
-		Collection<Publication> allPublications = new ArrayList<Publication>(DatabaseHelper.getAllProceedings());
+		Collection<Publication> allPublications = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
 		return new ArrayList<Publication>(allPublications);
 
 		/*
@@ -475,9 +467,10 @@ public class ProceedingsWindow extends JFrame {
 		 * listPublications.add(p1); listPublications.add(p2); listPublications.add(p3);
 		 */
 	}
+
 	
 	public void reloadDataFromDatabase(){
-		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllProceedings());
+		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
 		reloadTable();
 	}
 	
@@ -514,15 +507,11 @@ public class ProceedingsWindow extends JFrame {
 	        return o1.getTitle().compareTo(o2.getTitle());
 	    }
 	}
-	
-	public ProceedingsWindow getMe(){
-		return this;
-	}
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new ProceedingsWindow().setVisible(true);
+				new PublicationsWindow().setVisible(true);
 			}
 		});
 

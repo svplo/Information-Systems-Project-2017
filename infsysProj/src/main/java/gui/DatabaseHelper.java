@@ -61,18 +61,24 @@ public class DatabaseHelper {
 		pm.getPersistenceManagerFactory().close();
 	}
 
-	public static void UpdateProceedings(String proceedingsID, String title, int year, String elect, String note, int number, String publisher, String volume, String isbn, String series, String confEdition) {
+	//TODO
+	public static void UpdateProceedings(String proceedingsID, String title,List<String> authors, int year, String elect, String note, int number, String publisher, String volume, String isbn, String series, String confEdition, List<String> inProcNames) {
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
+		pm.currentTransaction().setRetainValues(true);
+		Query query = pm.newQuery(Proceedings.class);
+		query.setFilter("name == a");
+		query.declareParameters("String a");
 
-		Query query = pm.newQuery(Proceedings.class, "id == '" + proceedingsID.replaceAll("'", "&#39") + "'");
+
 		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute();
+		List<Proceedings> allProceedings = new ArrayList<Proceedings>(proceedings);
 		Proceedings proc;
 		if (proceedings.isEmpty()) {
 			System.out.println("Error: Did not find a publication with ID: " + proceedingsID);
 
 		} else {
-			proc = proceedings.iterator().next();
+			proc = allProceedings.iterator().next();
 			proc.setTitle(title);
 			proc.setYear(year);
 			// authors
@@ -85,6 +91,7 @@ public class DatabaseHelper {
 			proc.getSeries().setName(series);
 			proc.getConferenceEdition().getConference().setName(confEdition);
 			// InProceedings
+			
 
 			pm.makePersistent(proc);
 		}
@@ -93,6 +100,7 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 
 	}
+
 
 	public static void DeleteProceeding(String proceedingsID) {
 		DatabaseHelper.openDB();
@@ -197,6 +205,24 @@ public class DatabaseHelper {
 		return result;
 	}
 
+	public static List<String> getAuthorsOfProceedings(String proceedingsID){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+		Query query = pm.newQuery(Proceedings.class, "id == '" + proceedingsID.replaceAll("'", "&#39") + "'");
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute();
+		List<String> result = new ArrayList<String>();
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + proceedingsID);
+
+		} else {
+			for (Person i : proceedings.iterator().next().getAuthors()) {
+				result.add(i.getName());
+			}
+		}
+		DatabaseHelper.closeDB();
+		return result;
+	}
+	
 	public static List<String> getInProceedingsOfProceedings(String proceedingsID) {
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
@@ -371,6 +397,7 @@ public class DatabaseHelper {
 
 	}
 
+	//TODO
 	public static void updatePerson(String personName, String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -389,6 +416,8 @@ public class DatabaseHelper {
 			p = allPublications.iterator().next();
 			p.setName(newPersonName);
 			
+<<<<<<< HEAD
+=======
 			for(Publication oldPub : p.getAuthoredPublications()){
 				List<Person> oldSet = oldPub.getAuthors();
 				List<Person> newSet = new ArrayList<Person>();
@@ -423,6 +452,7 @@ public class DatabaseHelper {
 
 
 			
+>>>>>>> 35ff0785046c55f27d289e18be66c105f0f9612f
 			Set<Publication> autPubs = new HashSet<Publication>();
 			for (String s : newAuthoredPublications) {
 				Query query1 = pm.newQuery(InProceedings.class);
