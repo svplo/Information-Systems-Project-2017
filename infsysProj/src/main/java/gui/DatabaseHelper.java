@@ -374,35 +374,54 @@ public class DatabaseHelper {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
-		Query query = pm.newQuery(Person.class, "name == '" + personName.replaceAll("'", "&#39") + "'");
-		Collection<Person> proceedings = (Collection<Person>) query.execute();
+		
+		Query query = pm.newQuery(Person.class);
+		query.setFilter("name == a");
+		query.declareParameters("String a");
+
+		Collection<Person> proceedings = (Collection<Person>) query.execute(personName);
 		List<Person> allPublications = new ArrayList<Person>(proceedings);
 		Person p;
 		if (proceedings.isEmpty()) {
 			System.out.println("Error: Did not find a publication with ID: " + personName);
 		} else {
-			// TODO: update changed Proceedings and Inproceedings!!
 			p = allPublications.iterator().next();
 			p.setName(newPersonName);
 			Set<Publication> autPubs = new HashSet<Publication>();
 			for (String s : newAuthoredPublications) {
-				Query query1 = pm.newQuery(InProceedings.class, "title == '" + s.replaceAll("'", "&#39") + "'");
-				Collection<InProceedings> proceedings1 = (Collection<InProceedings>) query1.execute();
+				Query query1 = pm.newQuery(InProceedings.class);
+				query1.setFilter("title == a");
+				query1.declareParameters("String a");
+
+				Collection<InProceedings> proceedings1 = (Collection<InProceedings>) query1.execute(s);
 				if (proceedings1.isEmpty()) {
 					System.out.println("Error: Did not Find InProceedings: " + s);
 				} else {
-					autPubs.add(proceedings1.iterator().next());
+					InProceedings inProc = proceedings1.iterator().next();
+					autPubs.add(inProc);
+					List<Person> authors = inProc.getAuthors();
+					authors.add(p);
+					inProc.setAuthors(authors);
 				}
 			}
 			Set<Publication> editPubs = new HashSet<Publication>();
 
 			for (String s : newEditedPublications) {
-				Query query1 = pm.newQuery(Proceedings.class, "title == '" + s.replaceAll("'", "&#39") + "'");
-				Collection<Proceedings> proceedings1 = (Collection<Proceedings>) query1.execute();
+				
+				Query query1 = pm.newQuery(Proceedings.class);
+				query1.setFilter("title == a");
+				query1.declareParameters("String a");
+
+				Collection<Proceedings> proceedings1 = (Collection<Proceedings>) query1.execute(s);
 				if (proceedings1.isEmpty()) {
 					System.out.println("Error: Did not Find Proceedings: " + s);
 				} else {
-					editPubs.add(proceedings1.iterator().next());
+					Proceedings proc = proceedings1.iterator().next();
+					editPubs.add(proc);
+					List<Person> authors = proc.getAuthors();
+					authors.add(p);
+					proc.setAuthors(authors);
+
 				}
 			}
 
@@ -410,6 +429,57 @@ public class DatabaseHelper {
 			p.setAuthoredPublications(autPubs);
 			pm.makePersistent(p);
 		}
+
+		pm.currentTransaction().commit();
+		closeDB(pm);
+
+	}
+
+	public static void addPerson(String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications) {
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+		pm.currentTransaction().setRetainValues(true);
+		Person p = new Person(newPersonName);
+		Set<Publication> autPubs = new HashSet<Publication>();
+		for (String s : newAuthoredPublications) {
+			Query query1 = pm.newQuery(InProceedings.class);
+			query1.setFilter("title == a");
+			query1.declareParameters("String a");
+
+			Collection<InProceedings> proceedings1 = (Collection<InProceedings>) query1.execute(s);
+			if (proceedings1.isEmpty()) {
+				System.out.println("Error: Did not Find InProceedings: " + s);
+			} else {
+				InProceedings inProc = proceedings1.iterator().next();
+				autPubs.add(inProc);
+				List<Person> authors = inProc.getAuthors();
+				authors.add(p);
+				inProc.setAuthors(authors);
+			}
+		}
+		Set<Publication> editPubs = new HashSet<Publication>();
+
+		for (String s : newEditedPublications) {
+			
+			Query query1 = pm.newQuery(Proceedings.class);
+			query1.setFilter("title == a");
+			query1.declareParameters("String a");
+
+			Collection<Proceedings> proceedings1 = (Collection<Proceedings>) query1.execute(s);
+			if (proceedings1.isEmpty()) {
+				System.out.println("Error: Did not Find Proceedings: " + s);
+			} else {
+				Proceedings proc = proceedings1.iterator().next();
+				editPubs.add(proc);
+				List<Person> authors = proc.getAuthors();
+				authors.add(p);
+				proc.setAuthors(authors);
+			}
+		}
+
+		p.setEditedPublications(editPubs);
+		p.setAuthoredPublications(autPubs);
+		pm.makePersistent(p);
 
 		pm.currentTransaction().commit();
 		closeDB(pm);
