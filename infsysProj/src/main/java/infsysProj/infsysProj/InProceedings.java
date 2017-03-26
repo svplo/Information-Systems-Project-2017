@@ -10,7 +10,7 @@ public class InProceedings extends Publication {
 		// TODO Auto-generated constructor stub
 	}
 
-	private InProceedings() {
+	public InProceedings() {
 		super(1);
 	}
 

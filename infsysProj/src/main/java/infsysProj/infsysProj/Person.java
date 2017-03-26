@@ -40,18 +40,22 @@ public class Person extends DomainObject {
 	}
 
 	public Set<Publication> getAuthoredPublications() {
+		zooActivateRead();
 		return authoredPublications;
 	}
 
 	public void setAuthoredPublications(Set<Publication> authoredPublications) {
+		zooActivateWrite();
 		this.authoredPublications = authoredPublications;
 	}
 
 	public Set<Publication> getEditedPublications() {
+		zooActivateRead();
 		return editedPublications;
 	}
 
 	public void setEditedPublications(Set<Publication> editedPublications) {
+		zooActivateWrite();
 		this.editedPublications = editedPublications;
 	}
 }
