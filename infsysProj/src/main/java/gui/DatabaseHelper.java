@@ -663,16 +663,11 @@ public class DatabaseHelper {
 			}
 			
 			for(Person oldAuthor : p.getAuthors()){
-				System.out.println("inremove:" + oldAuthor.getName());
 				Set<Publication> oldSet = oldAuthor.getAuthoredPublications();
 				Set<Publication> newSet = new HashSet<Publication>();
 				for(Publication ufhe : oldSet){
 					if(!ufhe.getTitle().equals(newInProc.getTitle())){
 						newSet.add(ufhe);
-						System.out.println("f");
-					}
-					else{
-						System.out.println("t");
 					}
 				}
 				oldAuthor.setAuthoredPublications(newSet);
@@ -692,9 +687,8 @@ public class DatabaseHelper {
 					
 					theA = listOfAuthors.iterator().next();
 					
-					System.out.println("AddingNewAthors" + theA.getName());
 					Set<Publication> authoredPubs = theA.getAuthoredPublications();
-					System.out.println(authoredPubs.add((Publication)p));
+					authoredPubs.add((Publication)p);
 					theA.setAuthoredPublications(authoredPubs);
 					
 					theNewAuthors.add(theA);
@@ -716,6 +710,19 @@ public class DatabaseHelper {
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
 		
+		Query query0 = pm.newQuery(InProceedings.class);
+		query0.setFilter("title == a");
+		query0.declareParameters("String a");
+
+		Collection<InProceedings> alreadyExists = (Collection<InProceedings>) query0.execute(newInProc.getTitle());
+		if (!alreadyExists.isEmpty()) {
+			System.out.println("There already exists an InProceeding with title " + newInProc.getTitle());
+			pm.currentTransaction().rollback();
+			closeDB(pm);
+
+			return;
+			
+		} 
 		Query query2 = pm.newQuery(Proceedings.class);
 		query2.setFilter("title == a");
 		query2.declareParameters("String a");

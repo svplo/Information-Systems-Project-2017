@@ -110,7 +110,6 @@ public class InProceedingsWindow extends JFrame {
 		searchTextField.addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e){
-				System.out.println(searchTextField.getText());
 				allPublications = DatabaseHelper.searchForInProceedings(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
@@ -164,7 +163,6 @@ public class InProceedingsWindow extends JFrame {
 	    JButton searchButton = new JButton("Search");
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(searchTextField.getText());
 				allPublications = DatabaseHelper.searchForInProceedings(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
@@ -397,7 +395,6 @@ public class InProceedingsWindow extends JFrame {
 		        			
 		        			break;
 		        	}
-		        	System.out.println("reload");
 			        reloadTable();
 
 		        
