@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Label;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,7 +20,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -27,6 +31,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
+import javax.swing.event.TableColumnModelEvent;
 import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -41,6 +48,10 @@ public class PersonDetail extends JFrame {
 	private JPanel contentPane;
 	private Person person;
 	JTextField txtTitle;
+	List<String> authoredPublications;
+	List<String> removedAuthoredPublications = new ArrayList<String>();
+	List<String> editedPublications = new ArrayList<String>();
+	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -78,10 +89,8 @@ public class PersonDetail extends JFrame {
 		JButton updateButton = new JButton("Update");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Person newPerson = new Person(txtTitle.getText());
-				newPerson.setAuthoredPublications(person.getAuthoredPublications());
-				newPerson.setEditedPublications(person.getEditedPublications());
-				DatabaseHelper.updatePerson(person.getName(),newPerson);
+				String newName = txtTitle.getText();
+				DatabaseHelper.updatePerson(person.getName(),newName, authoredPublications, editedPublications);
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
@@ -143,9 +152,9 @@ public class PersonDetail extends JFrame {
 		
 
         //load names of InProceedings from Database
-        List<String> inProcNames = DatabaseHelper.getAuthoredPublicationsForPerson(person.getName());
+        authoredPublications = DatabaseHelper.getAuthoredPublicationsForPerson(person.getName());
 
-		JLabel lblInProceedings = new JLabel("Authored Publications (" + inProcNames.size() + ")");
+		JLabel lblInProceedings = new JLabel("Authored Publications (" + authoredPublications.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
 		c.weighty = 0;
@@ -160,14 +169,68 @@ public class PersonDetail extends JFrame {
             "Title"
         };
          
-        String[][] data = new String[inProcNames.size()][1];
-        for(int i = 0; i < inProcNames.size(); i++){
-        	data[i][0] = inProcNames.get(i);
+        String[][] data = new String[authoredPublications.size()][1];
+        for(int i = 0; i < authoredPublications.size(); i++){
+        	data[i][0] = authoredPublications.get(i);
         }
         //create table with data
-        JTable table = new JTable(data, columns);
-         
-        //add the table to the frame
+        JTable table = new JTable();
+
+        table.setModel(new DefaultTableModel(data,columns) {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+        }
+);
+	        final JPopupMenu popupMenu = new JPopupMenu();
+	        JMenuItem deleteItem = new JMenuItem("Delete");
+	        deleteItem.addActionListener(new ActionListener() {
+	        
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	            	
+                    authoredPublications.remove(table.getSelectedRow());
+                    ((DefaultTableModel)table.getModel()).removeRow(table.getSelectedRow());
+                    table.clearSelection();
+                    lblInProceedings.setText("Authored Publications (" + authoredPublications.size() + ")");
+
+                    }
+	        });
+			deleteItem.setEnabled(false);
+	        popupMenu.add(deleteItem);
+	        popupMenu.addPopupMenuListener(new PopupMenuListener() {
+
+	            @Override
+	            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+	                SwingUtilities.invokeLater(new Runnable() {
+	                    @Override
+	                    public void run() {
+	                        int selectedRowAuthoredPublications = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
+	                        if (selectedRowAuthoredPublications > -1) {
+	                            table.setRowSelectionInterval(selectedRowAuthoredPublications, selectedRowAuthoredPublications);
+	                        }
+	                    }
+	                });
+	            }
+
+	            @Override
+	            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+	                // TODO Auto-generated method stub
+
+	            }
+
+	            @Override
+	            public void popupMenuCanceled(PopupMenuEvent e) {
+	                // TODO Auto-generated method stub
+
+	            }
+	        });
+
+	        table.setComponentPopupMenu(popupMenu);
+
         
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
@@ -180,7 +243,7 @@ public class PersonDetail extends JFrame {
         contentPane.add(new JScrollPane(table),c);
 
         //load names of InProceedings from Database
-        List<String> editedPublications = DatabaseHelper.getEditedPublicationsForPerson(person.getName());
+        editedPublications = DatabaseHelper.getEditedPublicationsForPerson(person.getName());
 
 		JLabel editedPubs = new JLabel("Edited Publications (" + editedPublications.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -203,7 +266,64 @@ public class PersonDetail extends JFrame {
         }
         //create table with data
         JTable table2 = new JTable(data, columns);
-         
+        table2.setModel(new DefaultTableModel(data,columns) {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+        }
+);
+        
+	        final JPopupMenu popupMenu2 = new JPopupMenu();
+	        JMenuItem deleteItem2 = new JMenuItem("Delete");
+	        deleteItem2.addActionListener(new ActionListener() {
+
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+                    editedPublications.remove(table2.getSelectedRow());
+                    ((DefaultTableModel)table2.getModel()).removeRow(table2.getSelectedRow());
+                    editedPubs.setText("Edited Publications (" + editedPublications.size() + ")");
+                    table2.clearSelection();
+
+                    }
+	        });
+			deleteItem2.setEnabled(false);
+
+	        popupMenu2.add(deleteItem2);
+	        popupMenu2.addPopupMenuListener(new PopupMenuListener() {
+
+	            @Override
+	            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+	                SwingUtilities.invokeLater(new Runnable() {
+	                    @Override
+	                    public void run() {
+	                        int selectedRowAuthoredPublications = table2.rowAtPoint(SwingUtilities.convertPoint(popupMenu2, new Point(0, 0), table2));
+	                        if (selectedRowAuthoredPublications > -1) {
+	                            table2.setRowSelectionInterval(selectedRowAuthoredPublications, selectedRowAuthoredPublications);
+	                        }
+	                    }
+	                });
+	            }
+
+	            @Override
+	            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+	                // TODO Auto-generated method stub
+
+	            }
+
+	            @Override
+	            public void popupMenuCanceled(PopupMenuEvent e) {
+	                // TODO Auto-generated method stub
+
+	            }
+	        });
+
+	        table2.setComponentPopupMenu(popupMenu2);
+
+        
+
         //add the table to the frame
         
 		c.fill = GridBagConstraints.BOTH;
@@ -222,10 +342,16 @@ public class PersonDetail extends JFrame {
 				if(ActiveUpdate.isSelected()){
 					updateButton.setEnabled(true);
 					txtTitle.setEditable(true);
+					deleteItem.setEnabled(true);
+					deleteItem2.setEnabled(true);
+
 				}
 				else{
 					updateButton.setEnabled(false);
 					txtTitle.setEditable(false);
+					deleteItem.setEnabled(false);
+					deleteItem2.setEnabled(false);
+
 				}
 
 			}

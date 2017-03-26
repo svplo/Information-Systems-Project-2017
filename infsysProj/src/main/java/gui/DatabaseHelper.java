@@ -447,10 +447,10 @@ public class DatabaseHelper {
 
 	}
 	
-	public static void updatePerson(String personName, Person newPerson){
+	public static void updatePerson(String personName, String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications){
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
-		
+		pm.currentTransaction().setRetainValues(true);
 		Query query = pm.newQuery(Person.class, "name == '" + personName.replaceAll("'", "&#39") + "'");
 		Collection<Person> proceedings = (Collection<Person>) query.execute();
 		List<Person> allPublications = new ArrayList<Person>(proceedings);
@@ -460,8 +460,33 @@ public class DatabaseHelper {
 		} 
 		else{
 			p = allPublications.iterator().next();
-			p.setName(newPerson.getName());
-			
+			p.setName(newPersonName);
+			Set<Publication> autPubs = new HashSet<Publication>();
+			for(String s : newAuthoredPublications){
+				Query query1 = pm.newQuery(InProceedings.class, "title == '" + s.replaceAll("'", "&#39") + "'");
+				Collection<InProceedings> proceedings1 = (Collection<InProceedings>) query1.execute();
+				if (proceedings1.isEmpty()) {
+					System.out.println("ErrorautPubs" + s);
+				} 
+				else{
+					autPubs.add(proceedings1.iterator().next());
+				}
+			}
+			Set<Publication> editPubs = new HashSet<Publication>();
+
+			for(String s : newEditedPublications){
+				Query query1 = pm.newQuery(Proceedings.class, "title == '" + s.replaceAll("'", "&#39") + "'");
+				Collection<Proceedings> proceedings1 = (Collection<Proceedings>) query1.execute();
+				if (proceedings1.isEmpty()) {
+					System.out.println("Error" + s);
+				} 
+				else{
+					autPubs.add(proceedings1.iterator().next());
+				}
+			}
+
+			p.setEditedPublications(editPubs);
+			p.setAuthoredPublications(autPubs);
 			pm.makePersistent(p);
 		}
 		
