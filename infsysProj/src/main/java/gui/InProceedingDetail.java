@@ -1,5 +1,6 @@
 package gui;
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -33,13 +34,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import infsysProj.infsysProj.InProceedings;
+import infsysProj.infsysProj.Person;
 import infsysProj.infsysProj.Publication;
 import infsysProj.infsysProj.Proceedings;
 
-public class ProceedingDetail extends JFrame {
+public class InProceedingDetail extends JFrame {
 
 	private JPanel contentPane;
-	private Proceedings proceeding;
+	private InProceedings inProceeding;
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -52,10 +54,10 @@ public class ProceedingDetail extends JFrame {
 		});
 
 	}
-
-	public ProceedingDetail(Proceedings proceeding, ProceedingsWindow caller) {
-		super("Detailed Preceeding");
-		this.proceeding = proceeding;
+	
+	public InProceedingDetail(InProceedings inProceeding, InProceedingsWindow caller) {
+		super("Detailed InProceeding");
+		this.inProceeding = inProceeding;
 
 		contentPane = new JPanel(new GridBagLayout());
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -111,7 +113,7 @@ public class ProceedingDetail extends JFrame {
 
 		JTextField txtTitle = new JTextField();
 		txtTitle.setEditable(false);
-		txtTitle.setText(proceeding.getTitle());
+		txtTitle.setText(inProceeding.getTitle());
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -135,7 +137,7 @@ public class ProceedingDetail extends JFrame {
 
 		JTextField txtYear = new JTextField();
 		txtYear.setEditable(false);
-		txtYear.setText(proceeding.getYear().toString());
+		txtYear.setText(inProceeding.getYear().toString());
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -159,7 +161,7 @@ public class ProceedingDetail extends JFrame {
 
 		JTextField txtElect = new JTextField();
 		txtElect.setEditable(false);
-		txtElect.setText(proceeding.getElectronicEdition());
+		txtElect.setText(inProceeding.getElectronicEdition());
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -183,7 +185,7 @@ public class ProceedingDetail extends JFrame {
 
 		JTextField txtNote = new JTextField();
 		txtNote.setEditable(false);
-		txtNote.setText(proceeding.getNote());
+		txtNote.setText(inProceeding.getNote());
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -194,7 +196,7 @@ public class ProceedingDetail extends JFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(txtNote, c);
 
-		JLabel lblNumber = new JLabel("Number");
+		JLabel lblPages = new JLabel("Pages");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
 		c.weighty = 0;
@@ -202,11 +204,11 @@ public class ProceedingDetail extends JFrame {
 		c.gridx = 0;
 		c.gridy = 5;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(lblNumber, c);
+		contentPane.add(lblPages, c);
 
-		JTextField txtNumber = new JTextField();
-		txtNumber.setEditable(false);
-		txtNumber.setText(proceeding.getNumber()+"");
+		JTextField txtPages = new JTextField();
+		txtPages.setEditable(false);
+		txtPages.setText(inProceeding.getPages());
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -215,9 +217,9 @@ public class ProceedingDetail extends JFrame {
 		c.gridx = 1;
 		c.gridy = 5;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(txtNumber, c);
+		contentPane.add(txtPages, c);
 
-		JLabel lblPublisher = new JLabel("Publisher");
+		JLabel lblProceeding = new JLabel("Proceeding");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
 		c.weighty = 0;
@@ -225,11 +227,11 @@ public class ProceedingDetail extends JFrame {
 		c.gridx = 0;
 		c.gridy = 6;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(lblPublisher, c);
+		contentPane.add(lblProceeding, c);
 
-		JTextField txtPublisher = new JTextField();
-		txtPublisher.setEditable(false);
-		txtPublisher.setText(DatabaseHelper.getPublisherName(proceeding.getId()));
+		JTextField txtProceeding = new JTextField();
+		txtProceeding.setEditable(false);
+		txtProceeding.setText(DatabaseHelper.getProceedingName(inProceeding.getId()));
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -238,132 +240,7 @@ public class ProceedingDetail extends JFrame {
 		c.gridx = 1;
 		c.gridy = 6;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(txtPublisher, c);
-
-		JLabel lblVolume = new JLabel("Volume");
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1;
-		c.weighty = 0;
-		c.gridwidth = 1;
-		c.gridx = 0;
-		c.gridy = 7;
-		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(lblVolume, c);
-
-		JTextField txtVolume = new JTextField();
-		txtVolume.setEditable(false);
-		txtVolume.setText(proceeding.getVolume());
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1;
-		c.weighty = 0;
-		c.gridwidth = 2;
-		c.gridx = 1;
-		c.gridy = 7;
-		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(txtVolume, c);
-
-		JLabel lblISBN = new JLabel("ISBN");
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1;
-		c.weighty = 0;
-		c.gridwidth = 1;
-		c.gridx = 0;
-		c.gridy = 8;
-		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(lblISBN, c);
-
-		JTextField txtISBN = new JTextField();
-		txtISBN.setEditable(false);
-		txtISBN.setText(proceeding.getIsbn());
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1;
-		c.weighty = 0;
-		c.gridwidth = 2;
-		c.gridx = 1;
-		c.gridy = 8;
-		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(txtISBN, c);
-
-		JLabel lblSeries = new JLabel("Series");
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1;
-		c.weighty = 0;
-		c.gridwidth = 1;
-		c.gridx = 0;
-		c.gridy = 9;
-		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(lblSeries, c);
-
-		JTextField txtSeries = new JTextField();
-		txtSeries.setEditable(false);
-		txtSeries.setText(DatabaseHelper.getSeriesName(proceeding.getID()));
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1;
-		c.weighty = 0;
-		c.gridwidth = 2;
-		c.gridx = 1;
-		c.gridy = 9;
-		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(txtSeries, c);
-
-		JLabel lblConfEdition = new JLabel("Conference edition");
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1;
-		c.weighty = 0;
-		c.gridwidth = 1;
-		c.gridx = 0;
-		c.gridy = 10;
-		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(lblConfEdition, c);
-
-		JTextField txtConfEdition = new JTextField();
-		txtConfEdition.setEditable(false);
-		txtConfEdition.setText(DatabaseHelper.getConferenceName(proceeding.getID()));
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1;
-		c.weighty = 0;
-		c.gridwidth = 2;
-		c.gridx = 1;
-		c.gridy = 10;
-		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(txtConfEdition, c);
-
-        //load names of InProceedings from Database
-        List<String> inProcNames = DatabaseHelper.getInProceedingsOfProceedings(proceeding.getId());
-
-		JLabel lblInProceedings = new JLabel("InProceedings(" + inProcNames.size() + ")");
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1;
-		c.weighty = 0;
-		c.gridwidth = 1;
-		c.gridx = 0;
-		c.gridy = 11;
-		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(lblInProceedings, c);
-
-		 //headers for the table
-        String[] columns = new String[] {
-            "Title"
-        };
-         
-        String[][] data = new String[inProcNames.size()][1];
-        for(int i = 0; i < inProcNames.size(); i++){
-        	data[i][0] = inProcNames.get(i);
-        }
-        //create table with data
-        JTable table = new JTable(data, columns);
-         
-        //add the table to the frame
-        
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1;
-		c.weighty = 5;
-		c.gridwidth = 2;
-		c.gridx = 1;
-		c.gridy = 11;
-		c.insets = new Insets(5, 5, 5, 5);
-		//contentPane.add(txtInProceedings, c);
-        contentPane.add(new JScrollPane(table),c);
+		contentPane.add(txtProceeding, c);
 
 		
 		ActiveUpdate.addActionListener(new ActionListener() {
@@ -374,12 +251,9 @@ public class ProceedingDetail extends JFrame {
 					txtYear.setEditable(true);
 					txtElect.setEditable(true);
 					txtNote.setEditable(true);
-					txtNumber.setEditable(true);
-					txtPublisher.setEditable(true);
-					txtVolume.setEditable(true);
-					txtISBN.setEditable(true);
-					txtSeries.setEditable(true);
-					txtConfEdition.setEditable(true);
+					txtPages.setEditable(true);
+					txtProceeding.setEditable(true);
+
 
 				}
 				else{
@@ -388,13 +262,9 @@ public class ProceedingDetail extends JFrame {
 					txtYear.setEditable(false);
 					txtElect.setEditable(false);
 					txtNote.setEditable(false);
-					txtNumber.setEditable(false);
-					txtPublisher.setEditable(false);
-					txtVolume.setEditable(false);
-					txtISBN.setEditable(false);
-					txtSeries.setEditable(false);
-					txtConfEdition.setEditable(false);
-
+					txtPages.setEditable(false);
+					txtProceeding.setEditable(false);
+					
 				}
 
 			}
@@ -409,17 +279,14 @@ public class ProceedingDetail extends JFrame {
 				 //List<String> authors;
 				 String elect = txtElect.getText();
 				 String note = txtNote.getText();
-				 int number = Integer.parseInt(txtNumber.getText());
-				 String publisher = txtPublisher.getText();
-				 String volume = txtVolume.getText();
-				 String isbn = txtISBN.getText();
-				 String series = txtSeries.getText();
-				 String confEdition = txtConfEdition.getText();
+				 String pages = txtPages.getText();
+				 String proceeding = txtProceeding.getText();
+
 				 //List<String> inProceedings;
 				
 
 				
-				DatabaseHelper.UpdateProceedings(proceeding.getId(), title, year, elect, note, number, publisher, volume, isbn, series, confEdition);
+				DatabaseHelper.UpdateProceedings(inProceeding.getId(), title, year, elect, note, pages, proceeding);
 				dispose();
 				}
 
@@ -428,8 +295,8 @@ public class ProceedingDetail extends JFrame {
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					
-				DatabaseHelper.DeleteProceeding(proceeding.getId());
-				JOptionPane.showMessageDialog(null, "Proceeding successfully deleted");
+				DatabaseHelper.DeleteInProceeding(inProceeding.getId());
+				JOptionPane.showMessageDialog(null, "Inproceeding successfully deleted");
 				caller.reloadDataFromDatabase();
 				dispose();
 				}
@@ -447,10 +314,4 @@ public class ProceedingDetail extends JFrame {
 	       });
 
 	}
-/*	String format(Collection<?> c) {
-		  String s = c.stream().map(Object::toString).collect(Collectors.joining("\n"));
-		  return String.format("[%s]", s);
-		}
-*/
-
 }

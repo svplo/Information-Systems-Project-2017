@@ -58,6 +58,40 @@ public class DatabaseHelper {
 		pm.getPersistenceManagerFactory().close();
 	}
 	
+
+	public static void UpdateProceedings(String id, String title, int year, String elect, String note, String pages, String proceeding) {
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+		
+		Query query = pm.newQuery(InProceedings.class, "id == '" + id.replaceAll("'", "&#39") + "'");
+		Collection<InProceedings> inProceedings = (Collection<InProceedings>) query.execute();
+		InProceedings proc;
+		if (inProceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + id);
+
+		} else {
+			proc = inProceedings.iterator().next();
+			proc.setTitle(title);
+			proc.setYear(year);
+			//authors
+			proc.setElectronicEdition(elect);
+			proc.setNote(note);
+			proc.setPages(pages);
+			proc.getProceedings().setTitle(proceeding);
+	
+
+
+			pm.makePersistent(proc);
+		}
+		pm.currentTransaction().commit();
+
+		DatabaseHelper.closeDB();
+		
+		
+	}
+
+
+	
 	public static void UpdateProceedings(String proceedingsID, String title, int year, String elect, String note, int number, String publisher, String volume, String isbn, String series, String confEdition){
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
@@ -89,6 +123,25 @@ public class DatabaseHelper {
 
 		DatabaseHelper.closeDB();
 		
+	}
+	
+	public static void DeleteInProceeding(String id) {
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+		
+		Query query = pm.newQuery(InProceedings.class, "id == '" + id.replaceAll("'", "&#39") + "'");
+		Collection<InProceedings> inProceedings = (Collection<InProceedings>) query.execute();
+		InProceedings proc;
+		if (inProceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + id);
+
+		} else {
+			proc = inProceedings.iterator().next();
+			pm.deletePersistent(proc);
+		}
+		pm.currentTransaction().commit();
+
+		DatabaseHelper.closeDB();
 	}
 	
 	public static void DeleteProceeding(String proceedingsID){
@@ -138,6 +191,24 @@ public class DatabaseHelper {
 
 		closeDB(pm);
 		return allPublications;
+	}
+	
+	public static String getProceedingName(String inProceedingID){
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(InProceedings.class, "id == '" + inProceedingID.replaceAll("'", "&#39") + "'");
+		Collection<InProceedings> inProceedings = (Collection<InProceedings>) query.execute();
+		String result = null;
+		if (inProceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + inProceedingID);
+
+		} else {
+			result = inProceedings.iterator().next().getProceedings().getID();
+		}
+
+		DatabaseHelper.closeDB();
+		return result;
 	}
 	
 	public static String getPublisherName(String proceedingsID){
@@ -193,7 +264,7 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 		return result;
 	}
-	
+
 	public static List<String> getInProceedingsOfProceedings(String proceedingsID){
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
@@ -1171,5 +1242,8 @@ public class DatabaseHelper {
 		pm.currentTransaction().commit();
 		return proc;
 	}
+
+
+
 
 }
