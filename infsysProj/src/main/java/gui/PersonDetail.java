@@ -1,14 +1,9 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Label;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,33 +12,27 @@ import java.util.stream.Collectors;
 import java.awt.event.*;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
+import infsysProj.infsysProj.DomainObject;
 import infsysProj.infsysProj.InProceedings;
 import infsysProj.infsysProj.Person;
-import infsysProj.infsysProj.Publication;
 import infsysProj.infsysProj.Proceedings;
 
-public class PersonDetail extends JFrame {
+public class PersonDetail extends MyJFrame {
 
 	private JPanel contentPane;
 	private Person person;
@@ -51,6 +40,10 @@ public class PersonDetail extends JFrame {
 	List<String> authoredPublications;
 	List<String> removedAuthoredPublications = new ArrayList<String>();
 	List<String> editedPublications = new ArrayList<String>();
+	JTable authoredPublicationsTable;
+	JLabel lblauthoredPublications;
+	JTable editedPublicationsTable;
+	JLabel lblEditedPublications;
 	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -154,15 +147,36 @@ public class PersonDetail extends JFrame {
         //load names of InProceedings from Database
         authoredPublications = DatabaseHelper.getAuthoredPublicationsForPerson(person.getName());
 
-		JLabel lblInProceedings = new JLabel("Authored Publications (" + authoredPublications.size() + ")");
+		lblauthoredPublications = new JLabel("Authored Publications (" + authoredPublications.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
 		c.weighty = 0;
 		c.gridwidth = 1;
 		c.gridx = 0;
-		c.gridy = 10;
+		c.gridy = 3;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(lblInProceedings, c);
+		contentPane.add(lblauthoredPublications, c);
+
+		JButton addAuthoredPublicationButton = new JButton("Add");
+		addAuthoredPublicationButton.setEnabled(false);
+		addAuthoredPublicationButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.INPROCEEDINGS,PersonDetail.this,1);
+				frame.setVisible(true);
+				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+			}
+		});
+
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.weighty = 0;
+		c.gridwidth = 2;
+		c.gridx = 1;
+		c.gridy = 4;
+		c.insets = new Insets(5, 5, 5, 5);
+		contentPane.add(addAuthoredPublicationButton, c);
 
 		 //headers for the table
         String[] columns = new String[] {
@@ -174,9 +188,9 @@ public class PersonDetail extends JFrame {
         	data[i][0] = authoredPublications.get(i);
         }
         //create table with data
-        JTable table = new JTable();
+        authoredPublicationsTable = new JTable();
 
-        table.setModel(new DefaultTableModel(data,columns) {
+        authoredPublicationsTable.setModel(new DefaultTableModel(data,columns) {
 
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -192,15 +206,17 @@ public class PersonDetail extends JFrame {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	            	
-                    authoredPublications.remove(table.getSelectedRow());
-                    ((DefaultTableModel)table.getModel()).removeRow(table.getSelectedRow());
-                    table.clearSelection();
-                    lblInProceedings.setText("Authored Publications (" + authoredPublications.size() + ")");
+                    authoredPublications.remove(authoredPublicationsTable.getSelectedRow());
+                    ((DefaultTableModel)authoredPublicationsTable.getModel()).removeRow(authoredPublicationsTable.getSelectedRow());
+                    authoredPublicationsTable.clearSelection();
+                    lblauthoredPublications.setText("Authored Publications (" + authoredPublications.size() + ")");
 
                     }
 	        });
 			deleteItem.setEnabled(false);
 	        popupMenu.add(deleteItem);
+	        
+	        
 	        popupMenu.addPopupMenuListener(new PopupMenuListener() {
 
 	            @Override
@@ -208,9 +224,9 @@ public class PersonDetail extends JFrame {
 	                SwingUtilities.invokeLater(new Runnable() {
 	                    @Override
 	                    public void run() {
-	                        int selectedRowAuthoredPublications = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
+	                        int selectedRowAuthoredPublications = authoredPublicationsTable.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), authoredPublicationsTable));
 	                        if (selectedRowAuthoredPublications > -1) {
-	                            table.setRowSelectionInterval(selectedRowAuthoredPublications, selectedRowAuthoredPublications);
+	                            authoredPublicationsTable.setRowSelectionInterval(selectedRowAuthoredPublications, selectedRowAuthoredPublications);
 	                        }
 	                    }
 	                });
@@ -229,23 +245,45 @@ public class PersonDetail extends JFrame {
 	            }
 	        });
 
-	        table.setComponentPopupMenu(popupMenu);
+	        authoredPublicationsTable.setComponentPopupMenu(popupMenu);
 
         
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
 		c.weighty = 5;
 		c.gridwidth = 2;
+		c.gridheight = 1;
 		c.gridx = 1;
-		c.gridy = 10;
+		c.gridy = 3;
 		c.insets = new Insets(5, 5, 5, 5);
 		//contentPane.add(txtInProceedings, c);
-        contentPane.add(new JScrollPane(table),c);
+        contentPane.add(new JScrollPane(authoredPublicationsTable),c);
+
+		JButton addEditedPublicationButton = new JButton("Add");
+		addEditedPublicationButton.setEnabled(false);
+		addEditedPublicationButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.PROCEEDINGS,PersonDetail.this,2);
+				frame.setVisible(true);
+				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+			}
+		});
+
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.weighty = 0;
+		c.gridwidth = 2;
+		c.gridx = 1;
+		c.gridy = 12;
+		c.insets = new Insets(5, 5, 5, 5);
+		contentPane.add(addEditedPublicationButton, c);
 
         //load names of InProceedings from Database
         editedPublications = DatabaseHelper.getEditedPublicationsForPerson(person.getName());
 
-		JLabel editedPubs = new JLabel("Edited Publications (" + editedPublications.size() + ")");
+		lblEditedPublications = new JLabel("Edited Publications (" + editedPublications.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
 		c.weighty = 0;
@@ -253,7 +291,7 @@ public class PersonDetail extends JFrame {
 		c.gridx = 0;
 		c.gridy = 11;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(editedPubs, c);
+		contentPane.add(lblEditedPublications, c);
 
 		 //headers for the table
         columns = new String[] {
@@ -265,8 +303,8 @@ public class PersonDetail extends JFrame {
         	data[i][0] = editedPublications.get(i);
         }
         //create table with data
-        JTable table2 = new JTable(data, columns);
-        table2.setModel(new DefaultTableModel(data,columns) {
+        editedPublicationsTable = new JTable(data, columns);
+        editedPublicationsTable.setModel(new DefaultTableModel(data,columns) {
 
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -282,16 +320,17 @@ public class PersonDetail extends JFrame {
 
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-                    editedPublications.remove(table2.getSelectedRow());
-                    ((DefaultTableModel)table2.getModel()).removeRow(table2.getSelectedRow());
-                    editedPubs.setText("Edited Publications (" + editedPublications.size() + ")");
-                    table2.clearSelection();
+                    editedPublications.remove(editedPublicationsTable.getSelectedRow());
+                    ((DefaultTableModel)editedPublicationsTable.getModel()).removeRow(editedPublicationsTable.getSelectedRow());
+                    lblEditedPublications.setText("Edited Publications (" + editedPublications.size() + ")");
+                    editedPublicationsTable.clearSelection();
 
                     }
 	        });
 			deleteItem2.setEnabled(false);
 
 	        popupMenu2.add(deleteItem2);
+
 	        popupMenu2.addPopupMenuListener(new PopupMenuListener() {
 
 	            @Override
@@ -299,9 +338,9 @@ public class PersonDetail extends JFrame {
 	                SwingUtilities.invokeLater(new Runnable() {
 	                    @Override
 	                    public void run() {
-	                        int selectedRowAuthoredPublications = table2.rowAtPoint(SwingUtilities.convertPoint(popupMenu2, new Point(0, 0), table2));
+	                        int selectedRowAuthoredPublications = editedPublicationsTable.rowAtPoint(SwingUtilities.convertPoint(popupMenu2, new Point(0, 0), editedPublicationsTable));
 	                        if (selectedRowAuthoredPublications > -1) {
-	                            table2.setRowSelectionInterval(selectedRowAuthoredPublications, selectedRowAuthoredPublications);
+	                            editedPublicationsTable.setRowSelectionInterval(selectedRowAuthoredPublications, selectedRowAuthoredPublications);
 	                        }
 	                    }
 	                });
@@ -320,7 +359,7 @@ public class PersonDetail extends JFrame {
 	            }
 	        });
 
-	        table2.setComponentPopupMenu(popupMenu2);
+	        editedPublicationsTable.setComponentPopupMenu(popupMenu2);
 
         
 
@@ -334,7 +373,7 @@ public class PersonDetail extends JFrame {
 		c.gridy = 11;
 		c.insets = new Insets(5, 5, 5, 5);
 		//contentPane.add(txtInProceedings, c);
-        contentPane.add(new JScrollPane(table2),c);
+        contentPane.add(new JScrollPane(editedPublicationsTable),c);
 
 		
 		ActiveUpdate.addActionListener(new ActionListener() {
@@ -344,6 +383,8 @@ public class PersonDetail extends JFrame {
 					txtTitle.setEditable(true);
 					deleteItem.setEnabled(true);
 					deleteItem2.setEnabled(true);
+					addAuthoredPublicationButton.setEnabled(true);
+					addEditedPublicationButton.setEnabled(true);
 
 				}
 				else{
@@ -351,6 +392,8 @@ public class PersonDetail extends JFrame {
 					txtTitle.setEditable(false);
 					deleteItem.setEnabled(false);
 					deleteItem2.setEnabled(false);
+					addAuthoredPublicationButton.setEnabled(false);
+					addEditedPublicationButton.setEnabled(false);
 
 				}
 
@@ -376,6 +419,34 @@ public class PersonDetail extends JFrame {
 	private void closeWindow(){
 		dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 
+	}
+
+	@Override
+	public void selectedObject(DomainObject object, int id) {
+		if(id == 1){
+			if(authoredPublications.contains(((InProceedings)object).getTitle())){
+				System.out.println("This InProceedings is already in the list");
+			}
+			else{
+	            authoredPublications.add(((InProceedings)object).getTitle());
+	            String[] newInProc = new String[1];
+	            newInProc[0] = ((InProceedings)object).getTitle();
+	            ((DefaultTableModel)authoredPublicationsTable.getModel()).addRow(newInProc);
+	            authoredPublicationsTable.clearSelection();
+	            lblauthoredPublications.setText("Authored Publications (" + authoredPublications.size() + ")");
+			}
+
+		}
+		else if(id == 2){
+            editedPublications.add(((Proceedings)object).getTitle());
+            String[] newProc = new String[1];
+            newProc[0] = ((Proceedings)object).getTitle();
+            ((DefaultTableModel)editedPublicationsTable.getModel()).addRow(newProc);
+            editedPublicationsTable.clearSelection();
+            lblEditedPublications.setText("Edited Publications (" + editedPublications.size() + ")");
+
+		}
+		
 	}
 
 }
