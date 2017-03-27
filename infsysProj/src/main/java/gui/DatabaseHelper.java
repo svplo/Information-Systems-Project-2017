@@ -506,6 +506,10 @@ public class DatabaseHelper {
 
 	public static void addPerson(String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications) {
 		
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+		pm.currentTransaction().setRetainValues(true);
+
 		Query query0 = pm.newQuery(Person.class);
 		query0.setFilter("name == a");
 		query0.declareParameters("String a");
@@ -519,9 +523,6 @@ public class DatabaseHelper {
 		} 
 
 		
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
-		pm.currentTransaction().setRetainValues(true);
 		Person p = new Person(newPersonName);
 		Set<Publication> autPubs = new HashSet<Publication>();
 		for (String s : newAuthoredPublications) {
@@ -780,7 +781,7 @@ public class DatabaseHelper {
 			closeDB(pm);
 			return;
 		}
-
+		
 		Query query = pm.newQuery(Proceedings.class);
 		query.setFilter("title == a");
 		query.declareParameters("String a");
