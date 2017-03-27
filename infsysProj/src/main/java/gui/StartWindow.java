@@ -6,11 +6,16 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import infsysProj.infsysProj.Series;
 
 //resource: https://www.eduonix.com/blog/java-programming-2/learn-to-create-multiple-frames-java/
 public class StartWindow extends JFrame {
@@ -70,7 +75,7 @@ public class StartWindow extends JFrame {
 	public StartWindow() {
 		setTitle("Start Frame");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 500);
+		setBounds(100, 100, 450, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -132,7 +137,48 @@ public class StartWindow extends JFrame {
 		btnPersonTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
 		btnPersonTableFrame.setBounds(100, 350, 200, 25);
 		contentPane.add(btnPersonTableFrame);
+		
+		JButton btnConferenceTableFrame = new JButton("Conference Table");
+		btnConferenceTableFrame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// call the object of PublicationsWindow and set visible true
+				ConferenceWindow frame = new ConferenceWindow();
+				frame.setVisible(true);
+				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			}
+		});
+		// modify button
+		btnConferenceTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
+		btnConferenceTableFrame.setBounds(100, 400, 200, 25);
+		contentPane.add(btnConferenceTableFrame);
 
+		JButton btnSeriesTableFrame = new JButton("Series Table");
+		btnSeriesTableFrame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// call the object of PublicationsWindow and set visible true
+				SeriesWindow frame = new SeriesWindow();
+				frame.setVisible(true);
+				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			}
+		});
+		// modify button
+		btnSeriesTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
+		btnSeriesTableFrame.setBounds(100, 450, 200, 25);
+		contentPane.add(btnSeriesTableFrame);
+		
+		JButton btnPublisherTableFrame = new JButton("Publisher Table");
+		btnPublisherTableFrame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// call the object of PublicationsWindow and set visible true
+				PublisherWindow frame = new PublisherWindow();
+				frame.setVisible(true);
+				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			}
+		});
+		// modify button
+		btnPublisherTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
+		btnPublisherTableFrame.setBounds(100, 500, 200, 25);
+		contentPane.add(btnPublisherTableFrame);
 
 
 		// modify label

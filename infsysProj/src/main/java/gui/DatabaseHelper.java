@@ -339,6 +339,63 @@ public class DatabaseHelper {
 		return allPublications;
 
 	}
+	
+	public static List<Conference> searchForConference(String search) {
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Conference.class, "name.contains('" + search.replaceAll("'", "&#39") + "')");
+		Collection<Conference> proceedings = (Collection<Conference>) query.execute();
+		List<Conference> allPublications = new ArrayList<Conference>(proceedings);
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + search);
+
+		}
+
+		pm.currentTransaction().rollback();
+		closeDB(pm);
+
+		return allPublications;
+
+	}
+	
+	public static List<Series> searchForSeries(String search) {
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Series.class, "name.contains('" + search.replaceAll("'", "&#39") + "')");
+		Collection<Series> proceedings = (Collection<Series>) query.execute();
+		List<Series> allPublications = new ArrayList<Series>(proceedings);
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + search);
+
+		}
+
+		pm.currentTransaction().rollback();
+		closeDB(pm);
+
+		return allPublications;
+
+	}
+	
+	public static List<Publisher> searchForPublisher(String search) {
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(Publisher.class, "name.contains('" + search.replaceAll("'", "&#39") + "')");
+		Collection<Publisher> proceedings = (Collection<Publisher>) query.execute();
+		List<Publisher> allPublications = new ArrayList<Publisher>(proceedings);
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + search);
+
+		}
+
+		pm.currentTransaction().rollback();
+		closeDB(pm);
+
+		return allPublications;
+
+	}
 
 	public static List<Publication> searchForProceedings(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
@@ -1223,6 +1280,51 @@ public class DatabaseHelper {
 
 		closeDB(pm);
 		return allPeople;
+	}
+	
+	public static Collection<Conference> getAllConference(){
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+		
+		Extent<Conference> ext = pm.getExtent(Conference.class);
+		List<Conference> allConference = new ArrayList<Conference>();
+		for(Conference c : ext) {
+			allConference.add(c);
+		}
+		ext.closeAll();
+		
+		closeDB(pm);
+		return allConference;
+	}
+	
+	public static Collection<Publisher> getAllPublisher(){
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+		
+		Extent<Publisher> ext = pm.getExtent(Publisher.class);
+		List<Publisher> allPublisher = new ArrayList<Publisher>();
+		for(Publisher p : ext) {
+			allPublisher.add(p);
+		}
+		ext.closeAll();
+		
+		closeDB(pm);
+		return allPublisher;
+	}
+	
+	public static Collection<Series> getAllSeries(){
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+		
+		Extent<Series> ext = pm.getExtent(Series.class);
+		List<Series> allSeries = new ArrayList<Series>();
+		for(Series p : ext) {
+			allSeries.add(p);
+		}
+		ext.closeAll();
+		
+		closeDB(pm);
+		return allSeries;
 	}
 
 	// find publication by key (according to xml file)
