@@ -115,7 +115,6 @@ public class ProceedingsWindow extends JFrame {
 		searchTextField.addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e){
-				System.out.println(searchTextField.getText());
 				allPublications = DatabaseHelper.searchForProceedings(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
@@ -171,7 +170,6 @@ public class ProceedingsWindow extends JFrame {
 	    JButton searchButton = new JButton("Search");
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(searchTextField.getText());
 				allPublications = DatabaseHelper.searchForProceedings(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
@@ -402,12 +400,10 @@ public class ProceedingsWindow extends JFrame {
 		        			
 		        			break;
 		        	}
-		        	System.out.println("reload");
 			        reloadTable();
 
 		        
 
-		        System.out.println("Column index selected " + col + " " + name);
 		    }
 		});
 
