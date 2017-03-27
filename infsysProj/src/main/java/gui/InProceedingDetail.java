@@ -105,7 +105,14 @@ public class InProceedingDetail extends MyJFrame {
 				newInProc.setElectronicEdition(txtElect.getText());
 				newInProc.setNote(txtNote.getText());
 				newInProc.setPages(txtPages.getText());
-				newInProc.setYear(Integer.parseInt(txtYear.getText()));
+				try{
+					newInProc.setYear(Integer.parseInt(txtYear.getText()));
+				}
+				catch(NumberFormatException e){
+					newInProc.setYear(0);
+
+				}
+
 				DatabaseHelper.updateInProceeding(inProceeding.getTitle(),newInProc,txtProceeding.getText(),authors);
 				caller.reloadDataFromDatabase();
 				closeWindow();
@@ -275,12 +282,8 @@ public class InProceedingDetail extends MyJFrame {
 
 		txtProceeding = new JTextField();
 		txtProceeding.setEditable(false);
-<<<<<<< HEAD
-		//txtProceeding.setText(DatabaseHelper.getProceedingName(inProceeding.getId()));
-=======
 		proceedingsName = DatabaseHelper.getProceedingsName(this.inProceeding.getTitle());
 		txtProceeding.setText(proceedingsName);
->>>>>>> 35ff0785046c55f27d289e18be66c105f0f9612f
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -456,7 +459,15 @@ public class InProceedingDetail extends MyJFrame {
 
 				// Proceedings Update Fields
 				String title = txtTitle.getText();
-				int year = Integer.parseInt(txtYear.getText());
+				
+				try{
+					int year = Integer.parseInt(txtYear.getText());
+				}
+				catch(NumberFormatException eef){
+					int year = 0;
+
+				}
+
 				// List<String> authors;
 				String elect = txtElect.getText();
 				String note = txtNote.getText();
@@ -465,27 +476,9 @@ public class InProceedingDetail extends MyJFrame {
 
 				// List<String> inProceedings;
 
-<<<<<<< HEAD
-				
-			//	DatabaseHelper.UpdateProceedings(inProceeding.getId(), title, year, elect, note, pages, proceeding);
-				dispose();
-				}
-
-		});
-		
-		Delete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-					
-			//	DatabaseHelper.DeleteInProceeding(inProceeding.getId());
-				JOptionPane.showMessageDialog(null, "Inproceeding successfully deleted");
-				caller.reloadDataFromDatabase();
-				dispose();
-				}
-=======
 				// DatabaseHelper.UpdateProceedings(inProceeding.getId(), title, year, elect, note, pages, proceeding);
 				dispose();
 			}
->>>>>>> 35ff0785046c55f27d289e18be66c105f0f9612f
 
 		});
 

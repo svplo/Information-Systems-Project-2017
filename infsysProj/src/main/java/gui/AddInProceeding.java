@@ -95,7 +95,14 @@ public class AddInProceeding extends MyJFrame {
 				newInProc.setElectronicEdition(txtElect.getText());
 				newInProc.setNote(txtNote.getText());
 				newInProc.setPages(txtPages.getText());
-				newInProc.setYear(Integer.parseInt(txtYear.getText()));
+				try{
+					newInProc.setYear(Integer.parseInt(txtYear.getText()));
+				}
+				catch(NumberFormatException e){
+					newInProc.setYear(0);
+
+				}
+
 				DatabaseHelper.addInProceeding(newInProc,txtProceeding.getText(),authors);
 				caller.reloadDataFromDatabase();
 				closeWindow();
@@ -400,26 +407,6 @@ public class AddInProceeding extends MyJFrame {
 		// contentPane.add(txtInProceedings, c);
 		contentPane.add(new JScrollPane(authorsTable), c);
 
-
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				// Proceedings Update Fields
-				String title = txtTitle.getText();
-				int year = Integer.parseInt(txtYear.getText());
-				// List<String> authors;
-				String elect = txtElect.getText();
-				String note = txtNote.getText();
-				String pages = txtPages.getText();
-				String proceeding = txtProceeding.getText();
-
-				// List<String> inProceedings;
-
-				// DatabaseHelper.UpdateProceedings(inProceeding.getId(), title, year, elect, note, pages, proceeding);
-				dispose();
-			}
-
-		});
 
 		setContentPane(contentPane);
 		pack();

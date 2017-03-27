@@ -399,7 +399,6 @@ public class InProceedingsWindow extends JFrame {
 
 		        
 
-		        System.out.println("Column index selected " + col + " " + name);
 		    }
 		});
 
