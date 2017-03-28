@@ -75,7 +75,7 @@ public class StartWindow extends JFrame {
 	public StartWindow() {
 		setTitle("Start Frame");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 600);
+		setBounds(100, 100, 450, 620);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -179,6 +179,20 @@ public class StartWindow extends JFrame {
 		btnPublisherTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
 		btnPublisherTableFrame.setBounds(100, 500, 200, 25);
 		contentPane.add(btnPublisherTableFrame);
+		
+		JButton btnConferenceEditionTableFrame = new JButton("Conference Edition Table");
+		btnConferenceEditionTableFrame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// call the object of PublicationsWindow and set visible true
+				ConferenceEditionWindow frame = new ConferenceEditionWindow();
+				frame.setVisible(true);
+				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			}
+		});
+		// modify button
+		btnConferenceEditionTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
+		btnConferenceEditionTableFrame.setBounds(100, 550, 200, 25);
+		contentPane.add(btnConferenceEditionTableFrame);
 
 
 		// modify label

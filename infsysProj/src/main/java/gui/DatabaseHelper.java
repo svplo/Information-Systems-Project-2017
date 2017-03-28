@@ -378,6 +378,25 @@ public class DatabaseHelper {
 
 	}
 	
+	public static List<ConferenceEdition> searchForConferenceEdition(String search) {
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+
+		Query query = pm.newQuery(ConferenceEdition.class, "name.contains('" + search.replaceAll("'", "&#39") + "')");
+		Collection<ConferenceEdition> proceedings = (Collection<ConferenceEdition>) query.execute();
+		List<ConferenceEdition> allPublications = new ArrayList<ConferenceEdition>(proceedings);
+		if (proceedings.isEmpty()) {
+			System.out.println("Error: Did not find a publication with ID: " + search);
+
+		}
+
+		pm.currentTransaction().rollback();
+		closeDB(pm);
+
+		return allPublications;
+
+	}
+	
 	public static List<Publisher> searchForPublisher(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -1325,6 +1344,21 @@ public class DatabaseHelper {
 		
 		closeDB(pm);
 		return allSeries;
+	}
+	
+	public static Collection<ConferenceEdition> getAllConferenceEdition(){
+		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
+		pm.currentTransaction().begin();
+		
+		Extent<ConferenceEdition> ext = pm.getExtent(ConferenceEdition.class);
+		List<ConferenceEdition> allConferenceEdition = new ArrayList<ConferenceEdition>();
+		for(ConferenceEdition p : ext) {
+			allConferenceEdition.add(p);
+		}
+		ext.closeAll();
+		
+		closeDB(pm);
+		return allConferenceEdition;
 	}
 
 	// find publication by key (according to xml file)
