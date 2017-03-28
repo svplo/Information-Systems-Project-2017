@@ -45,13 +45,13 @@ public class ConferenceEditionTableModel extends AbstractTableModel {
 		String returnValue = "";
 		switch (columnIndex) {
 		case COLUMN_TITLE:
-			returnValue = conferenceEdition.getConference().getName();
+			returnValue = DatabaseHelper.getConferenceEditionName(conferenceEdition);
 			break;
 		case COLUMN_YEAR:
 			returnValue = String.valueOf(conferenceEdition.getYear());
 			break;
 		case COLUMN_EDITION:
-			returnValue = String.valueOf(conferenceEdition.getProceedings().getTitle());
+			returnValue = DatabaseHelper.getConferenceEditionProceeding(conferenceEdition);
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid column index");
