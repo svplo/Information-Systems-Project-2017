@@ -79,6 +79,23 @@ public class DatabaseHelper {
 
 		} else {
 			proc = proceedings.iterator().next();
+			for (InProceedings in : proc.getInProceedings()) {
+				in.setProceedings(null);
+			}
+			for (Person p : proc.getAuthors()) {
+
+				Set<Publication> oldAut = p.getEditedPublications();
+				Set<Publication> newAut = new HashSet<Publication>();
+				for (Publication ufhe : oldAut) {
+					if (!ufhe.getTitle().equals(proc.getTitle())) {
+						System.out.println("added" + ufhe.getTitle());
+						newAut.add(ufhe);
+					}
+				}
+				p.setEditedPublications(newAut);
+				pm.makePersistent(p);
+
+			}
 			pm.deletePersistent(proc);
 		}
 		pm.currentTransaction().commit();
@@ -204,7 +221,7 @@ public class DatabaseHelper {
 	public static List<String> getAuthorsOfProceedings(String proceedingsName) {
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
-		
+
 		Query query = pm.newQuery(Proceedings.class);
 		query.setFilter("title == a");
 		query.declareParameters("String a");
@@ -339,7 +356,7 @@ public class DatabaseHelper {
 		return allPublications;
 
 	}
-	
+
 	public static List<Conference> searchForConference(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -358,7 +375,7 @@ public class DatabaseHelper {
 		return allPublications;
 
 	}
-	
+
 	public static List<Series> searchForSeries(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -377,7 +394,7 @@ public class DatabaseHelper {
 		return allPublications;
 
 	}
-	
+
 	public static List<ConferenceEdition> searchForConferenceEdition(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -396,7 +413,7 @@ public class DatabaseHelper {
 		return allPublications;
 
 	}
-	
+
 	public static List<Publisher> searchForPublisher(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -464,9 +481,38 @@ public class DatabaseHelper {
 		Collection<Person> proceedings = (Collection<Person>) query.execute();
 		Person p;
 		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + personName);
+			System.out.println("Error: Did not find a publication with name: " + personName);
 		} else {
 			p = proceedings.iterator().next();
+			for (Publication publ : p.getAuthoredPublications()) {
+
+				List<Person> oldAut = publ.getAuthors();
+				List<Person> newAut = new ArrayList<Person>();
+				for (Person ufhe : oldAut) {
+					if (!ufhe.getName().equals(p.getName())) {
+						newAut.add(ufhe);
+					}
+				}
+				publ.setAuthors(newAut);
+				pm.makePersistent(p);
+
+			}
+			
+			for (Publication publ : p.getEditedPublications()) {
+
+				List<Person> oldAut = publ.getAuthors();
+				List<Person> newAut = new ArrayList<Person>();
+				for (Person ufhe : oldAut) {
+					if (!ufhe.getName().equals(p.getName())) {
+						newAut.add(ufhe);
+					}
+				}
+				publ.setAuthors(newAut);
+				pm.makePersistent(p);
+
+			}
+
+
 			pm.deletePersistent(p);
 		}
 
@@ -480,6 +526,7 @@ public class DatabaseHelper {
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
 
+		/*
 		Query query0 = pm.newQuery(Person.class);
 		query0.setFilter("name == a");
 		query0.declareParameters("String a");
@@ -490,8 +537,8 @@ public class DatabaseHelper {
 			pm.currentTransaction().commit();
 			closeDB(pm);
 			return;
-		} 
-		
+		}
+*/
 		Query query = pm.newQuery(Person.class);
 		query.setFilter("name == a");
 		query.declareParameters("String a");
@@ -581,7 +628,7 @@ public class DatabaseHelper {
 	}
 
 	public static void addPerson(String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications) {
-		
+
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -596,9 +643,8 @@ public class DatabaseHelper {
 			pm.currentTransaction().commit();
 			closeDB(pm);
 			return;
-		} 
+		}
 
-		
 		Person p = new Person(newPersonName);
 		Set<Publication> autPubs = new HashSet<Publication>();
 		for (String s : newAuthoredPublications) {
@@ -713,6 +759,33 @@ public class DatabaseHelper {
 			System.out.println("Error: Did not find a publication with ID: " + title);
 		} else {
 			p = proceedings1.iterator().next();
+			for (Person pers : p.getAuthors()) {
+
+				Set<Publication> oldAut = pers.getAuthoredPublications();
+				Set<Publication> newAut = new HashSet<Publication>();
+				for (Publication ufhe : oldAut) {
+					if (!ufhe.getTitle().equals(p.getTitle())) {
+						newAut.add(ufhe);
+					}
+				}
+				pers.setAuthoredPublications(newAut);
+				pm.makePersistent(pers);
+
+			}
+			if(p.getProceedings() != null){
+			Proceedings proceed = p.getProceedings();
+			Set<InProceedings> oldInProcs = proceed.getInProceedings();
+			Set<InProceedings> newInProcs = new HashSet<InProceedings>();
+			for (InProceedings ufhe : oldInProcs) {
+				if (!ufhe.getTitle().equals(p.getTitle())) {
+					newInProcs.add(ufhe);
+				}
+			}
+			proceed.setInProceedings(newInProcs);
+			pm.makePersistent(proceed);
+			}
+			
+
 			pm.deletePersistent(p);
 		}
 
@@ -746,6 +819,7 @@ public class DatabaseHelper {
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
 
+		/*
 		Query query0 = pm.newQuery(InProceedings.class);
 		query0.setFilter("title == a");
 		query0.declareParameters("String a");
@@ -759,7 +833,7 @@ public class DatabaseHelper {
 			return;
 
 		}
-
+*/
 		Query query = pm.newQuery(InProceedings.class);
 		query.setFilter("title == a");
 		query.declareParameters("String a");
@@ -846,18 +920,7 @@ public class DatabaseHelper {
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
 
-		Query query9 = pm.newQuery(Proceedings.class);
-		query9.setFilter("title == a");
-		query9.declareParameters("String a");
 
-		Collection<Proceedings> proceedings9 = (Collection<Proceedings>) query9.execute(newProc.getTitle());
-		if (!proceedings9.isEmpty()) {
-			System.out.println("Error: There exists already a Proceeding with the name: " + newProc.getTitle());
-			pm.currentTransaction().rollback();
-			closeDB(pm);
-			return;
-		}
-		
 		Query query = pm.newQuery(Proceedings.class);
 		query.setFilter("title == a");
 		query.declareParameters("String a");
@@ -1108,7 +1171,6 @@ public class DatabaseHelper {
 		}
 		p.setAuthors(newAuthors);
 
-
 		// add new InProceedings to Proceeding and set Proceeding of InProceedings
 		Set<InProceedings> newInProceedings = new HashSet<InProceedings>();
 		for (String s : inProceedings) {
@@ -1128,7 +1190,6 @@ public class DatabaseHelper {
 
 		}
 		p.setInProceedings(newInProceedings);
-
 
 		// add Proceeding to new Publisher and add Publisher to Proceeding (possibly creat new Publisher)
 		Query query2 = pm.newQuery(Publisher.class);
@@ -1174,7 +1235,6 @@ public class DatabaseHelper {
 
 		p.setSeries(inProc4);
 
-		
 		Query query5 = pm.newQuery(Conference.class);
 		query5.setFilter("name == a");
 		query5.declareParameters("String a");
@@ -1300,63 +1360,63 @@ public class DatabaseHelper {
 		closeDB(pm);
 		return allPeople;
 	}
-	
-	public static Collection<Conference> getAllConference(){
+
+	public static Collection<Conference> getAllConference() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
-		
+
 		Extent<Conference> ext = pm.getExtent(Conference.class);
 		List<Conference> allConference = new ArrayList<Conference>();
-		for(Conference c : ext) {
+		for (Conference c : ext) {
 			allConference.add(c);
 		}
 		ext.closeAll();
-		
+
 		closeDB(pm);
 		return allConference;
 	}
-	
-	public static Collection<Publisher> getAllPublisher(){
+
+	public static Collection<Publisher> getAllPublisher() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
-		
+
 		Extent<Publisher> ext = pm.getExtent(Publisher.class);
 		List<Publisher> allPublisher = new ArrayList<Publisher>();
-		for(Publisher p : ext) {
+		for (Publisher p : ext) {
 			allPublisher.add(p);
 		}
 		ext.closeAll();
-		
+
 		closeDB(pm);
 		return allPublisher;
 	}
-	
-	public static Collection<Series> getAllSeries(){
+
+	public static Collection<Series> getAllSeries() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
-		
+
 		Extent<Series> ext = pm.getExtent(Series.class);
 		List<Series> allSeries = new ArrayList<Series>();
-		for(Series p : ext) {
+		for (Series p : ext) {
 			allSeries.add(p);
 		}
 		ext.closeAll();
-		
+
 		closeDB(pm);
 		return allSeries;
 	}
-	
-	public static Collection<ConferenceEdition> getAllConferenceEdition(){
+
+	public static Collection<ConferenceEdition> getAllConferenceEdition() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
-		
+
 		Extent<ConferenceEdition> ext = pm.getExtent(ConferenceEdition.class);
 		List<ConferenceEdition> allConferenceEdition = new ArrayList<ConferenceEdition>();
-		for(ConferenceEdition p : ext) {
+		for (ConferenceEdition p : ext) {
 			allConferenceEdition.add(p);
 		}
 		ext.closeAll();
-		
+
 		closeDB(pm);
 		return allConferenceEdition;
 	}

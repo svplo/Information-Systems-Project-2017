@@ -166,7 +166,7 @@ public class PublisherWindow extends JFrame{
 			c.fill = GridBagConstraints.HORIZONTAL;
 		    c.weightx = 1;
 		    c.weighty = 0;
-		    c.gridwidth = 2;
+		    c.gridwidth = 3;
 		    c.gridx = 5;
 		    c.gridy = 1;
 		    c.insets = new Insets(5,5,5,5);

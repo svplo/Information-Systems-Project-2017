@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
+import infsysProj.infsysProj.InProceedings;
 import infsysProj.infsysProj.Publication;
 
 //resource: https://docs.oracle.com/javase/tutorial/uiswing/components/table.html#simple
@@ -71,7 +72,9 @@ public class PublicationTableModel extends AbstractTableModel {
 			returnValue = publications.getElectronicEdition();
 			break;
 		case COLUMN_DETAILS:
-			// go to detailed view
+			if(publications instanceof InProceedings){
+				returnValue = ((InProceedings) publications).getNote();
+			}
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid column index");
@@ -87,12 +90,4 @@ public class PublicationTableModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 
-	// needed for sorting
-	@Override
-	public Class<?> getColumnClass(int columnIndex) {
-		if (listPublication.isEmpty()) {
-			return Object.class;
-		}
-		return getValueAt(0, columnIndex).getClass();
-	}
 }

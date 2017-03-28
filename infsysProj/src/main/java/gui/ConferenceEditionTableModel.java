@@ -67,14 +67,6 @@ public class ConferenceEditionTableModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 
-	// needed for sorting
-	@Override
-	public Class<?> getColumnClass(int columnIndex) {
-		if (listConferenceEdition.isEmpty()) {
-			return Object.class;
-		}
-		return getValueAt(0, columnIndex).getClass();
-	}
 }
 	
 
