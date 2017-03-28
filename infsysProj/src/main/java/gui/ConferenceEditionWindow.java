@@ -317,7 +317,7 @@ public class ConferenceEditionWindow extends JFrame {
 			        int col = table.columnAtPoint(e.getPoint());
 			        String name = table.getColumnName(col);
 			        	switch(col){
-			        		case 0:
+			        		/*case 0:
 			        			nNameClicked++;
 			        			if(nNameClicked%2 == 0){
 							        Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
@@ -336,7 +336,7 @@ public class ConferenceEditionWindow extends JFrame {
 							        });
 
 			        			}
-						        break;
+						        break;*/
 			        		case 1 :
 			        			nYearClicked++;
 			        		
@@ -359,7 +359,7 @@ public class ConferenceEditionWindow extends JFrame {
 			        			}
 
 			        			break;
-			        		case 2 :
+			        		/*case 2 :
 			        			nProceedingsClicked++;
 				        		
 			        			if(nProceedingsClicked%2 == 0){
@@ -382,7 +382,7 @@ public class ConferenceEditionWindow extends JFrame {
 
 
 			        			break;
-
+*/
 			        		default :
 			        			
 			        			break;
