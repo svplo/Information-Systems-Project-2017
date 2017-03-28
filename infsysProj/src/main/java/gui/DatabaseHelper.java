@@ -178,6 +178,31 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 		return result;
 	}
+	
+	public static String getConferenceEditionName(ConferenceEdition proceedingName) {
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+		
+		ConferenceEdition confed = (ConferenceEdition) pm.getObjectById(proceedingName.jdoZooGetOid());		
+		
+			String result = confed.getConference().getName();
+		
+
+		DatabaseHelper.closeDB();
+		return result;
+	}
+	public static String getConferenceEditionProceeding(ConferenceEdition proceedingName) {
+		DatabaseHelper.openDB();
+		pm.currentTransaction().begin();
+
+		ConferenceEdition confed = (ConferenceEdition) pm.getObjectById(proceedingName.jdoZooGetOid());
+
+		
+		String result = confed.getProceedings().getTitle();
+		
+		DatabaseHelper.closeDB();
+		return result;
+	}
 
 	public static String getConferenceYear(String proceedingName) {
 		DatabaseHelper.openDB();
