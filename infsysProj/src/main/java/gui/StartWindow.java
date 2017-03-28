@@ -75,7 +75,7 @@ public class StartWindow extends JFrame {
 	public StartWindow() {
 		setTitle("Start Frame");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 620);
+		setBounds(100, 100, 450, 680);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

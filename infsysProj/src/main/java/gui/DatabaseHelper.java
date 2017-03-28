@@ -96,6 +96,7 @@ public class DatabaseHelper {
 				pm.makePersistent(p);
 
 			}
+			
 			pm.deletePersistent(proc);
 		}
 		pm.currentTransaction().commit();
@@ -204,7 +205,7 @@ public class DatabaseHelper {
 		
 			String result = confed.getConference().getName();
 		
-
+			pm.currentTransaction().commit();
 		DatabaseHelper.closeDB();
 		return result;
 	}
@@ -216,7 +217,7 @@ public class DatabaseHelper {
 
 		
 		String result = confed.getProceedings().getTitle();
-		
+		pm.currentTransaction().commit();
 		DatabaseHelper.closeDB();
 		return result;
 	}
