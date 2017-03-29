@@ -21,7 +21,7 @@ public class PersonTableModel extends AbstractTableModel {
 
 	private List<Person> listPerson;
 
-	public PersonTableModel(List<Person> allPeople) {		
+	public PersonTableModel(List<Person> allPeople) {
 
 		this.listPerson = allPeople;
 
@@ -59,10 +59,9 @@ public class PersonTableModel extends AbstractTableModel {
 
 		return returnValue;
 	}
-	
-	
-	public void changeData(List<Person> newList){
-		
+
+	public void changeData(List<Person> newList) {
+
 		this.listPerson = newList;
 		fireTableDataChanged();
 	}

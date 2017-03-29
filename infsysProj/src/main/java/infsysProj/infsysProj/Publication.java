@@ -14,7 +14,7 @@ public class Publication extends DomainObject {
 	String electronicEdition;
 
 	public Publication(Integer num) {
-		
+
 	}
 
 	public String getTitle() {

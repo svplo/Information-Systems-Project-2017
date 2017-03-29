@@ -39,7 +39,7 @@ public class PublicationTableModel extends AbstractTableModel {
 
 	private List<Publication> listPublication;
 
-	public PublicationTableModel(List<Publication> allPublications) {		
+	public PublicationTableModel(List<Publication> allPublications) {
 
 		this.listPublication = allPublications;
 
@@ -72,7 +72,7 @@ public class PublicationTableModel extends AbstractTableModel {
 			returnValue = publications.getElectronicEdition();
 			break;
 		case COLUMN_DETAILS:
-			if(publications instanceof InProceedings){
+			if (publications instanceof InProceedings) {
 				returnValue = ((InProceedings) publications).getNote();
 			}
 			break;
@@ -82,10 +82,9 @@ public class PublicationTableModel extends AbstractTableModel {
 
 		return returnValue;
 	}
-	
-	
-	public void changeData(List<Publication> newList){
-		
+
+	public void changeData(List<Publication> newList) {
+
 		this.listPublication = newList;
 		fireTableDataChanged();
 	}

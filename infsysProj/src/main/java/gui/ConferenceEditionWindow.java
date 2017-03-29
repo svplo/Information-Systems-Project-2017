@@ -56,393 +56,344 @@ public class ConferenceEditionWindow extends JFrame {
 	int nNameClicked = 0;
 	int nYearClicked = 0;
 	int nProceedingsClicked = 0;
-	
+
 	public static enum ItemsPerPage {
-	    TWENTY("20 items per page",20,0), 
-	    FIFTY("50 items per page",50,1),
-	    HUNDRED("100 items per page",100,2),
-	    TWOHUNDRED("200 items per page",200,3),
-	    FIVEHUNDRED("500 items per page",500,4),
-	    THOUSAND("1000 items per page",1000,5),
-	    ALL("All items",Integer.MAX_VALUE,6);
+		TWENTY("20 items per page", 20, 0), FIFTY("50 items per page", 50, 1), HUNDRED("100 items per page", 100, 2), TWOHUNDRED("200 items per page", 200, 3), FIVEHUNDRED("500 items per page", 500, 4), THOUSAND("1000 items per page", 1000, 5), ALL("All items", Integer.MAX_VALUE, 6);
 
-	    private final String string;
-	    private final int number;
-	    private final int index;
+		private final String string;
+		private final int number;
+		private final int index;
 
-	    private ItemsPerPage(String string, int number, int index) {
-	        this.string = string;
-	        this.number = number;
-	        this.index = index;
-	    }
+		private ItemsPerPage(String string, int number, int index) {
+			this.string = string;
+			this.number = number;
+			this.index = index;
+		}
 
-	    public String getString() {
-	        return string;
-	    }
+		public String getString() {
+			return string;
+		}
 
-	    public int getNumber() {
-	        return number;
-	    }
-	    public int getIndex() {
-	        return index;
-	    }
-	    public static ItemsPerPage getEnumForInt(int legIndex) {
-	        for (ItemsPerPage l : ItemsPerPage.values()) {
-	            if (l.index == legIndex) return l;
-	        }
-	        throw new IllegalArgumentException("Leg not found. Amputated?");
-	     }
+		public int getNumber() {
+			return number;
+		}
 
+		public int getIndex() {
+			return index;
+		}
+
+		public static ItemsPerPage getEnumForInt(int legIndex) {
+			for (ItemsPerPage l : ItemsPerPage.values()) {
+				if (l.index == legIndex)
+					return l;
+			}
+			throw new IllegalArgumentException("Leg not found. Amputated?");
+		}
 
 	}
-	public ConferenceEditionWindow(){
+
+	public ConferenceEditionWindow() {
 		super("Conference Edition window");
-		
+
 		contentPane = new JPanel(new GridBagLayout());
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setPreferredSize(new Dimension(1000,600));
+		contentPane.setPreferredSize(new Dimension(1000, 600));
 		JTextField searchTextField = new JTextField();
 		searchTextField.setBorder(new EmptyBorder(5, 5, 5, 5));
-		searchTextField.addActionListener(new ActionListener(){
+		searchTextField.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e){
+			public void actionPerformed(ActionEvent e) {
 				System.out.println(searchTextField.getText());
 				allConferenceEdition = DatabaseHelper.searchForConferenceEdition(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
-            	
-            }});
-		
+
+			}
+		});
+
 		GridBagConstraints c = new GridBagConstraints();
-	    c.fill = GridBagConstraints.HORIZONTAL;
-	    c.ipadx = 10;
-	    c.weightx = 1;
-	    c.gridwidth = 5;
-	    c.gridx = 0;
-	    c.gridy = 1;
-	    c.insets = new Insets(5,5,5,5);
-	    contentPane.add( searchTextField, c );
-	    
-	    allConferenceEdition = new ArrayList<ConferenceEdition>(DatabaseHelper.getAllConferenceEdition());
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipadx = 10;
+		c.weightx = 1;
+		c.gridwidth = 5;
+		c.gridx = 0;
+		c.gridy = 1;
+		c.insets = new Insets(5, 5, 5, 5);
+		contentPane.add(searchTextField, c);
+
+		allConferenceEdition = new ArrayList<ConferenceEdition>(DatabaseHelper.getAllConferenceEdition());
 		currentConferenceEdition = allConferenceEdition.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new ConferenceEditionTableModel(currentConferenceEdition);
-		table = new JTable(tableModel)/*{
-	         public boolean editCellAt(int row, int column, java.util.EventObject e) {
-	             return false;
-	          }
-	       }*/;
-	      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	    	      
-	      /*table.addMouseListener(new MouseAdapter() {
-	          public void mouseClicked(MouseEvent e) {
-	             if (e.getClickCount() == 2) {
-	            	 JTable target = (JTable) e.getSource();
-	                 int row = target.getSelectedRow();
-	            	 Person person = currentPeople.get(row);
-	            	 PersonDetail textFrame = new PersonDetail(person, getMe());
-	                textFrame.setVisible(true);
-	             }
-	          }
-	       });*/
-	      
-	      JScrollPane scrollPane = new JScrollPane(table);		
-		    c.fill = GridBagConstraints.BOTH;
-		    c.weightx = 1;
-		    c.weighty = 1;
-		    c.gridwidth = 8;
-		    c.gridx = 1;
-		    c.gridy = 2;
-		    c.insets = new Insets(5,5,5,5);
-		    contentPane.add(scrollPane, c);
-		    
-		    JButton searchButton = new JButton("Search");
-			searchButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					System.out.println(searchTextField.getText());
-					allConferenceEdition = DatabaseHelper.searchForConferenceEdition(searchTextField.getText());
-					pageNumber = 0;
+		table = new JTable(tableModel)/*
+										 * { public boolean editCellAt(int row, int column, java.util.EventObject e) { return false; } }
+										 */;
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		/*
+		 * table.addMouseListener(new MouseAdapter() { public void mouseClicked(MouseEvent e) { if (e.getClickCount() == 2) { JTable target = (JTable) e.getSource(); int row = target.getSelectedRow(); Person person = currentPeople.get(row); PersonDetail textFrame = new PersonDetail(person, getMe()); textFrame.setVisible(true); } } });
+		 */
+
+		JScrollPane scrollPane = new JScrollPane(table);
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridwidth = 8;
+		c.gridx = 1;
+		c.gridy = 2;
+		c.insets = new Insets(5, 5, 5, 5);
+		contentPane.add(scrollPane, c);
+
+		JButton searchButton = new JButton("Search");
+		searchButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println(searchTextField.getText());
+				allConferenceEdition = DatabaseHelper.searchForConferenceEdition(searchTextField.getText());
+				pageNumber = 0;
+				reloadTable();
+			}
+		});
+
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.weighty = 0;
+		c.gridwidth = 2;
+		c.gridx = 5;
+		c.gridy = 1;
+		c.insets = new Insets(5, 5, 5, 5);
+		contentPane.add(searchButton, c);
+
+		/*
+		 * JButton addButton = new JButton("Add"); addButton.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent arg0) { AddPerson textFrame = new AddPerson(getMe()); textFrame.setVisible(true);
+		 * 
+		 * } });
+		 * 
+		 * c.fill = GridBagConstraints.HORIZONTAL; c.weightx = 1; c.weighty = 0; c.gridwidth = 1; c.gridx = 7; c.gridy = 1; c.insets = new Insets(5,5,5,5); contentPane.add(addButton, c);
+		 */
+
+		numberOfItemsLabel = new JLabel("1-50 of " + String.valueOf(allConferenceEdition.size()) + " items");
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.weighty = 0;
+		c.gridwidth = 1;
+		c.gridx = 1;
+		c.gridy = 3;
+		c.insets = new Insets(5, 5, 5, 5);
+		contentPane.add(numberOfItemsLabel, c);
+
+		JComboBox petList = new JComboBox(getItemsPerPageArray());
+		petList.setSelectedIndex(itemsPerPageIndex.getIndex());
+		petList.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JComboBox combo = (JComboBox) e.getSource();
+				pageNumber = 0;
+				itemsPerPageIndex = ItemsPerPage.getEnumForInt(combo.getSelectedIndex());
+				reloadTable();
+			}
+		});
+
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.weighty = 0;
+		c.gridwidth = 1;
+		c.gridx = 2;
+		c.gridy = 3;
+		c.insets = new Insets(5, 5, 5, 5);
+		contentPane.add(petList, c);
+
+		BasicArrowButton prevPageButton = new BasicArrowButton(BasicArrowButton.WEST);
+		prevPageButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (pageNumber > 0) {
+
+					pageNumber--;
 					reloadTable();
 				}
-			});
-			
-			c.fill = GridBagConstraints.HORIZONTAL;
-		    c.weightx = 1;
-		    c.weighty = 0;
-		    c.gridwidth = 2;
-		    c.gridx = 5;
-		    c.gridy = 1;
-		    c.insets = new Insets(5,5,5,5);
-		    contentPane.add(searchButton, c);
-		    
-		    /*JButton addButton = new JButton("Add");
-			addButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-	        	 AddPerson textFrame = new AddPerson(getMe());
-	        	 textFrame.setVisible(true);
+			}
+		});
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.gridwidth = 1;
+		c.gridx = 3;
+		c.gridy = 3;
+		c.insets = new Insets(5, 5, 5, 5);
+		contentPane.add(prevPageButton, c);
 
+		JLabel label2 = new JLabel("Page");
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.weighty = 0;
+		c.gridwidth = 1;
+		c.gridx = 4;
+		c.gridy = 3;
+		c.insets = new Insets(5, 5, 5, 5);
+		contentPane.add(label2, c);
+
+		pageTextField = new JTextField();
+		pageTextField.setText("1");
+		pageTextField.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+
+				int newPage = Integer.parseInt(pageTextField.getText());
+				if (newPage > 0 && numberOfPages() >= newPage) {
+					pageNumber = newPage - 1;
+					reloadTable();
+				} else {
+					pageTextField.setText(String.valueOf(pageNumber + 1));
 				}
-			});
-			
-			c.fill = GridBagConstraints.HORIZONTAL;
-		    c.weightx = 1;
-		    c.weighty = 0;
-		    c.gridwidth = 1;
-		    c.gridx = 7;
-		    c.gridy = 1;
-		    c.insets = new Insets(5,5,5,5);
-		    contentPane.add(addButton, c);
-*/
-		    
-		    numberOfItemsLabel = new JLabel("1-50 of " + String.valueOf(allConferenceEdition.size())+ " items");
-		    c.fill = GridBagConstraints.HORIZONTAL;
-		    c.weightx = 1;
-		    c.weighty = 0;
-		    c.gridwidth = 1;
-		    c.gridx = 1;
-		    c.gridy = 3;
-		    c.insets = new Insets(5,5,5,5);
-		    contentPane.add(numberOfItemsLabel, c);
-		    
-		    JComboBox petList = new JComboBox(getItemsPerPageArray());
-		    petList.setSelectedIndex(itemsPerPageIndex.getIndex());
-		    petList.addActionListener( new ActionListener(){
-	            public void actionPerformed(ActionEvent e){
-	                JComboBox combo = (JComboBox)e.getSource();
-	                pageNumber = 0;
-	                itemsPerPageIndex = ItemsPerPage.getEnumForInt(combo.getSelectedIndex());
-	                reloadTable();
-	                }
-	        }            
-	);
-	      
-		    c.fill = GridBagConstraints.HORIZONTAL;
-		    c.weightx = 1;
-		    c.weighty = 0;
-		    c.gridwidth = 1;
-		    c.gridx = 2;
-		    c.gridy = 3;
-		    c.insets = new Insets(5,5,5,5);
-		    contentPane.add(petList, c);
-		    
-		    BasicArrowButton prevPageButton = new BasicArrowButton(BasicArrowButton.WEST);
-		    prevPageButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					if(pageNumber > 0){
-						
-						pageNumber--;
-						reloadTable();
+
+			}
+		});
+
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipadx = 10;
+		c.weightx = 1;
+		c.gridwidth = 1;
+		c.gridx = 5;
+		c.gridy = 3;
+		c.insets = new Insets(5, 5, 5, 5);
+		contentPane.add(pageTextField, c);
+
+		numberOfPagesLabel = new JLabel("of " + String.valueOf(numberOfPages()));
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.weighty = 0;
+		c.gridwidth = 1;
+		c.gridx = 6;
+		c.gridy = 3;
+		c.insets = new Insets(5, 5, 5, 5);
+		contentPane.add(numberOfPagesLabel, c);
+		BasicArrowButton nextPageButton = new BasicArrowButton(BasicArrowButton.EAST);
+		nextPageButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (numberOfPages() > pageNumber + 1) {
+
+					pageNumber++;
+					reloadTable();
+				}
+			}
+		});
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.gridwidth = 1;
+		c.gridx = 7;
+		c.gridy = 3;
+		c.insets = new Insets(5, 5, 5, 5);
+		contentPane.add(nextPageButton, c);
+
+		setContentPane(contentPane);
+		pack();
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setLocationRelativeTo(null);
+		// table.setAutoCreateRowSorter(true);
+		table.getTableHeader().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				int col = table.columnAtPoint(e.getPoint());
+				String name = table.getColumnName(col);
+				switch (col) {
+				/*
+				 * case 0: nNameClicked++; if(nNameClicked%2 == 0){ Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
+				 * 
+				 * @Override public int compare(ConferenceEdition o1, ConferenceEdition o2) { return o1.getConference().getName().compareTo(o2.getConference().getName()); } }); } else{ Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
+				 * 
+				 * @Override public int compare(ConferenceEdition o1, ConferenceEdition o2) { return o2.getConference().getName().compareTo(o1.getConference().getName()); } });
+				 * 
+				 * } break;
+				 */
+				case 1:
+					nYearClicked++;
+
+					if (nYearClicked % 2 == 0) {
+						Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
+							@Override
+							public int compare(ConferenceEdition o1, ConferenceEdition o2) {
+								return ((Integer) o1.getYear()).compareTo((Integer) o2.getYear());
+							}
+						});
+					} else {
+						Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
+							@Override
+							public int compare(ConferenceEdition o1, ConferenceEdition o2) {
+								return ((Integer) o2.getYear()).compareTo((Integer) o1.getYear());
+							}
+						});
+
 					}
+
+					break;
+				/*
+				 * case 2 : nProceedingsClicked++;
+				 * 
+				 * if(nProceedingsClicked%2 == 0){ Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
+				 * 
+				 * @Override public int compare(ConferenceEdition o1, ConferenceEdition o2) { return (o1.getProceedings().getTitle()).compareTo(o2.getProceedings().getTitle()); } }); } else{ Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
+				 * 
+				 * @Override public int compare(ConferenceEdition o1, ConferenceEdition o2) { return (o2.getProceedings().getTitle()).compareTo(o1.getProceedings().getTitle()); } });
+				 * 
+				 * }
+				 * 
+				 * 
+				 * break;
+				 */
+				default:
+
+					break;
 				}
-			});
-		    c.fill = GridBagConstraints.HORIZONTAL;
-		    c.weightx = 1;
-		    c.gridwidth = 1;
-		    c.gridx = 3;
-		    c.gridy = 3;
-		    c.insets = new Insets(5,5,5,5);
-		    contentPane.add(prevPageButton, c);
-		    
-		    JLabel label2 = new JLabel("Page");
-		    c.fill = GridBagConstraints.HORIZONTAL;
-		    c.weightx = 1;
-		    c.weighty = 0;
-		    c.gridwidth = 1;
-		    c.gridx = 4;
-		    c.gridy = 3;
-		    c.insets = new Insets(5,5,5,5);
-		    contentPane.add(label2, c);
-		    
-		    pageTextField = new JTextField();
-			pageTextField.setText("1");
-			pageTextField.addActionListener(new ActionListener(){
+				System.out.println("reload");
+				reloadTable();
 
-	            public void actionPerformed(ActionEvent e){
-
-	            		int newPage = Integer.parseInt(pageTextField.getText());
-	                    if(newPage>0 && numberOfPages()>=newPage){
-	                    	pageNumber = newPage-1;
-	                    	reloadTable();
-	                    }
-	                    else{
-	                    	pageTextField.setText(String.valueOf(pageNumber+1));
-	                    }
-
-	            }});
-
-		    c.fill = GridBagConstraints.HORIZONTAL;
-		    c.ipadx = 10;
-		    c.weightx = 1;
-		    c.gridwidth = 1;
-		    c.gridx = 5;
-		    c.gridy = 3;
-		    c.insets = new Insets(5,5,5,5);
-		    contentPane.add( pageTextField, c );
-		    
-		    numberOfPagesLabel = new JLabel("of " + String.valueOf(numberOfPages()));
-		    c.fill = GridBagConstraints.HORIZONTAL;
-		    c.weightx = 1;
-		    c.weighty = 0;
-		    c.gridwidth = 1;
-		    c.gridx = 6;
-		    c.gridy = 3;
-		    c.insets = new Insets(5,5,5,5);
-		    contentPane.add(numberOfPagesLabel, c);
-		    BasicArrowButton nextPageButton = new BasicArrowButton(BasicArrowButton.EAST);
-		    nextPageButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					if(numberOfPages()> pageNumber+1){
-
-						pageNumber++;
-						reloadTable();
-					}
-				}
-			});
-		    c.fill = GridBagConstraints.HORIZONTAL;
-		    c.weightx = 1;
-		    c.gridwidth = 1;
-		    c.gridx = 7;
-		    c.gridy = 3;
-		    c.insets = new Insets(5,5,5,5);
-		    contentPane.add(nextPageButton, c);
-		    
-		    setContentPane(contentPane);
-			pack();
-			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			setLocationRelativeTo(null);
-			//table.setAutoCreateRowSorter(true);
-			table.getTableHeader().addMouseListener(new MouseAdapter() {
-			    @Override
-			    public void mouseClicked(MouseEvent e) {
-			    	
-			        int col = table.columnAtPoint(e.getPoint());
-			        String name = table.getColumnName(col);
-			        	switch(col){
-			        		/*case 0:
-			        			nNameClicked++;
-			        			if(nNameClicked%2 == 0){
-							        Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
-							            @Override
-							            public int compare(ConferenceEdition o1, ConferenceEdition o2) {
-							                return o1.getConference().getName().compareTo(o2.getConference().getName());
-							            }
-							        });
-			        			}
-			        			else{
-							        Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
-							            @Override
-							            public int compare(ConferenceEdition o1, ConferenceEdition o2) {
-							                return o2.getConference().getName().compareTo(o1.getConference().getName());
-							            }
-							        });
-
-			        			}
-						        break;*/
-			        		case 1 :
-			        			nYearClicked++;
-			        		
-			        			if(nYearClicked%2 == 0){
-							        Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
-							            @Override
-							            public int compare(ConferenceEdition o1, ConferenceEdition o2) {
-							                return ((Integer)o1.getYear()).compareTo((Integer)o2.getYear());
-							            }
-							        });
-			        			}
-			        			else{
-							        Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
-							            @Override
-							            public int compare(ConferenceEdition o1, ConferenceEdition o2) {
-							                return ((Integer)o2.getYear()).compareTo((Integer)o1.getYear());
-							            }
-							        });
-
-			        			}
-
-			        			break;
-			        		/*case 2 :
-			        			nProceedingsClicked++;
-				        		
-			        			if(nProceedingsClicked%2 == 0){
-							        Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
-							            @Override
-							            public int compare(ConferenceEdition o1, ConferenceEdition o2) {
-							                return (o1.getProceedings().getTitle()).compareTo(o2.getProceedings().getTitle());
-							            }
-							        });
-			        			}
-			        			else{
-							        Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
-							            @Override
-							            public int compare(ConferenceEdition o1, ConferenceEdition o2) {
-							                return (o2.getProceedings().getTitle()).compareTo(o1.getProceedings().getTitle());
-							            }
-							        });
-
-			        			}
-
-
-			        			break;
-*/
-			        		default :
-			        			
-			        			break;
-			        	}
-			        	System.out.println("reload");
-				        reloadTable();
-
-			        
-
-			        System.out.println("Column index selected " + col + " " + name);
-			    }
-			});
+				System.out.println("Column index selected " + col + " " + name);
+			}
+		});
 	}
-	
+
 	public static String[] getItemsPerPageArray() {
-	    ItemsPerPage[] states = ItemsPerPage.values();
-	    String[] names = new String[states.length];
+		ItemsPerPage[] states = ItemsPerPage.values();
+		String[] names = new String[states.length];
 
-	    for (int i = 0; i < states.length; i++) {
-	        names[i] = states[i].getString();
-	    }
+		for (int i = 0; i < states.length; i++) {
+			names[i] = states[i].getString();
+		}
 
-	    return names;
+		return names;
 	}
-	
-	public void reloadDataFromDatabase(){
+
+	public void reloadDataFromDatabase() {
 		allConferenceEdition = new ArrayList<ConferenceEdition>(DatabaseHelper.getAllConferenceEdition());
 		reloadTable();
 	}
-	
-	public void reloadTable(){
-		int size = allConferenceEdition.size();
-		if(itemsPerPageIndex == ItemsPerPage.ALL){
-	        numberOfPagesLabel.setText("of 1");
-	        numberOfItemsLabel.setText("1 - " + size + " of " + size + " items");
-	        pageTextField.setText("1");
 
+	public void reloadTable() {
+		int size = allConferenceEdition.size();
+		if (itemsPerPageIndex == ItemsPerPage.ALL) {
+			numberOfPagesLabel.setText("of 1");
+			numberOfItemsLabel.setText("1 - " + size + " of " + size + " items");
+			pageTextField.setText("1");
+
+		} else {
+			numberOfPagesLabel.setText("of " + String.valueOf(numberOfPages()));
+			numberOfItemsLabel.setText(String.valueOf(pageNumber * itemsPerPageIndex.getNumber() + 1) + " - " + String.valueOf((int) Math.min(size, (pageNumber + 1) * itemsPerPageIndex.getNumber())) + " of " + String.valueOf(allConferenceEdition.size()) + " items");
+			pageTextField.setText(String.valueOf(pageNumber + 1));
 		}
-		else{
-        numberOfPagesLabel.setText("of " + String.valueOf(numberOfPages()));
-        numberOfItemsLabel.setText(String.valueOf(pageNumber*itemsPerPageIndex.getNumber() + 1) + " - " + String.valueOf((int)Math.min(size,(pageNumber +1)*itemsPerPageIndex.getNumber())) + " of " + String.valueOf(allConferenceEdition.size()) + " items");
-		pageTextField.setText(String.valueOf(pageNumber+1));
-		}
-        currentConferenceEdition = allConferenceEdition.subList(itemsPerPageIndex.getNumber()*pageNumber, Math.min(itemsPerPageIndex.getNumber()*(pageNumber+1),size));
+		currentConferenceEdition = allConferenceEdition.subList(itemsPerPageIndex.getNumber() * pageNumber, Math.min(itemsPerPageIndex.getNumber() * (pageNumber + 1), size));
 		tableModel.changeData(currentConferenceEdition);
 
 	}
-	
-	private int numberOfPages(){
-		if(allConferenceEdition.size()< itemsPerPageIndex.getNumber()){
+
+	private int numberOfPages() {
+		if (allConferenceEdition.size() < itemsPerPageIndex.getNumber()) {
 			return 1;
-		}
-		else{
-			return (int) Math.floor(allConferenceEdition.size()/itemsPerPageIndex.getNumber())+1;
+		} else {
+			return (int) Math.floor(allConferenceEdition.size() / itemsPerPageIndex.getNumber()) + 1;
 		}
 	}
-	public ConferenceEditionWindow getMe(){
+
+	public ConferenceEditionWindow getMe() {
 		return this;
 	}
-	
+
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -451,6 +402,5 @@ public class ConferenceEditionWindow extends JFrame {
 		});
 
 	}
-
 
 }

@@ -31,8 +31,8 @@ public class Proceedings extends Publication {
 		zooActivateRead();
 		return note;
 	}
-	
-	public String getID(){
+
+	public String getID() {
 
 		return super.getId();
 	}

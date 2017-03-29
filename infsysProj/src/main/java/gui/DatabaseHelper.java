@@ -96,7 +96,7 @@ public class DatabaseHelper {
 				pm.makePersistent(p);
 
 			}
-			
+
 			pm.deletePersistent(proc);
 		}
 		pm.currentTransaction().commit();
@@ -196,26 +196,26 @@ public class DatabaseHelper {
 		DatabaseHelper.closeDB();
 		return result;
 	}
-	
+
 	public static String getConferenceEditionName(ConferenceEdition proceedingName) {
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
-		
-		ConferenceEdition confed = (ConferenceEdition) pm.getObjectById(proceedingName.jdoZooGetOid());		
-		
-			String result = confed.getConference().getName();
-		
-			pm.currentTransaction().commit();
+
+		ConferenceEdition confed = (ConferenceEdition) pm.getObjectById(proceedingName.jdoZooGetOid());
+
+		String result = confed.getConference().getName();
+
+		pm.currentTransaction().commit();
 		DatabaseHelper.closeDB();
 		return result;
 	}
+
 	public static String getConferenceEditionProceeding(ConferenceEdition proceedingName) {
 		DatabaseHelper.openDB();
 		pm.currentTransaction().begin();
 
 		ConferenceEdition confed = (ConferenceEdition) pm.getObjectById(proceedingName.jdoZooGetOid());
 
-		
 		String result = confed.getProceedings().getTitle();
 		pm.currentTransaction().commit();
 		DatabaseHelper.closeDB();
@@ -523,7 +523,7 @@ public class DatabaseHelper {
 				pm.makePersistent(p);
 
 			}
-			
+
 			for (Publication publ : p.getEditedPublications()) {
 
 				List<Person> oldAut = publ.getAuthors();
@@ -537,7 +537,6 @@ public class DatabaseHelper {
 				pm.makePersistent(p);
 
 			}
-
 
 			pm.deletePersistent(p);
 		}
@@ -553,18 +552,10 @@ public class DatabaseHelper {
 		pm.currentTransaction().setRetainValues(true);
 
 		/*
-		Query query0 = pm.newQuery(Person.class);
-		query0.setFilter("name == a");
-		query0.declareParameters("String a");
-
-		Collection<Person> proceedings10 = (Collection<Person>) query0.execute(newPersonName);
-		if (!proceedings10.isEmpty()) {
-			System.out.println("There already exists a Person with name: " + newPersonName);
-			pm.currentTransaction().commit();
-			closeDB(pm);
-			return;
-		}
-*/
+		 * Query query0 = pm.newQuery(Person.class); query0.setFilter("name == a"); query0.declareParameters("String a");
+		 * 
+		 * Collection<Person> proceedings10 = (Collection<Person>) query0.execute(newPersonName); if (!proceedings10.isEmpty()) { System.out.println("There already exists a Person with name: " + newPersonName); pm.currentTransaction().commit(); closeDB(pm); return; }
+		 */
 		Query query = pm.newQuery(Person.class);
 		query.setFilter("name == a");
 		query.declareParameters("String a");
@@ -798,19 +789,18 @@ public class DatabaseHelper {
 				pm.makePersistent(pers);
 
 			}
-			if(p.getProceedings() != null){
-			Proceedings proceed = p.getProceedings();
-			Set<InProceedings> oldInProcs = proceed.getInProceedings();
-			Set<InProceedings> newInProcs = new HashSet<InProceedings>();
-			for (InProceedings ufhe : oldInProcs) {
-				if (!ufhe.getTitle().equals(p.getTitle())) {
-					newInProcs.add(ufhe);
+			if (p.getProceedings() != null) {
+				Proceedings proceed = p.getProceedings();
+				Set<InProceedings> oldInProcs = proceed.getInProceedings();
+				Set<InProceedings> newInProcs = new HashSet<InProceedings>();
+				for (InProceedings ufhe : oldInProcs) {
+					if (!ufhe.getTitle().equals(p.getTitle())) {
+						newInProcs.add(ufhe);
+					}
 				}
+				proceed.setInProceedings(newInProcs);
+				pm.makePersistent(proceed);
 			}
-			proceed.setInProceedings(newInProcs);
-			pm.makePersistent(proceed);
-			}
-			
 
 			pm.deletePersistent(p);
 		}
@@ -846,20 +836,14 @@ public class DatabaseHelper {
 		pm.currentTransaction().setRetainValues(true);
 
 		/*
-		Query query0 = pm.newQuery(InProceedings.class);
-		query0.setFilter("title == a");
-		query0.declareParameters("String a");
-
-		Collection<InProceedings> alreadyExists = (Collection<InProceedings>) query0.execute(newInProc.getTitle());
-		if (!alreadyExists.isEmpty()) {
-			System.out.println("There already exists an InProceeding with title " + newInProc.getTitle());
-			pm.currentTransaction().rollback();
-			closeDB(pm);
-
-			return;
-
-		}
-*/
+		 * Query query0 = pm.newQuery(InProceedings.class); query0.setFilter("title == a"); query0.declareParameters("String a");
+		 * 
+		 * Collection<InProceedings> alreadyExists = (Collection<InProceedings>) query0.execute(newInProc.getTitle()); if (!alreadyExists.isEmpty()) { System.out.println("There already exists an InProceeding with title " + newInProc.getTitle()); pm.currentTransaction().rollback(); closeDB(pm);
+		 * 
+		 * return;
+		 * 
+		 * }
+		 */
 		Query query = pm.newQuery(InProceedings.class);
 		query.setFilter("title == a");
 		query.declareParameters("String a");
@@ -945,7 +929,6 @@ public class DatabaseHelper {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
-
 
 		Query query = pm.newQuery(Proceedings.class);
 		query.setFilter("title == a");

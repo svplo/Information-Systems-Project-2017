@@ -85,7 +85,6 @@ public class AddInProceeding extends MyJFrame {
 
 		GridBagConstraints c = new GridBagConstraints();
 
-
 		JButton updateButton = new JButton("Save");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -95,15 +94,14 @@ public class AddInProceeding extends MyJFrame {
 				newInProc.setElectronicEdition(txtElect.getText());
 				newInProc.setNote(txtNote.getText());
 				newInProc.setPages(txtPages.getText());
-				try{
+				try {
 					newInProc.setYear(Integer.parseInt(txtYear.getText()));
-				}
-				catch(NumberFormatException e){
+				} catch (NumberFormatException e) {
 					newInProc.setYear(0);
 
 				}
 
-				DatabaseHelper.addInProceeding(newInProc,txtProceeding.getText(),authors);
+				DatabaseHelper.addInProceeding(newInProc, txtProceeding.getText(), authors);
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
@@ -407,7 +405,6 @@ public class AddInProceeding extends MyJFrame {
 		// contentPane.add(txtInProceedings, c);
 		contentPane.add(new JScrollPane(authorsTable), c);
 
-
 		setContentPane(contentPane);
 		pack();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -419,30 +416,28 @@ public class AddInProceeding extends MyJFrame {
 		});
 
 	}
-	
-	private void closeWindow(){
+
+	private void closeWindow() {
 		dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 
 	}
-	
+
 	@Override
 	public void selectedObject(DomainObject object, int id) {
-		if(id == 1){
-				proceedingsName = ((Proceedings)object).getTitle();
-				txtProceeding.setText(proceedingsName);
-		}
-		else if(id == 2){
-			
-            authors.add(((Person)object).getName());
-            String[] newProc = new String[1];
-            newProc[0] = ((Person)object).getName();
-            ((DefaultTableModel)authorsTable.getModel()).addRow(newProc);
-            authorsTable.clearSelection();
-            lblAuthors.setText("Authors (" + authors.size() + ")");
+		if (id == 1) {
+			proceedingsName = ((Proceedings) object).getTitle();
+			txtProceeding.setText(proceedingsName);
+		} else if (id == 2) {
+
+			authors.add(((Person) object).getName());
+			String[] newProc = new String[1];
+			newProc[0] = ((Person) object).getName();
+			((DefaultTableModel) authorsTable.getModel()).addRow(newProc);
+			authorsTable.clearSelection();
+			lblAuthors.setText("Authors (" + authors.size() + ")");
 
 		}
-		
+
 	}
-
 
 }
