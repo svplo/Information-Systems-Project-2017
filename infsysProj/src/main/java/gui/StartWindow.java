@@ -31,36 +31,36 @@ public class StartWindow extends JFrame {
 				try {
 					StartWindow frame = new StartWindow();
 					frame.setVisible(true);
-					
-					//Run the queries required for task 1.3
-				//	DatabaseHelper.query1("conf/acm/ColeMM87");
-					
-				//	DatabaseHelper.query2("expert system", 0, 3);
-					
-				//	DatabaseHelper.query3("expert system", 0, 3);
-					
-				//	DatabaseHelper.query4("William D. Young");
-					
-				//	DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
-					//William D. Young --> William R. Bevier --> J. Thomas Haigh = 2
-					
-				//	DatabaseHelper.query6();
-					
-				//	DatabaseHelper.query7(1980,1990);
-					
-				//	DatabaseHelper.query8("Microcomputing");
-					
-				//	DatabaseHelper.query9("Microcomputing");
 
-				//	DatabaseHelper.query10("Microcomputing");
-					
-				//	DatabaseHelper.query11("Microcomputing");
+					// Run the queries required for task 1.3
+					// DatabaseHelper.query1("conf/acm/ColeMM87");
 
-				//	DatabaseHelper.query12();
+					// DatabaseHelper.query2("expert system", 0, 3);
 
-				//	DatabaseHelper.query13("Robert Noel");
-					
-				//	DatabaseHelper.query14(1989, 1990);
+					// DatabaseHelper.query3("expert system", 0, 3);
+
+					// DatabaseHelper.query4("William D. Young");
+
+					// DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
+					// William D. Young --> William R. Bevier --> J. Thomas Haigh = 2
+
+					// DatabaseHelper.query6();
+
+					// DatabaseHelper.query7(1980,1990);
+
+					// DatabaseHelper.query8("Microcomputing");
+
+					// DatabaseHelper.query9("Microcomputing");
+
+					// DatabaseHelper.query10("Microcomputing");
+
+					// DatabaseHelper.query11("Microcomputing");
+
+					// DatabaseHelper.query12();
+
+					// DatabaseHelper.query13("Robert Noel");
+
+					// DatabaseHelper.query14(1989, 1990);
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -94,7 +94,7 @@ public class StartWindow extends JFrame {
 		btnPublicationTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
 		btnPublicationTableFrame.setBounds(100, 200, 200, 25);
 		contentPane.add(btnPublicationTableFrame);
-		
+
 		JButton btnProceedingsTableFrame = new JButton("Proceedings Table");
 		btnProceedingsTableFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -108,7 +108,7 @@ public class StartWindow extends JFrame {
 		btnProceedingsTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
 		btnProceedingsTableFrame.setBounds(100, 250, 200, 25);
 		contentPane.add(btnProceedingsTableFrame);
-		
+
 		JButton btnInProceedingsTableFrame = new JButton("InProceedings Table");
 		btnInProceedingsTableFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -123,7 +123,6 @@ public class StartWindow extends JFrame {
 		btnInProceedingsTableFrame.setBounds(100, 300, 200, 25);
 		contentPane.add(btnInProceedingsTableFrame);
 
-		
 		JButton btnPersonTableFrame = new JButton("Person Table");
 		btnPersonTableFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -137,7 +136,7 @@ public class StartWindow extends JFrame {
 		btnPersonTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
 		btnPersonTableFrame.setBounds(100, 350, 200, 25);
 		contentPane.add(btnPersonTableFrame);
-		
+
 		JButton btnConferenceTableFrame = new JButton("Conference Table");
 		btnConferenceTableFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -165,7 +164,7 @@ public class StartWindow extends JFrame {
 		btnSeriesTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
 		btnSeriesTableFrame.setBounds(100, 450, 200, 25);
 		contentPane.add(btnSeriesTableFrame);
-		
+
 		JButton btnPublisherTableFrame = new JButton("Publisher Table");
 		btnPublisherTableFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -179,7 +178,7 @@ public class StartWindow extends JFrame {
 		btnPublisherTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
 		btnPublisherTableFrame.setBounds(100, 500, 200, 25);
 		contentPane.add(btnPublisherTableFrame);
-		
+
 		JButton btnConferenceEditionTableFrame = new JButton("Conference Edition Table");
 		btnConferenceEditionTableFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -193,7 +192,6 @@ public class StartWindow extends JFrame {
 		btnConferenceEditionTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
 		btnConferenceEditionTableFrame.setBounds(100, 550, 200, 25);
 		contentPane.add(btnConferenceEditionTableFrame);
-
 
 		// modify label
 		JLabel lblStartWindow = new JLabel("Welcome!");

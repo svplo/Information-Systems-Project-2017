@@ -8,7 +8,6 @@ import infsysProj.infsysProj.ConferenceEdition;
 
 public class ConferenceEditionTableModel extends AbstractTableModel {
 
-
 	/**
 	 * 
 	 */
@@ -21,7 +20,7 @@ public class ConferenceEditionTableModel extends AbstractTableModel {
 
 	private List<ConferenceEdition> listConferenceEdition;
 
-	public ConferenceEditionTableModel(List<ConferenceEdition> allConferenceEdition) {		
+	public ConferenceEditionTableModel(List<ConferenceEdition> allConferenceEdition) {
 
 		this.listConferenceEdition = allConferenceEdition;
 
@@ -59,14 +58,11 @@ public class ConferenceEditionTableModel extends AbstractTableModel {
 
 		return returnValue;
 	}
-	
-	
-	public void changeData(List<ConferenceEdition> newList){
-		
+
+	public void changeData(List<ConferenceEdition> newList) {
+
 		this.listConferenceEdition = newList;
 		fireTableDataChanged();
 	}
 
 }
-	
-
