@@ -661,20 +661,23 @@ public class DatabaseHelper {
 	}
 */
 	public static void addInProceedings(List<InProceedings> list) {
-
 		//database.setMultithreaded(true);
-		MongoCollection<Document> collection = database.getCollection("InProceedings");
-		int length = list.size();
-		for (int i = 0; i < length; i++) {
-			collection.insertOne(Adaptor.toDBDocument(list.get(i)));
+				MongoCollection<Document> collection = database.getCollection("InProceedings");
+				int length = list.size();
+				List<Document> documents = new ArrayList<Document>();
+				for (int i = 0; i < length; i++) {
+					    documents.add(new Document("i", i));
+					if (i % 500 == 0) {
 
-			if (i % 500 == 0) {
-
-				System.out.println(i + " / " + length + " InProceedings added to Database.");
-			} else {
-			}
-		}
-		System.out.println("All InProceedings added to Database");
+						System.out.println(i + " / " + length + " In Proceedings added to Database.");
+					}
+				}
+				if (!documents.isEmpty()){
+					collection.insertMany(documents);
+				} else {
+					System.out.println("No documents (InProceedings) created.");
+				}
+				System.out.println("All InProceedings added to Database");
 	}
 /*
 	public static void updateInProceeding(String name, InProceedings newInProc, String proceedingsName, List<String> authors) {
@@ -1185,7 +1188,11 @@ public class DatabaseHelper {
 				System.out.println(i + " / " + length + " Proceedings added to Database.");
 			}
 		}
-		collection.insertMany(documents);
+		if (!documents.isEmpty()){
+			collection.insertMany(documents);
+		}else {
+			System.out.println("No documents (Proceedings) created.");
+		}
 		System.out.println("All Proceedings added to Database");
 	}
 /*

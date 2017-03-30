@@ -39,13 +39,13 @@ public class XMLParser {
 
 		System.out.println("Parsing Proceedings...");
 		parseProceedings(xmlFileName);
-	//	System.out.println("Parsing InProceedings...");
-	//	parseInProceedings(xmlFileName);
+		System.out.println("Parsing InProceedings...");
+		parseInProceedings(xmlFileName);
 		
 		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
 		DatabaseHelper.addProceedings(readProceedings);
-	//	DatabaseHelper.addInProceedings(readInProceedings);
+		DatabaseHelper.addInProceedings(readInProceedings);
 		DatabaseHelper.closeConnectionDB();
 		
 	}
