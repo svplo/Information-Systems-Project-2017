@@ -80,7 +80,7 @@ public class AddProceedings extends MyJFrame {
 
 	}
 
-	public AddProceedings(ProceedingsWindow caller) {
+	public AddProceedings( ProceedingsWindow caller) {
 		super("Add Preceeding");
 		proceeding = new Proceedings();
 		contentPane = new JPanel(new GridBagLayout());
@@ -88,6 +88,7 @@ public class AddProceedings extends MyJFrame {
 		contentPane.setPreferredSize(new Dimension(500, 600));
 
 		GridBagConstraints c = new GridBagConstraints();
+
 
 		JButton updateButton = new JButton("Save");
 		updateButton.addActionListener(new ActionListener() {
@@ -97,24 +98,27 @@ public class AddProceedings extends MyJFrame {
 				newProc.setTitle(txtTitle.getText());
 				newProc.setElectronicEdition(txtElect.getText());
 				newProc.setNote(txtNote.getText());
-				try {
+				try{
 					newProc.setNumber(Integer.parseInt(txtNumber.getText()));
-				} catch (NumberFormatException e) {
+				}
+				catch(NumberFormatException e){
 					newProc.setNumber(0);
 
 				}
-				try {
+				try{
 					newProc.setYear(Integer.parseInt(txtYear.getText()));
-				} catch (NumberFormatException e) {
+				}
+				catch(NumberFormatException e){
 					newProc.setYear(0);
 
 				}
 				newProc.setIsbn(txtISBN.getText());
 				newProc.setVolume(txtVolume.getText());
-				try {
-					DatabaseHelper.addProceeding(newProc, authors, inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(), Integer.parseInt(txtConfEdition.getText()));
-				} catch (NumberFormatException e) {
-					DatabaseHelper.addProceeding(newProc, authors, inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(), 0);
+				try{
+					DatabaseHelper.addProceeding(newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),Integer.parseInt(txtConfEdition.getText()));
+				}
+				catch(NumberFormatException e){
+					DatabaseHelper.addProceeding(newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0);
 
 				}
 
@@ -136,7 +140,7 @@ public class AddProceedings extends MyJFrame {
 		contentPane.add(updateButton, c);
 
 		JButton Delete = new JButton("Cancel");
-
+		
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -171,7 +175,7 @@ public class AddProceedings extends MyJFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(txtTitle, c);
 
-		// Load the Authors from DB
+		//Load the Authors from DB
 
 		lblAuthors = new JLabel("Authors(" + authors.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -182,18 +186,18 @@ public class AddProceedings extends MyJFrame {
 		c.gridy = 2;
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(lblAuthors, c);
-
+		
 		JButton addAuthorsButton = new JButton("Add");
 		addAuthorsButton.setEnabled(true);
 		addAuthorsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.PERSON, AddProceedings.this, 1);
+				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.PERSON,AddProceedings.this,1);
 				frame.setVisible(true);
 				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 			}
 		});
-
+		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
@@ -215,63 +219,64 @@ public class AddProceedings extends MyJFrame {
 		// create table with data
 		authorsTable = new JTable();
 		authorsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		authorsTable.setModel(new DefaultTableModel(dataA, columnsA) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				// all cells false
-				return false;
-			}
-		});
-
+		authorsTable.setModel(new DefaultTableModel(dataA,columnsA){
+			 @Override
+	            public boolean isCellEditable(int row, int column) {
+	               //all cells false
+	               return false;
+	            }
+	        }
+	);
+		
 		final JPopupMenu popupMenu = new JPopupMenu();
-		JMenuItem deleteItem = new JMenuItem("Delete");
+        JMenuItem deleteItem = new JMenuItem("Delete");
 
-		deleteItem.addActionListener(new ActionListener() {
+        deleteItem.addActionListener(new ActionListener() {
+	        
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	
+                authors.remove(authorsTable.getSelectedRow());
+                ((DefaultTableModel)authorsTable.getModel()).removeRow(authorsTable.getSelectedRow());
+                authorsTable.clearSelection();
+                lblAuthors.setText("Authors(" + authors.size() + ")");
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
+                }
+        });
+        deleteItem.setEnabled(true);
+        popupMenu.add(deleteItem);
+        
+        popupMenu.addPopupMenuListener(new PopupMenuListener() {
 
-				authors.remove(authorsTable.getSelectedRow());
-				((DefaultTableModel) authorsTable.getModel()).removeRow(authorsTable.getSelectedRow());
-				authorsTable.clearSelection();
-				lblAuthors.setText("Authors(" + authors.size() + ")");
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        int selectedRowAuthors = authorsTable.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), authorsTable));
+                        if (selectedRowAuthors > -1) {
+                            authorsTable.setRowSelectionInterval(selectedRowAuthors, selectedRowAuthors);
+                        }
+                    }
+                });
+            }
 
-			}
-		});
-		deleteItem.setEnabled(true);
-		popupMenu.add(deleteItem);
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                // TODO Auto-generated method stub
 
-		popupMenu.addPopupMenuListener(new PopupMenuListener() {
+            }
 
-			@Override
-			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						int selectedRowAuthors = authorsTable.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), authorsTable));
-						if (selectedRowAuthors > -1) {
-							authorsTable.setRowSelectionInterval(selectedRowAuthors, selectedRowAuthors);
-						}
-					}
-				});
-			}
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {
+                // TODO Auto-generated method stub
 
-			@Override
-			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void popupMenuCanceled(PopupMenuEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-		authorsTable.setComponentPopupMenu(popupMenu);
-		// table
-		c.fill = GridBagConstraints.BOTH;
+            }
+        });
+        
+        authorsTable.setComponentPopupMenu(popupMenu);
+        //table
+        c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
 		c.weighty = 5;
 		c.gridwidth = 2;
@@ -279,7 +284,7 @@ public class AddProceedings extends MyJFrame {
 		c.gridx = 1;
 		c.gridy = 2;
 		c.insets = new Insets(5, 5, 5, 5);
-		contentPane.add(new JScrollPane(authorsTable), c);
+        contentPane.add(new JScrollPane(authorsTable),c);
 
 		JLabel lblYear = new JLabel("Year");
 		c.fill = GridBagConstraints.BOTH;
@@ -505,18 +510,18 @@ public class AddProceedings extends MyJFrame {
 		c.gridy = 14;
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(lblInProceedings, c);
-
+		
 		JButton addInProceedingsButton = new JButton("Add");
 		addInProceedingsButton.setEnabled(true);
 		addInProceedingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.INPROCEEDINGS, AddProceedings.this, 2);
+				SelectPublication frame = new SelectPublication(SelectPublication.ObjectMode.INPROCEEDINGS,AddProceedings.this,2);
 				frame.setVisible(true);
 				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 			}
 		});
-
+		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
@@ -537,14 +542,15 @@ public class AddProceedings extends MyJFrame {
 		// create table with data
 		inProceedingsTable = new JTable();
 		inProceedingsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		inProceedingsTable.setModel(new DefaultTableModel(data, columns) {
+        inProceedingsTable.setModel(new DefaultTableModel(data,columns) {
 
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				// all cells false
-				return false;
-			}
-		});
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+        }
+);
 		final JPopupMenu popupMenu2 = new JPopupMenu();
 		JMenuItem deleteItem2 = new JMenuItem("Delete");
 		deleteItem2.addActionListener(new ActionListener() {
@@ -571,6 +577,7 @@ public class AddProceedings extends MyJFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(new JScrollPane(inProceedingsTable), c);
 
+
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -589,41 +596,46 @@ public class AddProceedings extends MyJFrame {
 		});
 
 	}
-
+	
 	@Override
 	public void selectedObject(DomainObject object, int id) {
-		if (id == 1) {
-			if (!authors.contains(((Person) object).getName())) {
-				authors.add(((Person) object).getName());
-				String[] newProc = new String[1];
-				newProc[0] = ((Person) object).getName();
-				((DefaultTableModel) authorsTable.getModel()).addRow(newProc);
-				authorsTable.clearSelection();
-				lblAuthors.setText("Authors (" + authors.size() + ")");
-			} else {
-				System.out.println("There is already an author with name: " + ((Person) object).getName());
+		if(id == 1){
+			if(!authors.contains(((Person)object).getName())){
+            authors.add(((Person)object).getName());
+            String[] newProc = new String[1];
+            newProc[0] = ((Person)object).getName();
+            ((DefaultTableModel)authorsTable.getModel()).addRow(newProc);
+            authorsTable.clearSelection();
+            lblAuthors.setText("Authors (" + authors.size() + ")");
 			}
-
-		} else if (id == 2) {
-			if (!inProcNames.contains(((InProceedings) object).getTitle())) {
-				inProcNames.add(((InProceedings) object).getTitle());
-				String[] newProc = new String[1];
-				newProc[0] = ((InProceedings) object).getTitle();
-				((DefaultTableModel) inProceedingsTable.getModel()).addRow(newProc);
-				inProceedingsTable.clearSelection();
-				lblInProceedings.setText("InProceedings (" + inProcNames.size() + ")");
-			} else {
-				System.out.println("There is already an InProceedings with name: " + ((InProceedings) object).getTitle());
+			else{
+				System.out.println("There is already an author with name: " + ((Person)object).getName());
 			}
 
 		}
+		else if(id == 2){
+			if(!inProcNames.contains(((InProceedings)object).getTitle())){
+				inProcNames.add(((InProceedings)object).getTitle());
+	            String[] newProc = new String[1];
+	            newProc[0] = ((InProceedings)object).getTitle();
+	            ((DefaultTableModel)inProceedingsTable.getModel()).addRow(newProc);
+	            inProceedingsTable.clearSelection();
+	            lblInProceedings.setText("InProceedings (" + inProcNames.size() + ")");
+				}
+				else{
+					System.out.println("There is already an InProceedings with name: " + ((InProceedings)object).getTitle());
+				}
 
+
+		}
+		
 	}
-
-	private void closeWindow() {
+	
+	private void closeWindow(){
 		dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 
 	}
+
 
 	/*
 	 * String format(Collection<?> c) { String s = c.stream().map(Object::toString).collect(Collectors.joining("\n")); return String.format("[%s]", s); }

@@ -32,21 +32,22 @@ public class XMLParser {
 	List<ConferenceEdition> readConferenceEditions = new ArrayList<ConferenceEdition>();
 	List<Publisher> readPublishers = new ArrayList<Publisher>();
 	List<Series> readSeries = new ArrayList<Series>();
+	
 
+	
 	public void parse() {
 
 		System.out.println("Parsing Proceedings...");
 		parseProceedings(xmlFileName);
-		System.out.println("Parsing InProceedings...");
-
-		parseInProceedings(xmlFileName);
-
+	//	System.out.println("Parsing InProceedings...");
+	//	parseInProceedings(xmlFileName);
+		
+		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
-		DatabaseHelper.openDB();
 		DatabaseHelper.addProceedings(readProceedings);
-		DatabaseHelper.addInProceedings(readInProceedings);
-		DatabaseHelper.closeDB();
-
+	//	DatabaseHelper.addInProceedings(readInProceedings);
+		DatabaseHelper.closeConnectionDB();
+		
 	}
 
 	private void parseProceedings(String xmlName) {
@@ -247,7 +248,8 @@ public class XMLParser {
 						inPages = true;
 					} else if (qName.equalsIgnoreCase("year")) {
 						inYear = true;
-					} else if (qName.equalsIgnoreCase("crossref")) {
+					}
+					else if (qName.equalsIgnoreCase("crossref")) {
 						inCrossRef = true;
 					} else if (qName.equalsIgnoreCase("ee")) {
 						inEE = true;
@@ -318,10 +320,13 @@ public class XMLParser {
 		}
 
 	}
-
+	
+	
 	private void addProceeding(Proceedings in, String booktitle, String publisher, String series) {
-
-		List<Conference> conferences = readConferences.parallelStream().filter(a -> Objects.equals(a.getName(), booktitle)).collect(Collectors.toList());
+		
+		List<Conference> conferences = readConferences.parallelStream()
+		    .filter(a -> Objects.equals(a.getName(), booktitle))
+		    .collect(Collectors.toList());
 		Conference conf;
 		ConferenceEdition edition = new ConferenceEdition();
 		if (conferences.isEmpty()) {
@@ -346,8 +351,12 @@ public class XMLParser {
 			conf.setEditions(conferenceEditions);
 			readConferences.add(conf);
 		}
-
-		List<Publisher> publishers = readPublishers.parallelStream().filter(a -> Objects.equals(a.getName(), publisher)).collect(Collectors.toList());
+		
+		
+		
+		List<Publisher> publishers = readPublishers.parallelStream()
+			    .filter(a -> Objects.equals(a.getName(), publisher))
+			    .collect(Collectors.toList());
 		Publisher pub;
 		if (publishers.isEmpty()) {
 			pub = new Publisher();
@@ -366,7 +375,9 @@ public class XMLParser {
 			readPublishers.add(pub);
 		}
 
-		List<Series> seriesList = readSeries.parallelStream().filter(a -> Objects.equals(a.getName(), series)).collect(Collectors.toList());
+		List<Series> seriesList = readSeries.parallelStream()
+			    .filter(a -> Objects.equals(a.getName(), series))
+			    .collect(Collectors.toList());
 		Series seriesResult;
 		if (seriesList.isEmpty()) {
 			seriesResult = new Series();
@@ -385,11 +396,14 @@ public class XMLParser {
 			readSeries.add(seriesResult);
 		}
 
+		
 		// Handle authors
 		List<Person> editors = new ArrayList<Person>();
 
 		for (Person p : in.getAuthors()) {
-			List<Person> editorList = readPeople.parallelStream().filter(a -> Objects.equals(a.getName(), p.getName())).collect(Collectors.toList());
+			List<Person> editorList = readPeople.parallelStream()
+				    .filter(a -> Objects.equals(a.getName(), p.getName()))
+				    .collect(Collectors.toList());
 			Person editorResult;
 			if (editorList.isEmpty()) {
 				editorResult = p;
@@ -416,11 +430,13 @@ public class XMLParser {
 		in.setConferenceEdition(edition);
 		readProceedings.add(in);
 	}
-
+	
 	private void addInProceeding(InProceedings in, String crossref) {
-
+		
 		if (crossref != "") {
-			List<Proceedings> proceedings = readProceedings.parallelStream().filter(a -> Objects.equals(a.getID(), crossref)).collect(Collectors.toList());
+			List<Proceedings> proceedings = readProceedings.parallelStream()
+				    .filter(a -> Objects.equals(a.getID(), crossref))
+				    .collect(Collectors.toList());
 			Proceedings proc;
 			if (proceedings.isEmpty()) {
 				System.out.println("Error: Did not find corresponding Proceeding while attempting to add InProceeding to Database. Crossref: " + crossref);
@@ -438,7 +454,9 @@ public class XMLParser {
 
 		List<Person> authors = new ArrayList<Person>();
 		for (Person p : in.getAuthors()) {
-			List<Person> editorObjects = readPeople.parallelStream().filter(a -> Objects.equals(a.getName(), p.getName())).collect(Collectors.toList());
+			List<Person> editorObjects = readPeople.parallelStream()
+				    .filter(a -> Objects.equals(a.getName(), p.getName()))
+				    .collect(Collectors.toList());
 			Person author;
 			if (editorObjects.isEmpty()) {
 				author = p;
@@ -458,10 +476,10 @@ public class XMLParser {
 			authors.add(author);
 
 		}
-		// System.out.println("Added InProceeding: " + in.getTitle());
+		//System.out.println("Added InProceeding: " + in.getTitle());
 
 		in.setAuthors(authors);
-
+		
 		readInProceedings.add(in);
 	}
 

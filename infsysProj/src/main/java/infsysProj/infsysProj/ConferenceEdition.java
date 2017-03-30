@@ -10,32 +10,26 @@ public class ConferenceEdition extends DomainObject {
 	Proceedings proceedings;
 
 	public Conference getConference() {
-		zooActivateRead();
 		return conf;
 	}
 
 	public void setConference(Conference conference) {
-		zooActivateWrite();
 		this.conf = conference;
 	}
 
 	public int getYear() {
-		zooActivateRead();
 		return year;
 	}
 
 	public void setYear(int year) {
-		zooActivateWrite();
 		this.year = year;
 	}
 
 	public Proceedings getProceedings() {
-		zooActivateRead();
 		return proceedings;
 	}
 
 	public void setProceedings(Proceedings proceedings) {
-		zooActivateWrite();
 		this.proceedings = proceedings;
 	}
 

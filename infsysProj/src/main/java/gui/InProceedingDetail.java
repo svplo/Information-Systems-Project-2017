@@ -105,14 +105,15 @@ public class InProceedingDetail extends MyJFrame {
 				newInProc.setElectronicEdition(txtElect.getText());
 				newInProc.setNote(txtNote.getText());
 				newInProc.setPages(txtPages.getText());
-				try {
+				try{
 					newInProc.setYear(Integer.parseInt(txtYear.getText()));
-				} catch (NumberFormatException e) {
+				}
+				catch(NumberFormatException e){
 					newInProc.setYear(0);
 
 				}
 
-				DatabaseHelper.updateInProceeding(inProceeding.getTitle(), newInProc, txtProceeding.getText(), authors);
+				DatabaseHelper.updateInProceeding(inProceeding.getTitle(),newInProc,txtProceeding.getText(),authors);
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
@@ -135,7 +136,7 @@ public class InProceedingDetail extends MyJFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				DatabaseHelper.deleteInProceeding(inProceeding.getTitle());
 				caller.reloadDataFromDatabase();
-				// JOptionPane.showMessageDialog(null, "Inproceeding successfully deleted");
+				//JOptionPane.showMessageDialog(null, "Inproceeding successfully deleted");
 				closeWindow();
 			}
 		});
@@ -435,6 +436,8 @@ public class InProceedingDetail extends MyJFrame {
 					addAuthor.setEnabled(true);
 					deleteItem.setEnabled(true);
 
+
+
 				} else {
 					updateButton.setEnabled(false);
 					txtTitle.setEditable(false);
@@ -456,10 +459,11 @@ public class InProceedingDetail extends MyJFrame {
 
 				// Proceedings Update Fields
 				String title = txtTitle.getText();
-
-				try {
+				
+				try{
 					int year = Integer.parseInt(txtYear.getText());
-				} catch (NumberFormatException eef) {
+				}
+				catch(NumberFormatException eef){
 					int year = 0;
 
 				}
@@ -489,28 +493,30 @@ public class InProceedingDetail extends MyJFrame {
 		});
 
 	}
-
-	private void closeWindow() {
+	
+	private void closeWindow(){
 		dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 
 	}
-
+	
 	@Override
 	public void selectedObject(DomainObject object, int id) {
-		if (id == 1) {
-			proceedingsName = ((Proceedings) object).getTitle();
-			txtProceeding.setText(proceedingsName);
-		} else if (id == 2) {
-
-			authors.add(((Person) object).getName());
-			String[] newProc = new String[1];
-			newProc[0] = ((Person) object).getName();
-			((DefaultTableModel) authorsTable.getModel()).addRow(newProc);
-			authorsTable.clearSelection();
-			lblAuthors.setText("Authors (" + authors.size() + ")");
+		if(id == 1){
+				proceedingsName = ((Proceedings)object).getTitle();
+				txtProceeding.setText(proceedingsName);
+		}
+		else if(id == 2){
+			
+            authors.add(((Person)object).getName());
+            String[] newProc = new String[1];
+            newProc[0] = ((Person)object).getName();
+            ((DefaultTableModel)authorsTable.getModel()).addRow(newProc);
+            authorsTable.clearSelection();
+            lblAuthors.setText("Authors (" + authors.size() + ")");
 
 		}
-
+		
 	}
+
 
 }

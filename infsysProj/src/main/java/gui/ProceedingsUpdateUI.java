@@ -99,12 +99,14 @@ public class ProceedingsUpdateUI extends JPanel {
 	 * private boolean isEmptyFieldData() { return (authorsField.getText().trim().isEmpty() && authorsField.getText().trim().isEmpty() && conferenceField.getText().trim().isEmpty() && proceedingsField.getText().trim().isEmpty() && yearField.getText().trim().isEmpty()) && pagesField.getText().trim().isEmpty()); }
 	 */
 	private class ButtonHandler implements ActionListener {
-
+		
 		public void actionPerformed(ActionEvent e) {
 			/*
 			 * Publication p = getFieldData(); switch (e.getActionCommand()) { case "Create": if (isEmptyFieldData()) { JOptionPane.showMessageDialog(null, "Cannot create an empty record"); return; } if (pub.create(p) != null) JOptionPane.showMessageDialog(null, "New person created successfully."); createButton.setText("New..."); break; case "Update": p.setTitle(""); p.authorsField(""); p.conferenceField(""); p.proceedingsField(""); p.setYear(0); p.setPages(0); setFieldData(p); createButton.setText("Save"); break; case "Delete": if (isEmptyFieldData()) { JOptionPane.showMessageDialog(null, "Cannot delete an empty record"); return; } p = pub.getCurrent(); pub.delete(); JOptionPane.showMessageDialog( null,"Person with ID:" + String.valueOf(p.getPersonId() + " is deleted successfully"));
 			 * break; default: JOptionPane.showMessageDialog(null, "invalid command"); }
 			 */ }
 	}
+	
+
 
 }

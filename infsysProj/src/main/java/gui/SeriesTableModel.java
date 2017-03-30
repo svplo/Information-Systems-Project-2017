@@ -22,7 +22,6 @@ public class SeriesTableModel extends AbstractTableModel {
 		this.listSeries = allSeries;
 
 	}
-
 	@Override
 	public String getColumnName(int columnIndex) {
 		return columnNames[columnIndex];
@@ -35,7 +34,7 @@ public class SeriesTableModel extends AbstractTableModel {
 	public int getRowCount() {
 		return listSeries.size();
 	}
-
+	
 	public String getValueAt(int rowIndex, int columnIndex) {
 		Series series = listSeries.get(rowIndex);
 		String returnValue = "";

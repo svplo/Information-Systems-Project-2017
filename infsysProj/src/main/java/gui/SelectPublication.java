@@ -392,73 +392,77 @@ public class SelectPublication extends JFrame {
 
 				switch (mode) {
 				case PERSON:
-					switch (col) {
-					case 0:
+		        	switch(col){
+	        		case 0:
 						nTitleClicked++;
-						if (nTitleClicked % 2 == 0) {
-							Collections.sort((List<Person>) allObjects, new Comparator<Person>() {
-								@Override
-								public int compare(Person o1, Person o2) {
-									return o1.getName().compareTo(o2.getName());
-								}
-							});
-						} else {
-							Collections.sort((List<Person>) allObjects, new Comparator<Person>() {
-								@Override
-								public int compare(Person o1, Person o2) {
-									return o2.getName().compareTo(o1.getName());
-								}
-							});
+	        			if(nTitleClicked%2 == 0){
+					        Collections.sort((List<Person>)allObjects, new Comparator<Person>() {
+					            @Override
+					            public int compare(Person o1, Person o2) {
+					                return o1.getName().compareTo(o2.getName());
+					            }
+					        });
+	        			}
+	        			else{
+					        Collections.sort((List<Person>)allObjects, new Comparator<Person>() {
+					            @Override
+					            public int compare(Person o1, Person o2) {
+					                return o2.getName().compareTo(o1.getName());
+					            }
+					        });
 
-						}
-						break;
-					case 1:
-						nYearClicked++;
+	        			}
+				        break;
+	        		case 1 :
+	        			nYearClicked++;
+	        		
+	        			if(nYearClicked%2 == 0){
+					        Collections.sort((List<Person>)allObjects, new Comparator<Person>() {
+					            @Override
+					            public int compare(Person o1, Person o2) {
+					                return ((Integer)o1.getAuthoredPublications().size()).compareTo((Integer)o2.getAuthoredPublications().size());
+					            }
+					        });
+	        			}
+	        			else{
+					        Collections.sort((List<Person>)allObjects, new Comparator<Person>() {
+					            @Override
+					            public int compare(Person o1, Person o2) {
+					                return ((Integer)o2.getAuthoredPublications().size()).compareTo((Integer)o1.getAuthoredPublications().size());
+					            }
+					        });
 
-						if (nYearClicked % 2 == 0) {
-							Collections.sort((List<Person>) allObjects, new Comparator<Person>() {
-								@Override
-								public int compare(Person o1, Person o2) {
-									return ((Integer) o1.getAuthoredPublications().size()).compareTo((Integer) o2.getAuthoredPublications().size());
-								}
-							});
-						} else {
-							Collections.sort((List<Person>) allObjects, new Comparator<Person>() {
-								@Override
-								public int compare(Person o1, Person o2) {
-									return ((Integer) o2.getAuthoredPublications().size()).compareTo((Integer) o1.getAuthoredPublications().size());
-								}
-							});
+	        			}
 
-						}
+	        			break;
+	        		case 2 :
+	        			nEEClicked++;
+		        		
+	        			if(nEEClicked%2 == 0){
+					        Collections.sort((List<Person>)allObjects, new Comparator<Person>() {
+					            @Override
+					            public int compare(Person o1, Person o2) {
+					                return ((Integer)o1.getEditedPublications().size()).compareTo((Integer)o2.getEditedPublications().size());
+					            }
+					        });
+	        			}
+	        			else{
+					        Collections.sort((List<Person>)allObjects, new Comparator<Person>() {
+					            @Override
+					            public int compare(Person o1, Person o2) {
+					                return ((Integer)o2.getEditedPublications().size()).compareTo((Integer)o1.getEditedPublications().size());
+					            }
+					        });
 
-						break;
-					case 2:
-						nEEClicked++;
+	        			}
 
-						if (nEEClicked % 2 == 0) {
-							Collections.sort((List<Person>) allObjects, new Comparator<Person>() {
-								@Override
-								public int compare(Person o1, Person o2) {
-									return ((Integer) o1.getEditedPublications().size()).compareTo((Integer) o2.getEditedPublications().size());
-								}
-							});
-						} else {
-							Collections.sort((List<Person>) allObjects, new Comparator<Person>() {
-								@Override
-								public int compare(Person o1, Person o2) {
-									return ((Integer) o2.getEditedPublications().size()).compareTo((Integer) o1.getEditedPublications().size());
-								}
-							});
 
-						}
+	        			break;
 
-						break;
-
-					default:
-
-						break;
-					}
+	        		default :
+	        			
+	        			break;
+	        	}
 
 					break;
 				case PUBLICATION:
@@ -589,19 +593,20 @@ public class SelectPublication extends JFrame {
 			pageTextField.setText(String.valueOf(pageNumber + 1));
 		}
 		currentObjects = allObjects.subList(itemsPerPageIndex.getNumber() * pageNumber, Math.min(itemsPerPageIndex.getNumber() * (pageNumber + 1), size));
-
+		
 		switch (mode) {
 		case PERSON:
-			((PersonTableModel) tableModel).changeData((List<Person>) currentObjects);
+			((PersonTableModel)tableModel).changeData((List<Person>)currentObjects);
 			break;
 		case PUBLICATION:
 		case INPROCEEDINGS:
 		case PROCEEDINGS:
 		default:
-			((PublicationTableModel) tableModel).changeData((List<Publication>) currentObjects);
+			((PublicationTableModel)tableModel).changeData((List<Publication>)currentObjects);
 
 			break;
 		}
+
 
 	}
 

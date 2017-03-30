@@ -19,6 +19,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+
 import infsysProj.infsysProj.InProceedings;
 import infsysProj.infsysProj.Publication;
 
@@ -37,9 +40,9 @@ public class PublicationTableModel extends AbstractTableModel {
 
 	private String[] columnNames = { "Publication Title", "Year", "Electronic Edition", "Details" };
 
-	private List<Publication> listPublication;
+	private DBCollection listPublication;
 
-	public PublicationTableModel(List<Publication> allPublications) {
+	public PublicationTableModel(DBCollection allPublications) {		
 
 		this.listPublication = allPublications;
 
@@ -55,24 +58,24 @@ public class PublicationTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return listPublication.size();
+		return (int) listPublication.count();
 	}
 
 	public String getValueAt(int rowIndex, int columnIndex) {
-		Publication publications = listPublication.get(rowIndex);
+		DBObject publications = listPublication.findOne();
 		String returnValue = "";
 		switch (columnIndex) {
 		case COLUMN_TITLE:
-			returnValue = publications.getTitle();
+			returnValue = (String) publications.get("title");
 			break;
 		case COLUMN_YEAR:
-			returnValue = publications.getYear().toString();
+			returnValue = (String) publications.get("year");
 			break;
 		case COLUMN_EDITION:
-			returnValue = publications.getElectronicEdition();
+			returnValue = (String) publications.get("electronicEdition");
 			break;
 		case COLUMN_DETAILS:
-			if (publications instanceof InProceedings) {
+			if(publications instanceof InProceedings){
 				returnValue = ((InProceedings) publications).getNote();
 			}
 			break;
@@ -82,9 +85,10 @@ public class PublicationTableModel extends AbstractTableModel {
 
 		return returnValue;
 	}
-
-	public void changeData(List<Publication> newList) {
-
+	
+	
+	public void changeData(DBCollection newList){
+		
 		this.listPublication = newList;
 		fireTableDataChanged();
 	}

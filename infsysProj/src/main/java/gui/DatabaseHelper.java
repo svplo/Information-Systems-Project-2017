@@ -1,24 +1,24 @@
 package gui;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
 
-import javax.jdo.Extent;
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
+import org.bson.Document;
+import org.bson.codecs.Codec;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
 
-import org.zoodb.jdo.ZooJdoHelper;
-import org.zoodb.tools.ZooHelper;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientOptions.Builder;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
 import infsysProj.infsysProj.Conference;
 import infsysProj.infsysProj.ConferenceEdition;
@@ -30,45 +30,53 @@ import infsysProj.infsysProj.Publisher;
 import infsysProj.infsysProj.Series;
 
 public class DatabaseHelper {
-	private static PersistenceManager pm;
-	private static String dbStandardName = "TheDatabase";
+	private static MongoDatabase database;
+	private static String dbStandardName = "TheNoSQLDatabase";
+	private static MongoClient mongoClient;
 
-	public static void openDB() {
-		pm = ZooJdoHelper.openDB(dbStandardName);
+	// source: http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/quick-tour/
+	public static void connectToDB() {
+		// if using the default port
+		//mongoClient = new MongoClient();
+		// MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+		Builder builder = MongoClientOptions.builder().connectTimeout(3000);  
+		mongoClient = new MongoClient( "localhost" , 27017 );
+		try {
+			mongoClient.getAddress();
+		} catch (Exception e) {
+		    System.out.println("Database unavailable!");
+		    mongoClient.close();
+		    return;
+		}
+
+		//DB db = mongoClient.getDB( "mydb" );
 	}
 
-	public static void closeDB() {
-		closeDB(pm);
+	public static void closeConnectionDB() {
+		mongoClient.close();
 	}
 
 	public static void createDB() {
-		// remove database if it exists
-		if (ZooHelper.dbExists(dbStandardName)) {
-
-			ZooHelper.removeDb(dbStandardName);
-		}
-
-		// create database
-		// By default, all database files will be created in %USER_HOME%/zoodb
-		ZooHelper.createDb(dbStandardName);
+		// database will be created automatically if it does not exist
+			database = mongoClient.getDatabase(dbStandardName);
 	}
 
-	private static void closeDB(PersistenceManager pm) {
-		if (pm.currentTransaction().isActive()) {
-			pm.currentTransaction().rollback();
+/*	private static void closeDB(DB databaseManager) {
+		if (databaseManager.currentTransaction().isActive()) {
+			databaseManager.currentTransaction().rollback();
 		}
-		pm.close();
-		pm.getPersistenceManagerFactory().close();
+		databaseManager.close();
+		databaseManager.getPersistenceManagerFactory().close();
 	}
 
 	// TODO
 
 	public static void DeleteProceeding(String proceedingName) {
-		DatabaseHelper.openDB();
-		pm.currentTransaction().begin();
-		pm.currentTransaction().setRetainValues(true);
+		DatabaseHelper.connectToDB();
+		database.currentTransaction().begin();
+		database.currentTransaction().setRetainValues(true);
 
-		Query query = pm.newQuery(Proceedings.class);
+		Query query = database.newQuery(Proceedings.class);
 		query.setFilter("title == a");
 		query.declareParameters("String a");
 
@@ -93,144 +101,71 @@ public class DatabaseHelper {
 					}
 				}
 				p.setEditedPublications(newAut);
-				pm.makePersistent(p);
+				database.makePersistent(p);
 
 			}
 
-			pm.deletePersistent(proc);
+			database.deletePersistent(proc);
 		}
-		pm.currentTransaction().commit();
+		database.currentTransaction().commit();
 
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
+	}
+*/
+	public static MongoCollection<Document> getAllPublications() {
+		connectToDB();
+		MongoCollection<Document> collection = database.getCollection("Publications");
+		closeConnectionDB();
+		return collection;
 	}
 
-	public static Collection<Publication> getAllPublications() {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
-
-		Extent<Publication> ext = pm.getExtent(Publication.class);
-		List<Publication> allPublications = new ArrayList<Publication>();
-		for (Publication p : ext) {
-			allPublications.add(p);
-		}
-		ext.closeAll();
-
-		closeDB(pm);
-		return allPublications;
-	}
-
-	public static Collection<Proceedings> getAllProceedings() {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
-
-		Extent<Proceedings> ext = pm.getExtent(Proceedings.class);
-		List<Proceedings> allPublications = new ArrayList<Proceedings>();
-		for (Proceedings p : ext) {
-			allPublications.add(p);
-		}
-		ext.closeAll();
-
-		closeDB(pm);
-		return allPublications;
+	public static MongoCollection<Document> getAllProceedings() {
+		connectToDB();
+		MongoCollection<Document> collection = database.getCollection("Proceedings");
+		closeConnectionDB();
+		return collection;
 	}
 
 	public static String getPublisherName(String proceedingName) {
-		DatabaseHelper.openDB();
-		pm.currentTransaction().begin();
+		DatabaseHelper.connectToDB();
 
-		Query query = pm.newQuery(Proceedings.class);
-		query.setFilter("title == a");
-		query.declareParameters("String a");
-
-		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceedingName);
-		String result = null;
-		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + proceedingName);
-
-		} else {
-			result = proceedings.iterator().next().getPublisher().getName();
-		}
-
-		DatabaseHelper.closeDB();
-		return result;
+		DatabaseHelper.closeConnectionDB();
+		return "";
 	}
 
 	public static String getSeriesName(String proceedingName) {
-		DatabaseHelper.openDB();
-		pm.currentTransaction().begin();
+		DatabaseHelper.connectToDB();
 
-		Query query = pm.newQuery(Proceedings.class);
-		query.setFilter("title == a");
-		query.declareParameters("String a");
-
-		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceedingName);
-		String result = null;
-		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with name: " + proceedingName);
-
-		} else {
-			result = proceedings.iterator().next().getSeries().getName();
-		}
-
-		DatabaseHelper.closeDB();
-		return result;
+		DatabaseHelper.closeConnectionDB();
+		return "";
 	}
 
 	public static String getConferenceName(String proceedingName) {
-		DatabaseHelper.openDB();
-		pm.currentTransaction().begin();
+		DatabaseHelper.connectToDB();
 
-		Query query = pm.newQuery(Proceedings.class);
-		query.setFilter("title == a");
-		query.declareParameters("String a");
-
-		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceedingName);
-		String result = null;
-		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with title: " + proceedingName);
-
-		} else {
-			result = proceedings.iterator().next().getConferenceEdition().getConference().getName();
-		}
-
-		DatabaseHelper.closeDB();
-		return result;
+		DatabaseHelper.closeConnectionDB();
+		return "";
 	}
 
 	public static String getConferenceEditionName(ConferenceEdition proceedingName) {
-		DatabaseHelper.openDB();
-		pm.currentTransaction().begin();
+		DatabaseHelper.connectToDB();
 
-		ConferenceEdition confed = (ConferenceEdition) pm.getObjectById(proceedingName.jdoZooGetOid());
-
-		String result = confed.getConference().getName();
-
-		pm.currentTransaction().commit();
-		DatabaseHelper.closeDB();
-		return result;
+		DatabaseHelper.closeConnectionDB();
+		return "";
 	}
 
 	public static String getConferenceEditionProceeding(ConferenceEdition proceedingName) {
-		DatabaseHelper.openDB();
-		pm.currentTransaction().begin();
-
-		ConferenceEdition confed = (ConferenceEdition) pm.getObjectById(proceedingName.jdoZooGetOid());
-
-		String result = confed.getProceedings().getTitle();
-		pm.currentTransaction().commit();
-		DatabaseHelper.closeDB();
-		return result;
+		DatabaseHelper.connectToDB();
+		
+		DatabaseHelper.closeConnectionDB();
+		return "";
 	}
 
 	public static String getConferenceYear(String proceedingName) {
-		DatabaseHelper.openDB();
-		pm.currentTransaction().begin();
+		DatabaseHelper.connectToDB();
 
-		Query query = pm.newQuery(Proceedings.class);
-		query.setFilter("title == a");
-		query.declareParameters("String a");
 
-		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceedingName);
+		Collection<Proceedings> proceedings = new HashSet<Proceedings>();
 
 		String result = null;
 		if (proceedings.isEmpty()) {
@@ -240,19 +175,14 @@ public class DatabaseHelper {
 			result = String.valueOf(proceedings.iterator().next().getConferenceEdition().getYear());
 		}
 
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 		return result;
 	}
 
 	public static List<String> getAuthorsOfProceedings(String proceedingsName) {
-		DatabaseHelper.openDB();
-		pm.currentTransaction().begin();
+		DatabaseHelper.connectToDB();
 
-		Query query = pm.newQuery(Proceedings.class);
-		query.setFilter("title == a");
-		query.declareParameters("String a");
-
-		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceedingsName);
+		Collection<Proceedings> proceedings = new HashSet<Proceedings>();
 		List<String> result = new ArrayList<String>();
 		if (proceedings.isEmpty()) {
 			System.out.println("Error: Did not find a publication with ID: " + proceedingsName);
@@ -262,39 +192,33 @@ public class DatabaseHelper {
 				result.add(i.getName());
 			}
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 		return result;
 	}
 
 	public static List<String> getInProceedingsOfProceedings(String proceedingName) {
-		DatabaseHelper.openDB();
-		pm.currentTransaction().begin();
+		DatabaseHelper.connectToDB();
 
-		Query query = pm.newQuery(Proceedings.class);
-		query.setFilter("title == a");
-		query.declareParameters("String a");
-
-		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceedingName);
+		MongoCollection<Document> proceedings = database.getCollection("Proceedings");
 		List<String> result = new ArrayList<String>();
-		if (proceedings.isEmpty()) {
+		if (proceedings.count() == 0l) {
 			System.out.println("Error: Did not find a publication with ID: " + proceedingName);
 
 		} else {
-			for (InProceedings i : proceedings.iterator().next().getInProceedings()) {
+			FindIterable<Document> cursor = proceedings.find();
+			for (InProceedings i : ((Proceedings) ((Iterator<DBObject>) cursor).next()).getInProceedings()) {
 				result.add(i.getTitle());
 			}
 		}
 
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 		return result;
 	}
 
 	public static List<String> getAuthoredPublicationsForPerson(String personName) {
-		DatabaseHelper.openDB();
-		pm.currentTransaction().begin();
+		DatabaseHelper.connectToDB();
 
-		Query query = pm.newQuery(Person.class, "name == '" + personName.replaceAll("'", "&#39") + "'");
-		Collection<Person> persons = (Collection<Person>) query.execute();
+		Collection<Person> persons = new HashSet<Person>();
 		List<String> result = new ArrayList<String>();
 		if (persons.isEmpty()) {
 			System.out.println("Error: Did not find a publication with ID: " + personName);
@@ -305,16 +229,14 @@ public class DatabaseHelper {
 			}
 		}
 
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 		return result;
 	}
 
 	public static List<String> getEditedPublicationsForPerson(String personName) {
-		DatabaseHelper.openDB();
-		pm.currentTransaction().begin();
-
-		Query query = pm.newQuery(Person.class, "name == '" + personName.replaceAll("'", "&#39") + "'");
-		Collection<Person> persons = (Collection<Person>) query.execute();
+		DatabaseHelper.connectToDB();
+		
+		Collection<Person> persons = new HashSet<Person>();
 		List<String> result = new ArrayList<String>();
 		if (persons.isEmpty()) {
 			System.out.println("Error: Did not find a publication with ID: " + personName);
@@ -325,181 +247,109 @@ public class DatabaseHelper {
 			}
 		}
 
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 		return result;
 	}
 
-	public static Collection<InProceedings> getAllInProceedings() {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
-
-		Extent<InProceedings> ext = pm.getExtent(InProceedings.class);
-		List<InProceedings> allPublications = new ArrayList<InProceedings>();
-		for (InProceedings p : ext) {
-			allPublications.add(p);
-		}
-		ext.closeAll();
-
-		closeDB(pm);
-		return allPublications;
+	public static MongoCollection<Document> getAllInProceedings() {
+		connectToDB();
+		MongoCollection<Document> collection = database.getCollection("InProceedings");
+		closeConnectionDB();
+		return collection;
 	}
 
 	public static List<Publication> searchForPublication(String search) {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
+		connectToDB();
 
-		Query query = pm.newQuery(Publication.class, "title.contains('" + search.replaceAll("'", "&#39") + "')");
-		Collection<Publication> proceedings = (Collection<Publication>) query.execute();
-		List<Publication> allPublications = new ArrayList<Publication>(proceedings);
+		Collection<Publication> publication = new HashSet<Publication>();
+		List<Publication> allPublications = new ArrayList<Publication>(publication);
 		Publication proc;
-		if (proceedings.isEmpty()) {
+		if (publication.isEmpty()) {
 			System.out.println("Error: Did not find a publication with ID: " + search);
 
 		}
 
-		pm.currentTransaction().rollback();
-		closeDB(pm);
+		closeConnectionDB();
 
 		return allPublications;
 
 	}
 
 	public static List<Person> searchForPeople(String search) {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
+		connectToDB();
 
-		Query query = pm.newQuery(Person.class, "name.contains('" + search.replaceAll("'", "&#39") + "')");
-		Collection<Person> proceedings = (Collection<Person>) query.execute();
-		List<Person> allPublications = new ArrayList<Person>(proceedings);
-		if (proceedings.isEmpty()) {
+		List<Person> people = new ArrayList<Person>();
+		if (people.isEmpty()) {
 			System.out.println("Error: Did not find a publication with ID: " + search);
 
 		}
 
-		pm.currentTransaction().rollback();
-		closeDB(pm);
+		closeConnectionDB();;
 
-		return allPublications;
+		return people;
 
 	}
 
 	public static List<Conference> searchForConference(String search) {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
+		connectToDB();
 
-		Query query = pm.newQuery(Conference.class, "name.contains('" + search.replaceAll("'", "&#39") + "')");
-		Collection<Conference> proceedings = (Collection<Conference>) query.execute();
-		List<Conference> allPublications = new ArrayList<Conference>(proceedings);
-		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + search);
+		List<Conference> conference = new ArrayList<Conference>();
+		closeConnectionDB();
 
-		}
-
-		pm.currentTransaction().rollback();
-		closeDB(pm);
-
-		return allPublications;
-
+		return conference;
 	}
 
 	public static List<Series> searchForSeries(String search) {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
+		connectToDB();
 
-		Query query = pm.newQuery(Series.class, "name.contains('" + search.replaceAll("'", "&#39") + "')");
-		Collection<Series> proceedings = (Collection<Series>) query.execute();
-		List<Series> allPublications = new ArrayList<Series>(proceedings);
-		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + search);
+		List<Series> series = new ArrayList<Series>();
+		
+		closeConnectionDB();
 
-		}
-
-		pm.currentTransaction().rollback();
-		closeDB(pm);
-
-		return allPublications;
-
+		return series;
 	}
 
 	public static List<ConferenceEdition> searchForConferenceEdition(String search) {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
+		connectToDB();
 
-		Query query = pm.newQuery(ConferenceEdition.class, "name.contains('" + search.replaceAll("'", "&#39") + "')");
-		Collection<ConferenceEdition> proceedings = (Collection<ConferenceEdition>) query.execute();
-		List<ConferenceEdition> allPublications = new ArrayList<ConferenceEdition>(proceedings);
-		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + search);
+		List<ConferenceEdition> confEdition = new ArrayList<ConferenceEdition>();
+		
+		closeConnectionDB();
 
-		}
-
-		pm.currentTransaction().rollback();
-		closeDB(pm);
-
-		return allPublications;
-
+		return confEdition;
 	}
 
 	public static List<Publisher> searchForPublisher(String search) {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
+		connectToDB();
 
-		Query query = pm.newQuery(Publisher.class, "name.contains('" + search.replaceAll("'", "&#39") + "')");
-		Collection<Publisher> proceedings = (Collection<Publisher>) query.execute();
-		List<Publisher> allPublications = new ArrayList<Publisher>(proceedings);
-		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + search);
+		List<Publisher> publisher = new ArrayList<Publisher>();
+		
+		closeConnectionDB();
 
-		}
-
-		pm.currentTransaction().rollback();
-		closeDB(pm);
-
-		return allPublications;
-
+		return publisher;
 	}
 
-	public static List<Publication> searchForProceedings(String search) {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
+	public static MongoCollection<Document> searchForProceedings(String search) {
+		connectToDB();
 
-		Query query = pm.newQuery(Proceedings.class, "title.contains('" + search.replaceAll("'", "&#39") + "')");
-		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute();
-		List<Publication> allPublications = new ArrayList<Publication>(proceedings);
-		Proceedings proc;
-		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + search);
+		MongoCollection<Document> publication = database.getCollection("Proceedings");
+		
+		closeConnectionDB();
 
-		}
-
-		pm.currentTransaction().rollback();
-		closeDB(pm);
-
-		return allPublications;
-
+		return publication;
 	}
 
 	public static List<Publication> searchForInProceedings(String search) {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
+		connectToDB();
 
-		Query query = pm.newQuery(InProceedings.class, "title.contains('" + search.replaceAll("'", "&#39") + "')");
-		Collection<InProceedings> proceedings = (Collection<InProceedings>) query.execute();
-		List<Publication> allPublications = new ArrayList<Publication>(proceedings);
-		InProceedings proc;
-		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + search);
+		List<Publication> publication = new ArrayList<Publication>();
+		
+		closeConnectionDB();
 
-		}
-
-		pm.currentTransaction().rollback();
-		closeDB(pm);
-
-		return allPublications;
-
+		return publication;
 	}
 
-	public static void deletePerson(String personName) {
+/*	public static void deletePerson(String personName) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -556,7 +406,7 @@ public class DatabaseHelper {
 		 * 
 		 * Collection<Person> proceedings10 = (Collection<Person>) query0.execute(newPersonName); if (!proceedings10.isEmpty()) { System.out.println("There already exists a Person with name: " + newPersonName); pm.currentTransaction().commit(); closeDB(pm); return; }
 		 */
-		Query query = pm.newQuery(Person.class);
+/*		Query query = pm.newQuery(Person.class);
 		query.setFilter("name == a");
 		query.declareParameters("String a");
 
@@ -809,17 +659,14 @@ public class DatabaseHelper {
 		closeDB(pm);
 
 	}
-
+*/
 	public static void addInProceedings(List<InProceedings> list) {
 
-		pm.setMultithreaded(true);
-
+		//database.setMultithreaded(true);
+		MongoCollection<Document> collection = database.getCollection("InProceedings");
 		int length = list.size();
 		for (int i = 0; i < length; i++) {
-			pm.currentTransaction().begin();
-			pm.currentTransaction().setRetainValues(true);
-			pm.makePersistent(list.get(i));
-			pm.currentTransaction().commit();
+			collection.insertOne(Adaptor.toDBDocument(list.get(i)));
 
 			if (i % 500 == 0) {
 
@@ -829,21 +676,10 @@ public class DatabaseHelper {
 		}
 		System.out.println("All InProceedings added to Database");
 	}
-
+/*
 	public static void updateInProceeding(String name, InProceedings newInProc, String proceedingsName, List<String> authors) {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
-		pm.currentTransaction().setRetainValues(true);
+		DBCollection collection = database.getCollection("InProceedings");
 
-		/*
-		 * Query query0 = pm.newQuery(InProceedings.class); query0.setFilter("title == a"); query0.declareParameters("String a");
-		 * 
-		 * Collection<InProceedings> alreadyExists = (Collection<InProceedings>) query0.execute(newInProc.getTitle()); if (!alreadyExists.isEmpty()) { System.out.println("There already exists an InProceeding with title " + newInProc.getTitle()); pm.currentTransaction().rollback(); closeDB(pm);
-		 * 
-		 * return;
-		 * 
-		 * }
-		 */
 		Query query = pm.newQuery(InProceedings.class);
 		query.setFilter("title == a");
 		query.declareParameters("String a");
@@ -1335,26 +1171,24 @@ public class DatabaseHelper {
 		pm.currentTransaction().commit();
 		closeDB(pm);
 	}
-
+*/
 	public static void addProceedings(List<Proceedings> list) {
 
-		pm.setMultithreaded(true);
-
+		//database.setMultithreaded(true);
+		MongoCollection<Document> collection = database.getCollection("Proceedings");
 		int length = list.size();
+		List<Document> documents = new ArrayList<Document>();
 		for (int i = 0; i < length; i++) {
-			pm.currentTransaction().begin();
-			pm.currentTransaction().setRetainValues(true);
-			pm.makePersistent(list.get(i));
-			pm.currentTransaction().commit();
-
+			    documents.add(new Document("i", i));
 			if (i % 500 == 0) {
 
 				System.out.println(i + " / " + length + " Proceedings added to Database.");
 			}
 		}
+		collection.insertMany(documents);
 		System.out.println("All Proceedings added to Database");
 	}
-
+/*
 	public static Collection<Person> getAllPeople() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -1399,41 +1233,25 @@ public class DatabaseHelper {
 		closeDB(pm);
 		return allPublisher;
 	}
-
-	public static Collection<Series> getAllSeries() {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
-
-		Extent<Series> ext = pm.getExtent(Series.class);
-		List<Series> allSeries = new ArrayList<Series>();
-		for (Series p : ext) {
-			allSeries.add(p);
-		}
-		ext.closeAll();
-
-		closeDB(pm);
-		return allSeries;
+*/
+	public static MongoCollection<Document> getAllSeries() {
+		connectToDB();
+		MongoCollection<Document> collection = database.getCollection("Series");
+		closeConnectionDB();
+		return collection;
 	}
 
-	public static Collection<ConferenceEdition> getAllConferenceEdition() {
-		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
-		pm.currentTransaction().begin();
-
-		Extent<ConferenceEdition> ext = pm.getExtent(ConferenceEdition.class);
-		List<ConferenceEdition> allConferenceEdition = new ArrayList<ConferenceEdition>();
-		for (ConferenceEdition p : ext) {
-			allConferenceEdition.add(p);
-		}
-		ext.closeAll();
-
-		closeDB(pm);
-		return allConferenceEdition;
+	public static MongoCollection<Document> getAllConferenceEdition() {
+		connectToDB();
+		MongoCollection<Document> collection = database.getCollection("ConferecenEdition");
+		closeConnectionDB();
+		return collection;
 	}
 
-	// find publication by key (according to xml file)
+/*	// find publication by key (according to xml file)
 	public static void query1(String id) {
 		String thisQuery = "Query 1";
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		Query query = pm.newQuery(Publication.class, "id == '" + id.replaceAll("'", "&#39") + "'");
@@ -1453,14 +1271,14 @@ public class DatabaseHelper {
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 	}
 
 	// find publication by object id (database)
 	// try 4197 (note: solution changes every time you reload database)
 	public static void query1Alter(Integer oid) {
 		String thisQuery = "Query 1 (alternative)";
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		Publication pub = (Publication) pm.getObjectById(oid.longValue());
@@ -1477,14 +1295,14 @@ public class DatabaseHelper {
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 	}
 
 	// Find publications by title, returning only a subset of all found publications
 	public static void query2(String title, int startOffset, int endOffset) {
 		String thisQuery = "Query 2";
 
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		Query query = pm.newQuery(Publication.class, "title.contains(t)");
@@ -1507,14 +1325,14 @@ public class DatabaseHelper {
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 	}
 
 	// Find publications by title, returning only a subset of all found publications ORDERED by title
 	public static void query3(String title, int startOffset, int endOffset) {
 		String thisQuery = "Query 3";
 
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		Query query = pm.newQuery(Publication.class, "title.contains(t)");
@@ -1538,7 +1356,7 @@ public class DatabaseHelper {
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 	}
 
 	// our own sorting algorithm, for sorting afterwards
@@ -1551,10 +1369,10 @@ public class DatabaseHelper {
 	 */
 
 	// returns name of the co-authors of a given author
-	public static void query4(String author) {
+/*	public static void query4(String author) {
 		String thisQuery = "Query 4";
 
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 		Collection<Person> result = new HashSet<Person>();
 
@@ -1600,13 +1418,13 @@ public class DatabaseHelper {
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 	}
 
 	// distance between 2 authors
 	public static void query5(String author1, String author2) {
 		String thisQuery = "Query 5";
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		String resultStr = "";
@@ -1694,7 +1512,7 @@ public class DatabaseHelper {
 		} else {
 			resultStr = ("The authors " + author1 + " and " + author2 + " are not connected.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
@@ -1708,7 +1526,7 @@ public class DatabaseHelper {
 	// global average of authors / publication (InProceedings + Proceedings)
 	public static void query6() {
 		String thisQuery = "Query 6";
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		Extent<Publication> ext = pm.getExtent(Publication.class);
@@ -1731,13 +1549,13 @@ public class DatabaseHelper {
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 	}
 
 	// Returns the number of publications per year between the interval year1 and year 2
 	public static void query7(int year1, int year2) {
 		String thisQuery = "Query 7";
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		Query q1 = pm.newQuery(Publication.class);
@@ -1778,14 +1596,14 @@ public class DatabaseHelper {
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 	}
 
 	// No of all publications of a conference, except proceedings
 	public static void query8(String conferenceName) {
 		String thisQuery = "Query 8";
 		String resultStr = "";
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		int result = 0;
@@ -1811,7 +1629,7 @@ public class DatabaseHelper {
 			}
 			resultStr = ("The number of in proceedings presented at the conference " + conferenceName + " was " + result + ".");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
@@ -1827,7 +1645,7 @@ public class DatabaseHelper {
 	public static void query9(String conferenceName) {
 		String thisQuery = "Query 9";
 		String resultStr = "";
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		Query q1 = pm.newQuery(Conference.class, "name == confName");
@@ -1862,7 +1680,7 @@ public class DatabaseHelper {
 			int result = authors.size() + editors.size();
 			resultStr = ("Number of authors and editors at the conference " + conferenceName + " was " + result + ".");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
@@ -1876,7 +1694,7 @@ public class DatabaseHelper {
 	// all authors of conferenceName
 	public static void query10(String conferenceName) {
 		String thisQuery = "Query 10";
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		Query q1 = pm.newQuery(Conference.class, "name == confName");
@@ -1927,14 +1745,14 @@ public class DatabaseHelper {
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 
 	}
 
 	// all publications of conferenceName
 	public static void query11(String conferenceName) {
 		String thisQuery = "Query 11";
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		Query q1 = pm.newQuery(Conference.class, "name == confName");
@@ -1968,13 +1786,13 @@ public class DatabaseHelper {
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 	}
 
 	// list of persons which were authors of an in proceeding and editor of the corresponding proceeding.
 	public static void query12() {
 		String thisQuery = "Query 12";
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		Extent<Proceedings> ext = pm.getExtent(Proceedings.class);
@@ -2002,13 +1820,13 @@ public class DatabaseHelper {
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 	}
 
 	// list of in proceedings where the given author appears as the last author
 	public static void query13(String authorName) {
 		String thisQuery = "Query 13";
-		DatabaseHelper.openDB();
+		DatabaseHelper.connectToDB();
 		pm.currentTransaction().begin();
 
 		Query q1 = pm.newQuery(Person.class, "name == authName");
@@ -2045,14 +1863,13 @@ public class DatabaseHelper {
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 	}
 
 	// list of publishers (Proceedings) whose authors appear in any in proceedings between year1 and year2
 	public static void query14(int year1, int year2) {
 		String thisQuery = "Query 14";
-		DatabaseHelper.openDB();
-		pm.currentTransaction().begin();
+		DatabaseHelper.connectToDB();
 
 		Query q1 = pm.newQuery(InProceedings.class);
 		q1.setFilter("(this.year >= year1) && (this.year <= year2)");
@@ -2090,7 +1907,7 @@ public class DatabaseHelper {
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-		DatabaseHelper.closeDB();
+		DatabaseHelper.closeConnectionDB();
 	}
-
+*/
 }

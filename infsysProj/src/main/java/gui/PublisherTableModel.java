@@ -6,7 +6,7 @@ import javax.swing.table.AbstractTableModel;
 import infsysProj.infsysProj.Publisher;
 import infsysProj.infsysProj.Publisher;
 
-public class PublisherTableModel extends AbstractTableModel {
+public class PublisherTableModel extends AbstractTableModel{
 
 	private static final long serialVersionUID = 1L;
 	private static final int COLUMN_TITLE = 0;
@@ -21,8 +21,8 @@ public class PublisherTableModel extends AbstractTableModel {
 
 		this.listPublisher = allPublisher;
 
+		
 	}
-
 	@Override
 	public String getColumnName(int columnIndex) {
 		return columnNames[columnIndex];
@@ -35,7 +35,7 @@ public class PublisherTableModel extends AbstractTableModel {
 	public int getRowCount() {
 		return listPublisher.size();
 	}
-
+	
 	public String getValueAt(int rowIndex, int columnIndex) {
 		Publisher publisher = listPublisher.get(rowIndex);
 		String returnValue = "";
@@ -67,5 +67,6 @@ public class PublisherTableModel extends AbstractTableModel {
 		}
 		return getValueAt(0, columnIndex).getClass();
 	}
+
 
 }
