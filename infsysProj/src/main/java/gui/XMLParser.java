@@ -335,9 +335,12 @@ public class XMLParser {
 			edition.setConference(conf);
 			edition.setYear(in.getYear());
 			edition.setProceedings(in);
+			edition.setId(String.valueOf(readConferenceEditions.size()));
+			readConferenceEditions.add(edition);
 			Set<ConferenceEdition> conferenceEditions = new HashSet<ConferenceEdition>();
 			conferenceEditions.add(edition);
 			conf.setEditions(conferenceEditions);
+			conf.setId(String.valueOf(readConferences.size()));
 			readConferences.add(conf);
 
 		} else {
@@ -346,6 +349,8 @@ public class XMLParser {
 			edition.setConference(conf);
 			edition.setYear(in.getYear());
 			edition.setProceedings(in);
+			edition.setId(String.valueOf(readConferenceEditions.size()));
+			readConferenceEditions.add(edition);
 			Set<ConferenceEdition> conferenceEditions = conf.getEditions();
 			conferenceEditions.add(edition);
 			conf.setEditions(conferenceEditions);
@@ -364,6 +369,7 @@ public class XMLParser {
 			Set<Publication> publications = new HashSet<Publication>();
 			publications.add(in);
 			pub.setPublications(publications);
+			pub.setId(String.valueOf(readPublishers.size()));
 			readPublishers.add(pub);
 
 		} else {
@@ -385,6 +391,7 @@ public class XMLParser {
 			Set<Publication> publications = new HashSet<Publication>();
 			publications.add(in);
 			seriesResult.setPublications(publications);
+			seriesResult.setId(String.valueOf(readSeries.size()));
 			readSeries.add(seriesResult);
 
 		} else {
@@ -410,6 +417,7 @@ public class XMLParser {
 				Set<Publication> publications = new HashSet<Publication>();
 				publications.add(in);
 				editorResult.setEditedPublications(publications);
+				editorResult.setId(String.valueOf(readPeople.size()));
 				readPeople.add(editorResult);
 
 			} else {
@@ -463,6 +471,7 @@ public class XMLParser {
 				Set<Publication> publications = new HashSet<Publication>();
 				publications.add(in);
 				author.setAuthoredPublications(publications);
+				author.setId(String.valueOf(readPeople.size()));
 				readPeople.add(author);
 
 			} else {
@@ -479,7 +488,7 @@ public class XMLParser {
 		//System.out.println("Added InProceeding: " + in.getTitle());
 
 		in.setAuthors(authors);
-		
+		//in.setId(String.valueOf(readInProceedings.size()));
 		readInProceedings.add(in);
 	}
 

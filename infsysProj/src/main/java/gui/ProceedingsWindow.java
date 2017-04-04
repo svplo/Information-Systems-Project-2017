@@ -53,8 +53,8 @@ public class ProceedingsWindow extends JFrame {
 	private JTable table;
 	private JPanel contentPane;
 	private ItemsPerPage itemsPerPageIndex = ItemsPerPage.FIFTY;
-	DBCollection allPublications;
-	DBCollection currentPublications;
+	List<Publication> allPublications;
+	List<Publication> currentPublications;
 	PublicationTableModel tableModel;
 	private int pageNumber = 0;
 	JTextField pageTextField;
@@ -117,7 +117,7 @@ public class ProceedingsWindow extends JFrame {
 		searchTextField.addActionListener(new ActionListener(){
 
            public void actionPerformed(ActionEvent e){
-				allPublications = DatabaseHelper.searchForProceedings(searchTextField.getText());
+				//allPublications = DatabaseHelper.searchForProceedings(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
             	
@@ -208,7 +208,7 @@ public class ProceedingsWindow extends JFrame {
 	    contentPane.add(addButton, c);
 
 	    
-	    numberOfItemsLabel = new JLabel("1-50 of " + String.valueOf(allPublications.count())+ " items");
+	    numberOfItemsLabel = new JLabel("1-50 of " + String.valueOf(allPublications.size()) + " items");
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 1;
 	    c.weighty = 0;
@@ -462,8 +462,8 @@ public class ProceedingsWindow extends JFrame {
 	}
 
 
-	public DBCollection createListPublications() {
-		DBCollection allPublications = DatabaseHelper.getAllProceedings();
+	public List<Publication> createListPublications() {
+		List<Publication> allPublications = DatabaseHelper.getAllProceedings();
 		return allPublications;
 	}
 	
@@ -473,7 +473,7 @@ public class ProceedingsWindow extends JFrame {
 	}
 	
 	public void reloadTable(){
-		int size = (int) allPublications.count();
+		int size = (int) allPublications.size();
 		if(itemsPerPageIndex == ItemsPerPage.ALL){
 	        numberOfPagesLabel.setText("of 1");
 	        numberOfItemsLabel.setText("1 - " + size + " of " + size + " items");
@@ -482,7 +482,7 @@ public class ProceedingsWindow extends JFrame {
 		}
 		else{
         numberOfPagesLabel.setText("of " + String.valueOf(numberOfPages()));
-        numberOfItemsLabel.setText(String.valueOf(pageNumber*itemsPerPageIndex.getNumber() + 1) + " - " + String.valueOf((int)Math.min(size,(pageNumber +1)*itemsPerPageIndex.getNumber())) + " of " + String.valueOf(allPublications.count()) + " items");
+        numberOfItemsLabel.setText(String.valueOf(pageNumber*itemsPerPageIndex.getNumber() + 1) + " - " + String.valueOf((int)Math.min(size,(pageNumber +1)*itemsPerPageIndex.getNumber())) + " of " + String.valueOf(allPublications.size()) + " items");
 		pageTextField.setText(String.valueOf(pageNumber+1));
 		}
         currentPublications = allPublications;//.subList(itemsPerPageIndex.getNumber()*pageNumber, Math.min(itemsPerPageIndex.getNumber()*(pageNumber+1),size));
@@ -491,11 +491,11 @@ public class ProceedingsWindow extends JFrame {
 	}
 	
 	private int numberOfPages(){
-		if(allPublications.count()< itemsPerPageIndex.getNumber()){
+		if(allPublications.size()< itemsPerPageIndex.getNumber()){
 			return 1;
 		}
 		else{
-			return (int) Math.floor(allPublications.count()/itemsPerPageIndex.getNumber())+1;
+			return (int) Math.floor(allPublications.size()/itemsPerPageIndex.getNumber())+1;
 		}
 	}
 

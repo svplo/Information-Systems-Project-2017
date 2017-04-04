@@ -11,6 +11,9 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.Block;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -31,7 +34,7 @@ import infsysProj.infsysProj.Series;
 
 public class DatabaseHelper {
 	private static MongoDatabase database;
-	private static String dbStandardName = "TheNoSQLDatabase";
+	private static String dbStandardName = "TheNoSQLDatabase3";
 	private static MongoClient mongoClient;
 
 	// source: http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/quick-tour/
@@ -119,11 +122,24 @@ public class DatabaseHelper {
 		return collection;
 	}
 
-	public static MongoCollection<Document> getAllProceedings() {
+	public static List<Publication> getAllProceedings() {
 		connectToDB();
+		createDB();
+		
 		MongoCollection<Document> collection = database.getCollection("Proceedings");
+		List<Publication> result = new ArrayList<Publication>();
+		FindIterable<Document> iterable = collection.find();
+		
+		 iterable.forEach(new Block<Document>() {
+		        @Override
+		        public void apply(final Document document) {
+		            result.add(Adaptor.toProceeding(document));
+
+		        }
+		   });
+
 		closeConnectionDB();
-		return collection;
+		return result;
 	}
 
 	public static String getPublisherName(String proceedingName) {
@@ -1179,12 +1195,15 @@ public class DatabaseHelper {
 
 		//database.setMultithreaded(true);
 		MongoCollection<Document> collection = database.getCollection("Proceedings");
+		if(collection == null){
+			System.out.println("null");
+		}
 		int length = list.size();
 		List<Document> documents = new ArrayList<Document>();
 		for (int i = 0; i < length; i++) {
-			    documents.add(new Document("i", i));
-			if (i % 500 == 0) {
+		    documents.add(Adaptor.toDBDocument(list.get(i)));
 
+			if (i % 500 == 0) {
 				System.out.println(i + " / " + length + " Proceedings added to Database.");
 			}
 		}

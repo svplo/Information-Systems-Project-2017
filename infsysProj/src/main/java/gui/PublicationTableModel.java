@@ -40,9 +40,9 @@ public class PublicationTableModel extends AbstractTableModel {
 
 	private String[] columnNames = { "Publication Title", "Year", "Electronic Edition", "Details" };
 
-	private DBCollection listPublication;
+	private List<Publication> listPublication;
 
-	public PublicationTableModel(DBCollection allPublications) {		
+	public PublicationTableModel(List<Publication> allPublications) {		
 
 		this.listPublication = allPublications;
 
@@ -58,21 +58,21 @@ public class PublicationTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return (int) listPublication.count();
+		return (int) listPublication.size();
 	}
 
 	public String getValueAt(int rowIndex, int columnIndex) {
-		DBObject publications = listPublication.findOne();
+		Publication publications = listPublication.get(rowIndex);
 		String returnValue = "";
 		switch (columnIndex) {
 		case COLUMN_TITLE:
-			returnValue = (String) publications.get("title");
+			returnValue = (String) publications.getTitle();
 			break;
 		case COLUMN_YEAR:
-			returnValue = (String) publications.get("year");
+			returnValue = String.valueOf(publications.getYear());
 			break;
 		case COLUMN_EDITION:
-			returnValue = (String) publications.get("electronicEdition");
+			returnValue = (String) publications.getElectronicEdition();
 			break;
 		case COLUMN_DETAILS:
 			if(publications instanceof InProceedings){
@@ -87,7 +87,7 @@ public class PublicationTableModel extends AbstractTableModel {
 	}
 	
 	
-	public void changeData(DBCollection newList){
+	public void changeData(List<Publication> newList){
 		
 		this.listPublication = newList;
 		fireTableDataChanged();
