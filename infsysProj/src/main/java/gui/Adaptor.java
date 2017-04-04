@@ -1,7 +1,9 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bson.Document;
 
@@ -36,6 +38,16 @@ public class Adaptor {
 		Conference conf = new Conference();
 		conf.setId((String)doc.get("_id"));
 		conf.setName((String)doc.get("name"));
+
+		Set<ConferenceEdition> conferenceEditions = new HashSet<ConferenceEdition>();
+		List<Document> conferenceEditionsIDDoc = ((List<Document>)doc.get("conferenceEditions"));
+		for(Document d: conferenceEditionsIDDoc){
+			ConferenceEdition proc = new ConferenceEdition();
+			proc.setId((String)d.get("_id"));
+			conferenceEditions.add(proc);
+		}
+		
+		conf.setEditions(conferenceEditions);
 
 		return conf;
 	}
@@ -103,7 +115,7 @@ public class Adaptor {
 		for(Publication p : person.getAuthoredPublications()){
 			authoredPublications.add(new BasicDBObject("_id", p.getId()));
 		}
-		for(Publication p : person.getAuthoredPublications()){
+		for(Publication p : person.getEditedPublications()){
 			editedPublications.add(new BasicDBObject("_id", p.getId()));
 		}
 
@@ -116,7 +128,27 @@ public class Adaptor {
 	public static final Person toPerson(Document doc) {
 		Person person = new Person();
 		person.setId((String)doc.get("_id"));
-		person.setName(doc.getString("name"));		
+		person.setName(doc.getString("name"));	
+		
+		Set<Publication> IDs = new HashSet<Publication>();
+		List<Document> inProceedingsIDsDoc = ((List<Document>)doc.get("authoredPublications"));
+		for(Document d: inProceedingsIDsDoc){
+			InProceedings inProc = new InProceedings();
+			inProc.setId((String)d.get("_id"));
+			IDs.add(inProc);
+		}
+		
+		Set<Publication> ProcIDs = new HashSet<Publication>();
+		List<Document> proceedingsIDsDoc = ((List<Document>)doc.get("editedPublications"));
+		for(Document d: proceedingsIDsDoc){
+			Proceedings proc = new Proceedings();
+			proc.setId((String)d.get("_id"));
+			ProcIDs.add(proc);
+		}
+		
+		person.setAuthoredPublications(IDs);
+		person.setEditedPublications(ProcIDs);
+		
 
 		return person;
 	}
@@ -167,6 +199,16 @@ public class Adaptor {
 		publisher.setId((String)doc.get("_id"));
 		publisher.setName(doc.getString("name"));		
 
+		Set<Publication> publications = new HashSet<Publication>();
+		List<Document> conferenceEditionsIDDoc = ((List<Document>)doc.get("publications"));
+		for(Document d: conferenceEditionsIDDoc){
+			Publication proc = new Publication(0);
+			proc.setId((String)d.get("_id"));
+			publications.add(proc);
+		}
+		
+		publisher.setPublications(publications);
+
 		return publisher;
 	}
 
@@ -192,6 +234,16 @@ public class Adaptor {
 		series.setId((String)doc.get("_id"));
 		series.setName(doc.getString("name"));		
 
+		Set<Publication> publications = new HashSet<Publication>();
+		List<Document> conferenceEditionsIDDoc = ((List<Document>)doc.get("publications"));
+		for(Document d: conferenceEditionsIDDoc){
+			Publication proc = new Publication(0);
+			proc.setId((String)d.get("_id"));
+			publications.add(proc);
+		}
+		
+		series.setPublications(publications);
+		
 		return series;
 	}
 

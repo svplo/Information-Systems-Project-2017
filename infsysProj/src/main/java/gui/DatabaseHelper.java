@@ -34,7 +34,7 @@ import infsysProj.infsysProj.Series;
 
 public class DatabaseHelper {
 	private static MongoDatabase database;
-	private static String dbStandardName = "TheNoSQLDatabase8";
+	private static String dbStandardName = "TheNoSQLDatabase9";
 	private static MongoClient mongoClient;
 
 	// source: http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/quick-tour/
@@ -289,10 +289,6 @@ public class DatabaseHelper {
 
 	}
 	
-	public static void p(Object s){
-		System.out.println(s);
-	}
-
 	public static List<String> getAuthoredPublicationsForPerson(String personName) {
 		DatabaseHelper.connectToDB();
 

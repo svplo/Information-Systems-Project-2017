@@ -62,7 +62,7 @@ public class SelectPublication extends JFrame {
 	ObjectMode mode;
 
 	public static enum ObjectMode {
-		PUBLICATION(""), PROCEEDINGS(""), INPROCEEDINGS(""), PERSON("");
+		PUBLICATION("Publication"), PROCEEDINGS("Proceedings"), INPROCEEDINGS("InProceedings"), PERSON("Person");
 
 		private final String string;
 
@@ -112,7 +112,8 @@ public class SelectPublication extends JFrame {
 	}
 
 	public SelectPublication(ObjectMode mode, MyJFrame caller, int id) {
-		super("Select a Publication");
+		super("Select a " + mode.getString());
+
 		this.mode = mode;
 		contentPane = new JPanel(new GridBagLayout());
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
