@@ -45,7 +45,12 @@ public class XMLParser {
 		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
 		DatabaseHelper.addProceedings(readProceedings);
+		DatabaseHelper.addPersons(readPeople);
 		DatabaseHelper.addInProceedings(readInProceedings);
+		DatabaseHelper.addConferences(readConferences);
+		DatabaseHelper.addSeries(readSeries);
+		DatabaseHelper.addPublishers(readPublishers);
+		DatabaseHelper.addConferenceEditions(readConferenceEditions);
 		DatabaseHelper.closeConnectionDB();
 		
 	}

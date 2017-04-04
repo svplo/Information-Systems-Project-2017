@@ -25,11 +25,19 @@ public class Adaptor {
 		List<BasicDBObject> conferenceEditions = new ArrayList<>();
 
 		for(ConferenceEdition e : conf.getEditions()){
-			conferenceEditions.add(new BasicDBObject("confereceEdition_id",e.getId() ));
+			conferenceEditions.add(new BasicDBObject("_id",e.getId() ));
 		}
 		doc.append("conferenceEditions", conferenceEditions);
 
 		return doc;
+	}
+	
+	public static final Conference toConference(Document doc) {
+		Conference conf = new Conference();
+		conf.setId((String)doc.get("_id"));
+		conf.setName((String)doc.get("name"));
+
+		return conf;
 	}
 
 	public static final Document toDBDocument(ConferenceEdition confEdition) {
@@ -41,23 +49,48 @@ public class Adaptor {
 		return doc;
 	}
 	
+	public static final ConferenceEdition toConferenceEdition(Document doc) {
+		ConferenceEdition confEdition = new ConferenceEdition();
+		confEdition.setId((String)doc.get("_id"));
+		confEdition.setYear((int)doc.getInteger("year"));
+
+		return confEdition;
+	}
+
 	public static final Document toDBDocument(InProceedings inProceeding) {
 		Document doc = new Document("_id", inProceeding.getId())
 				.append("note", inProceeding.getNote())
 				.append("title", inProceeding.getTitle())
 				.append("electronicEdition", inProceeding.getElectronicEdition())
 				.append("pages", inProceeding.getPages())
-				.append("proceedings", inProceeding.getProceedings().getId())
 				.append("year", inProceeding.getYear());
 		
+		if(inProceeding.getProceedings() != null){
+			doc.append("proceedings", inProceeding.getProceedings().getId());
+		}
+		else{
+			doc.append("proceedings", "");
+		}
 		List<BasicDBObject> authors = new ArrayList<>();
 
 		for(Person p : inProceeding.getAuthors()){
-			authors.add(new BasicDBObject("author_id",p.getId() ));		
+			authors.add(new BasicDBObject("_id",p.getId() ));		
 		}
 		doc.append("authors", authors);
 
 		return doc;
+	}
+
+	public static final InProceedings toInProceedings(Document doc) {
+		InProceedings proc = new InProceedings();
+		proc.setId((String)doc.get("_id"));
+		proc.setNote(doc.getString("note"));
+		proc.setElectronicEdition((String)doc.get("electronicEdition"));
+		proc.setTitle((String) doc.get("title"));
+		proc.setYear((int)doc.getInteger("year"));
+		
+
+		return proc;
 	}
 
 	public static final Document toDBDocument(Person person) {
@@ -68,10 +101,10 @@ public class Adaptor {
 		List<BasicDBObject> editedPublications = new ArrayList<>();
 
 		for(Publication p : person.getAuthoredPublications()){
-			authoredPublications.add(new BasicDBObject("authoredPublications_id", p.getId()));
+			authoredPublications.add(new BasicDBObject("_id", p.getId()));
 		}
 		for(Publication p : person.getAuthoredPublications()){
-			editedPublications.add(new BasicDBObject("editedPublications_id", p.getId()));
+			editedPublications.add(new BasicDBObject("_id", p.getId()));
 		}
 
 		doc.append("authoredPublications", authoredPublications);
@@ -80,6 +113,13 @@ public class Adaptor {
 		return doc;
 	}
 	
+	public static final Person toPerson(Document doc) {
+		Person person = new Person();
+		person.setId((String)doc.get("_id"));
+		person.setName(doc.getString("name"));		
+
+		return person;
+	}
 	
 	public static final Document toDBDocument(Publication pub) {
 		Document doc = new Document("_id", pub.getId())
@@ -89,13 +129,24 @@ public class Adaptor {
 		List<BasicDBObject> authors = new ArrayList<>();
 
 		for(Person p : pub.getAuthors()){
-			authors.add(new BasicDBObject("author_id",p.getId() ));		
+			authors.add(new BasicDBObject("_id",p.getId() ));		
 		}
 		doc.append("authors", authors);		
 		
 		return doc;
 	}
 	
+	public static final Publication toPublication(Document doc) {
+		Publication pub = new Publication(0);
+		pub.setId((String)doc.get("_id"));
+		pub.setTitle(doc.getString("title"));		
+		pub.setElectronicEdition((String)doc.get("electronicEdition"));
+		pub.setTitle((String) doc.get("title"));
+		pub.setYear((int)doc.getInteger("year"));
+
+		return pub;
+	}
+
 	public static final Document toDBDocument(Publisher publisher) {
 		Document doc = new Document("_id", publisher.getId())
 				.append("name", publisher.getName());
@@ -103,12 +154,20 @@ public class Adaptor {
 		List<BasicDBObject> publications = new ArrayList<>();
 
 		for(Publication p : publisher.getPublications()){
-			publications.add(new BasicDBObject("publication_id", p.getId()));
+			publications.add(new BasicDBObject("_id", p.getId()));
 		}
 
 		doc.append("publications", publications);
 		
 		return doc;
+	}
+	
+	public static final Publisher toPublisher(Document doc) {
+		Publisher publisher = new Publisher();
+		publisher.setId((String)doc.get("_id"));
+		publisher.setName(doc.getString("name"));		
+
+		return publisher;
 	}
 
 	public static final Document toDBDocument(Series series) {
@@ -118,7 +177,7 @@ public class Adaptor {
 		List<BasicDBObject> publications = new ArrayList<>();
 
 		for(Publication p : series.getPublications()){
-			publications.add(new BasicDBObject("publication_id", p.getId()));
+			publications.add(new BasicDBObject("_id", p.getId()));
 		}
 
 		doc.append("publications", publications);
@@ -128,6 +187,14 @@ public class Adaptor {
 		return doc;
 	}
 	
+	public static final Series toSeries(Document doc) {
+		Series series = new Series();
+		series.setId((String)doc.get("_id"));
+		series.setName(doc.getString("name"));		
+
+		return series;
+	}
+
 	public static final Document toDBDocument(Proceedings proceeding) {
 
     	Document doc = new Document("_id", proceeding.getId())
@@ -146,7 +213,7 @@ public class Adaptor {
 		List<BasicDBObject> inProceedings = new ArrayList<>();
 
 		for(InProceedings i : proceeding.getInProceedings()){
-			inProceedings.add(new BasicDBObject("inProceedings_id", i.getId()));
+			inProceedings.add(new BasicDBObject("_id", i.getId()));
 		}
 
 		doc.append("inProceedings", inProceedings);
@@ -165,8 +232,11 @@ public class Adaptor {
 		proc.setElectronicEdition((String)doc.get("electronicEdition"));
 		proc.setTitle((String) doc.get("title"));
 		proc.setYear((int)doc.getInteger("year"));
+		
+
 		return proc;
 	}
+
 
 
 }
