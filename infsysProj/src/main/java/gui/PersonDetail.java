@@ -82,7 +82,7 @@ public class PersonDetail extends MyJFrame {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String newName = txtTitle.getText();
-				DatabaseHelper.updatePerson(person.getName(),newName, authoredPublications, editedPublications);
+				DatabaseHelper.updatePerson(person.getId(),newName, authoredPublications, editedPublications);
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
@@ -102,7 +102,7 @@ public class PersonDetail extends MyJFrame {
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DatabaseHelper.deletePerson(person.getName());
+				DatabaseHelper.deletePerson(person.getId());
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
