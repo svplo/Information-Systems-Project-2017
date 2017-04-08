@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,31 +14,22 @@ import java.util.List;
 import java.util.Set;
 
 import org.bson.Document;
-import org.bson.codecs.Codec;
-import org.bson.codecs.configuration.CodecRegistries;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
-import com.mongodb.client.model.*;
-import com.mongodb.client.model.Sorts;
-import com.mongodb.client.model.Sorts.*;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Aggregates.*;
-
 import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.Block;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientOptions.Builder;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 
 import infsysProj.infsysProj.Conference;
 import infsysProj.infsysProj.ConferenceEdition;
@@ -953,7 +945,6 @@ public class DatabaseHelper {
 		 */
 	}
 	
-	//TODO: find gui bug
 	// returns name of the co-authors of a given author
 	public static void query4(String author) {
 		String thisQuery = "Query 4";
@@ -961,10 +952,21 @@ public class DatabaseHelper {
 		createDB();
 
 		MongoCollection<Document> pers = database.getCollection("Person");
-		FindIterable<Document> resultPers = pers.find(Filters.regex("name", author));
-		//using HashSet to avoid duplicates
-		
-		Iterator<Document> itr = resultPers.iterator();
+		BasicDBObject field = new  BasicDBObject();
+		field.put("authoredPublication", 1);
+		FindIterable<Document> authoredPubIds = pers.find(Filters.regex("name", author)).projection(field);
+		System.out.println(authoredPubIds.first());
+		Iterator<Document> itrAuthPubId = authoredPubIds.iterator();
+		//go through all publications
+		while (itrAuthPubId.hasNext()){
+			String id = extractId(itrAuthPubId.next());
+			//get corresponding inProceedings
+			MongoCollection<Document> inProc = database.getCollection("InProceeding");
+			BasicDBObject field2 = new  BasicDBObject();
+			field.put("authors", 1);
+			FindIterable<Document> resultInProc = inProc.find(Filters.regex("_id", id));//.projection(field2);
+			Iterator<Document> itr = resultInProc.iterator();
+			System.out.println(resultInProc.first());
 		try {
 			PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
@@ -987,11 +989,98 @@ public class DatabaseHelper {
 					}
 				}
 			}
+		
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
+		}
 		closeConnectionDB();
 	}
+	
+	// global average of authors / publication (InProceedings + Proceedings)
+		//TODO: verify, if persons are added correctly. zoodb gave different result
+		public static void query6() {
+			String thisQuery = "Query 6";
+			connectToDB();
+			createDB();
 
+			MongoCollection<Document> pers = database.getCollection("Person");
+			double authors = pers.count();
+			MongoCollection<Document> inProc = database.getCollection("InProceedings");
+			MongoCollection<Document> proc = database.getCollection("Proceedings");
+			double publications = inProc.count() + proc.count();
+			closeConnectionDB();
+			try {
+				PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+				writer.println(thisQuery);
+				if (publications != 0) {
+					writer.println("Average authors " + (double) (authors / publications) + ".");
+				} else {
+					writer.println("There are no publications available.");
+				}
+				writer.close();
+			} catch (IOException e) {
+				System.out.println("Could not print to file.");
+			}
+		}
+		
+		//TODO pretty print, id = no of publications
+		// Returns the number of publications per year between the interval year1 and year 2
+		public static void query7(int year1, int year2) {
+			String thisQuery = "Query 7";
+			connectToDB();
+			createDB();
+
+			try {
+			PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+			writer.println(thisQuery);
+			//writer.printf("%-12s%-17s\n", "Year", "No. Publications");
+			MongoCollection<Document> pubs = database.getCollection("Proceedings");
+			AggregateIterable<Document> publications = pubs.aggregate(Arrays.asList(
+		              Aggregates.match(Filters.lte("year", year2)),
+		              Aggregates.match(Filters.gte("year", year1)),
+		              Aggregates.group("$year", Accumulators.sum("year", 1))));
+			
+			Iterator<Document> itr = publications.iterator();
+			while (itr.hasNext()) {
+				System.out.println("next");
+				writer.println(itr.next());
+			}
+			writer.close();
+			} catch (IOException e) {
+				System.out.println("Could not print to file.");
+			}
+			closeConnectionDB();
+		}
+			
+		// No of all publications of a conference, except proceedings
+		public static void query8(String conferenceName) {
+			String thisQuery = "Query 8";
+			connectToDB();
+			createDB();
+
+			MongoCollection<Document> confs = database.getCollection("Conference");
+			AggregateIterable<Document> conferences = confs.aggregate(Arrays.asList(
+		              Aggregates.match(Filters.eq("name",conferenceName)),
+		              Aggregates.unwind("$conferenceEditions"),
+		              Aggregates.lookup("ConferenceEdition", "conferenceEditions", "proceedings", "proceedings"),
+		              //TODO proceedings seem to be empty :/
+		              Aggregates.group("$proceedings", Accumulators.sum("proceedings", 1))));
+			try {
+				PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+				writer.println(thisQuery);
+				Iterator<Document> itr = conferences.iterator();
+				while(itr.hasNext()){
+					writer.println(itr.next());
+				}
+				writer.close();
+			} catch (IOException e) {
+				System.out.println("Could not print to file.");
+			}
+			closeConnectionDB();
+		}
+		
+		
 }
+
