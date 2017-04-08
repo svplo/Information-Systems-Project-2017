@@ -49,4 +49,8 @@ public class Publication extends DomainObject {
 		this.electronicEdition = electronicEdition;
 	}
 
+	public void addAuthor(Person p){
+		this.authors.add(p);
+	}
+
 }

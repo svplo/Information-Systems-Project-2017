@@ -66,5 +66,6 @@ public class InProceedings extends Publication {
 	public void setProceedings(Proceedings proceedings) {
 		this.proceedings = proceedings;
 	}
+	
 
 }

@@ -42,7 +42,7 @@ import infsysProj.infsysProj.Series;
 
 public class DatabaseHelper {
 	private static MongoDatabase database;
-	private static String dbStandardName = "TheNoSQLDatabase9";
+	private static String dbStandardName = "TheNoSQLDatabase12";
 	private static MongoClient mongoClient;
 
 	// source: http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/quick-tour/
@@ -295,16 +295,18 @@ public class DatabaseHelper {
 
 	public static List<String> getAuthoredPublicationsForPerson(String personName) {
 		DatabaseHelper.connectToDB();
+		createDB();
 
-		Collection<Person> persons = new HashSet<Person>();
+		MongoCollection<Document> collection = database.getCollection("Person");
+		BasicDBObject query = new BasicDBObject("name", personName);
+		FindIterable<Document> iterable = collection.find(query);
+		
 		List<String> result = new ArrayList<String>();
-		if (persons.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + personName);
-
-		} else {
-			for (Publication i : persons.iterator().next().getAuthoredPublications()) {
-				result.add(i.getTitle());
-			}
+		for(Publication inProc : Adaptor.toPerson(iterable.first()).getAuthoredPublications()){
+			collection = database.getCollection("InProceedings");
+			query = new BasicDBObject("_id", inProc.getId());
+			iterable = collection.find(query);
+			result.add(Adaptor.toInProceedings(iterable.first()).getTitle());
 		}
 
 		DatabaseHelper.closeConnectionDB();
@@ -313,16 +315,18 @@ public class DatabaseHelper {
 
 	public static List<String> getEditedPublicationsForPerson(String personName) {
 		DatabaseHelper.connectToDB();
+		createDB();
 
-		Collection<Person> persons = new HashSet<Person>();
+		MongoCollection<Document> collection = database.getCollection("Person");
+		BasicDBObject query = new BasicDBObject("name", personName);
+		FindIterable<Document> iterable = collection.find(query);
+		
 		List<String> result = new ArrayList<String>();
-		if (persons.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + personName);
-
-		} else {
-			for (Publication i : persons.iterator().next().getEditedPublications()) {
-				result.add(i.getTitle());
-			}
+		for(Publication inProc : Adaptor.toPerson(iterable.first()).getEditedPublications()){
+			collection = database.getCollection("Proceedings");
+			query = new BasicDBObject("_id", inProc.getId());
+			iterable = collection.find(query);
+			result.add(Adaptor.toInProceedings(iterable.first()).getTitle());
 		}
 
 		DatabaseHelper.closeConnectionDB();
@@ -612,83 +616,181 @@ public class DatabaseHelper {
 		System.out.println("All Proceedings added to Database");
 
 	}
+	
+	public static void myDelete(String collection, String key, String compareString){
+		
+		BasicDBObject find = new BasicDBObject();
+		find.put(key, compareString);
+		MongoCollection<Document> coll = database.getCollection(collection);
+		coll.deleteOne(find);
+
+	}
+
+	
+	public static Iterator<Document> myQuery(String collection, String key, String compareString){
+		
+		BasicDBObject whereQuery = new BasicDBObject();
+		whereQuery.put(key, compareString);
+		MongoCollection<Document> coll = database.getCollection(collection);
+		Iterator<Document> cursor = coll.find(whereQuery).iterator();
+
+		return cursor;
+		
+	}
+	
+	public static void myReplacement(String collection, String key, String compareString, Document doc){
+		
+		BasicDBObject find = new BasicDBObject();
+		find.put(key, compareString);
+		MongoCollection<Document> coll = database.getCollection(collection);
+		coll.replaceOne(find, doc);
+
+	}
+
 
 	public static void updatePerson(String id, String name, List<String> authoredPublications, List<String> editedPublications) {
 		connectToDB();
 		createDB();
 		
-		MongoCollection<Document> collection = database.getCollection("Person");
-		BasicDBObject whereQuery = new BasicDBObject();
+		
+		//remove Person from authorList of authored Publications
+		Iterator<Document> cursor0 = myQuery("Person","_id",id);
+		Person oldPerson = Adaptor.toPerson(cursor0.next());
+		for(Publication inProc : oldPerson.getAuthoredPublications()){
+			Iterator<Document> cursor1 = myQuery("InProceedings","_id",inProc.getId());
+			InProceedings inProceeding = Adaptor.toInProceedings(cursor1.next());
+			List<Person> newAuthors = new ArrayList<Person>();
+			for(Person aut : inProceeding.getAuthors()){
+				if(!aut.getId().equals(id)){
+					newAuthors.add(aut);
+				}
+			}
+			inProceeding.setAuthors(newAuthors);
+			myReplacement("InProceedings", "_id", inProc.getId(),Adaptor.toDBDocument(inProceeding));
+		}
+		
+		//remove Person from authorList of edited Publications
+		for(Publication inProc : oldPerson.getEditedPublications()){
+			Iterator<Document> cursor1 = myQuery("Proceedings","_id",inProc.getId());
+			Proceedings inProceeding = Adaptor.toProceeding(cursor1.next());
+			List<Person> newAuthors = new ArrayList<Person>();
+			for(Person aut : inProceeding.getAuthors()){
+				if(!aut.getId().equals(id)){
+					newAuthors.add(aut);
+				}
+			}
+			inProceeding.setAuthors(newAuthors);
+			myReplacement("Proceedings", "_id", inProc.getId(),Adaptor.toDBDocument(inProceeding));
+		}
+
+		
 		Iterator<String> aPubIter = authoredPublications.iterator();
-		Iterator<String> ePubIter = authoredPublications.iterator();
+		Iterator<String> ePubIter = editedPublications.iterator();
 		Set<Publication> aPublications = new HashSet<Publication>();
 		Set<Publication> ePublications = new HashSet<Publication>();
 		while (aPubIter.hasNext()) {
-			whereQuery.put("title", aPubIter.next());
-			Iterator<Document> cursor = collection.find(whereQuery).iterator();
+			
+			Iterator<Document> cursor = myQuery("InProceedings", "title", aPubIter.next());
 			while (cursor.hasNext()) {
-				aPublications.add(Adaptor.toPublication(cursor.next()));
+				InProceedings inProceeding = Adaptor.toInProceedings(cursor.next());
+				inProceeding.addAuthor(oldPerson);
+				myReplacement("InProceedings", "_id",inProceeding.getId(),Adaptor.toDBDocument(inProceeding));
+				aPublications.add(inProceeding);
+				
 			}
 		}
 		while (ePubIter.hasNext()) {
-			whereQuery.put("title", ePubIter.next());
-			Iterator<Document> cursor = collection.find(whereQuery).iterator();
+			Iterator<Document> cursor = myQuery("Proceedings", "title", ePubIter.next());
 			while (cursor.hasNext()) {
-				ePublications.add(Adaptor.toPublication(cursor.next()));
+				Proceedings inProceeding = Adaptor.toProceeding(cursor.next());
+				inProceeding.addAuthor(oldPerson);
+				myReplacement("Proceedings", "_id",inProceeding.getId(),Adaptor.toDBDocument(inProceeding));
+				aPublications.add(inProceeding);
 			}
 		}
 		Person p = new Person(id, name, aPublications, ePublications);
-		BasicDBObject findPerson = new BasicDBObject();
-		findPerson.put("_id", id);
-		//instead of updating only specific fields, replace them all
-		collection.replaceOne(findPerson, Adaptor.toDBDocument(p));
+		myReplacement("Person", "_id", id,Adaptor.toDBDocument(p));
 		closeConnectionDB();
 	}
 
+	
+	
 	public static void deletePerson(String id) {
 		connectToDB();
 		createDB();
-		MongoCollection<Document> collection = database.getCollection("Person");
-		BasicDBObject whereQuery = new BasicDBObject();
-		whereQuery.put("_id", id);
-		collection.deleteOne(whereQuery);
+		
+		//remove Person from authorList of authored Publications
+		Iterator<Document> cursor0 = myQuery("Person","_id",id);
+		Person oldPerson = Adaptor.toPerson(cursor0.next());
+		for(Publication inProc : oldPerson.getAuthoredPublications()){
+			Iterator<Document> cursor1 = myQuery("InProceedings","_id",inProc.getId());
+			InProceedings inProceeding = Adaptor.toInProceedings(cursor1.next());
+			List<Person> newAuthors = new ArrayList<Person>();
+			for(Person aut : inProceeding.getAuthors()){
+				if(!aut.getId().equals(id)){
+					newAuthors.add(aut);
+				}
+			}
+			inProceeding.setAuthors(newAuthors);
+			myReplacement("InProceedings", "_id", inProc.getId(),Adaptor.toDBDocument(inProceeding));
+		}
+		
+		//remove Person from authorList of edited Publications
+		for(Publication inProc : oldPerson.getEditedPublications()){
+			Iterator<Document> cursor1 = myQuery("Proceedings","_id",inProc.getId());
+			Proceedings inProceeding = Adaptor.toProceeding(cursor1.next());
+			List<Person> newAuthors = new ArrayList<Person>();
+			for(Person aut : inProceeding.getAuthors()){
+				if(!aut.getId().equals(id)){
+					newAuthors.add(aut);
+				}
+			}
+			inProceeding.setAuthors(newAuthors);
+			myReplacement("Proceedings", "_id", inProc.getId(),Adaptor.toDBDocument(inProceeding));
+		}
+
+		myDelete("Person","_id", id);
 		closeConnectionDB();
 	}
 
 	public static void addPerson(String newName, List<String> authoredPublications, List<String> editedPublications) {
 			connectToDB();
 			createDB();
-			
-			MongoCollection<Document> collection = database.getCollection("Person");
-			BasicDBObject whereQuery = new BasicDBObject();
+			String id = (new ObjectId()).toString();
+			Person p = new Person();
+			p.setId(id);
 			Iterator<String> aPubIter = authoredPublications.iterator();
 			Iterator<String> ePubIter = editedPublications.iterator();
 			Set<Publication> aPublications = new HashSet<Publication>();
 			Set<Publication> ePublications = new HashSet<Publication>();
 			while (aPubIter.hasNext()) {
-				whereQuery.put("title", aPubIter.next());
-				Iterator<Document> cursor = collection.find(whereQuery).iterator();
+				
+				Iterator<Document> cursor = myQuery("InProceedings", "title", aPubIter.next());
 				while (cursor.hasNext()) {
-					aPublications.add(Adaptor.toPublication(cursor.next()));
+					InProceedings inProceeding = Adaptor.toInProceedings(cursor.next());
+					inProceeding.addAuthor(p);
+					myReplacement("InProceedings", "_id",inProceeding.getId(),Adaptor.toDBDocument(inProceeding));
+					aPublications.add(inProceeding);
+					
 				}
 			}
 			while (ePubIter.hasNext()) {
-				whereQuery.put("title", ePubIter.next());
-				Iterator<Document> cursor = collection.find(whereQuery).iterator();
+				Iterator<Document> cursor = myQuery("Proceedings", "title", ePubIter.next());
 				while (cursor.hasNext()) {
-					ePublications.add(Adaptor.toPublication(cursor.next()));
+					Proceedings inProceeding = Adaptor.toProceeding(cursor.next());
+					inProceeding.addAuthor(p);
+					myReplacement("Proceedings", "_id",inProceeding.getId(),Adaptor.toDBDocument(inProceeding));
+					aPublications.add(inProceeding);
 				}
 			}
-			Person p = new Person(newName, aPublications, ePublications);
+
+			p.setAuthoredPublications(aPublications);
+			p.setEditedPublications(ePublications);
 			
-			p.setId((new ObjectId()).toString());
 			//instead of updating only specific fields, replace them all
-			try{
-				collection.insertOne(Adaptor.toDBDocument(p));
-			}
-			catch(com.mongodb.MongoWriteException e){
-				//there is probably a duplicate key
-			}
+			MongoCollection<Document> collection = database.getCollection("Person");
+			collection.insertOne(Adaptor.toDBDocument(p));
+
 			closeConnectionDB();
 		}
 	/*

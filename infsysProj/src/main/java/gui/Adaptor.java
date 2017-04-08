@@ -101,6 +101,16 @@ public class Adaptor {
 		proc.setTitle((String) doc.get("title"));
 		proc.setYear((int)doc.getInteger("year"));
 		
+		List<Person> authors = new ArrayList<Person>();
+		List<Document> authorsIDsDoc = ((List<Document>)doc.get("authors"));
+		for(Document d: authorsIDsDoc){
+			Person aut = new Person();
+			aut.setId((String)d.get("_id"));
+			authors.add(aut);
+		}
+		
+		proc.setAuthors(authors);
+
 
 		return proc;
 	}
@@ -269,6 +279,14 @@ public class Adaptor {
 
 		doc.append("inProceedings", inProceedings);
     	
+		
+		List<BasicDBObject> authors = new ArrayList<>();
+
+		for(Person p : proceeding.getAuthors()){
+			authors.add(new BasicDBObject("_id",p.getId() ));		
+		}
+		doc.append("authors", authors);
+
     	return doc;
     			
     	    			
@@ -284,6 +302,15 @@ public class Adaptor {
 		proc.setTitle((String) doc.get("title"));
 		proc.setYear((int)doc.getInteger("year"));
 		
+		List<Person> authors = new ArrayList<Person>();
+		List<Document> authorsIDsDoc = ((List<Document>)doc.get("authors"));
+		for(Document d: authorsIDsDoc){
+			Person aut = new Person();
+			aut.setId((String)d.get("_id"));
+			authors.add(aut);
+		}
+		proc.setAuthors(authors);
+
 
 		return proc;
 	}
