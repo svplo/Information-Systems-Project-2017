@@ -17,6 +17,7 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 import com.mongodb.client.model.*;
 import com.mongodb.client.model.Sorts;
@@ -669,7 +670,7 @@ public class DatabaseHelper {
 			MongoCollection<Document> collection = database.getCollection("Person");
 			BasicDBObject whereQuery = new BasicDBObject();
 			Iterator<String> aPubIter = authoredPublications.iterator();
-			Iterator<String> ePubIter = authoredPublications.iterator();
+			Iterator<String> ePubIter = editedPublications.iterator();
 			Set<Publication> aPublications = new HashSet<Publication>();
 			Set<Publication> ePublications = new HashSet<Publication>();
 			while (aPubIter.hasNext()) {
@@ -687,8 +688,15 @@ public class DatabaseHelper {
 				}
 			}
 			Person p = new Person(newName, aPublications, ePublications);
+			
+			p.setId((new ObjectId()).toString());
 			//instead of updating only specific fields, replace them all
-			collection.insertOne(Adaptor.toDBDocument(p));
+			try{
+				collection.insertOne(Adaptor.toDBDocument(p));
+			}
+			catch(com.mongodb.MongoWriteException e){
+				//there is probably a duplicate key
+			}
 			closeConnectionDB();
 		}
 	/*

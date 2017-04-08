@@ -173,7 +173,6 @@ public class Adaptor {
 		pub.setId((String)doc.get("_id"));
 		pub.setTitle(doc.getString("title"));		
 		pub.setElectronicEdition((String)doc.get("electronicEdition"));
-		pub.setTitle((String) doc.get("title"));
 		pub.setYear((int)doc.getInteger("year"));
 
 		return pub;
