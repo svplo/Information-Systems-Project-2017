@@ -697,6 +697,7 @@ public class DatabaseHelper {
 	
 	public static String getID(Document doc, String key) {
 		//TODO Maybe someone know how to get _id of sub document
+		
 		DBObject  refer = (DBObject)doc.get(key);
 		return ((String) refer.get("_id"));
 	}
@@ -709,10 +710,7 @@ public class DatabaseHelper {
 		MongoCollection<Document> collection = database.getCollection("InProceedings");
 		BasicDBObject query = new BasicDBObject("_id", InProceedingId);
 		FindIterable<Document> iterable = collection.find(query);
-		String procId = getID(iterable.first(), "proceedings");
 		collection = database.getCollection("Proceedings");
-		query = new BasicDBObject("_id", procId);
-		iterable = collection.find(query);
 		p = Adaptor.toProceeding(iterable.first());
 		
 		closeConnectionDB();
