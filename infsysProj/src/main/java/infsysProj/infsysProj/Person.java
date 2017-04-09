@@ -65,7 +65,7 @@ public class Person extends DomainObject {
 	}
 	
 	public void addEditedPublication(Publication p){
-		this.authoredPublications.add(p);
+		this.editedPublications.add(p);
 	}
 
 	

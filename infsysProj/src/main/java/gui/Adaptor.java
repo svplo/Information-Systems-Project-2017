@@ -70,6 +70,9 @@ public class Adaptor {
 		Conference conference = new Conference();
 		conference.setId(doc.getString("conference"));
 		confEdition.setConference(conference);
+		Proceedings proc = new Proceedings();
+		proc.setId(doc.getString("proceedings"));
+		confEdition.setProceedings(proc);
 		return confEdition;
 	}
 

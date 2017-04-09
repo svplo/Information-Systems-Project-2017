@@ -227,26 +227,30 @@ public class DatabaseHelper {
 		return conf.getName();
 	}
 
-	public static String getConferenceEditionName(String proceedingName) {
+	public static String getConferenceEditionName(ConferenceEdition edition) {
 		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
 		
-		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
-		Proceedings proc = Adaptor.toProceeding(cursor.next());
 		
-		cursor = myQuery("ConferenceEdition", "_id", proc.getConferenceEdition().getId());
-		ConferenceEdition confE = Adaptor.toConferenceEdition(cursor.next());
+		Iterator<Document> cursor = myQuery("Conference", "_id", edition.getConference().getId());
+		Conference conf = Adaptor.toConference(cursor.next());
 		
 		
 		DatabaseHelper.closeConnectionDB();
-		return String.valueOf(confE.getYear());
+		return conf.getName();
 	}
 
-	public static String getConferenceEditionProceeding(ConferenceEdition proceedingName) {
+	public static String getConferenceEditionProceeding(ConferenceEdition edition) {
 		DatabaseHelper.connectToDB();
-
+		DatabaseHelper.createDB();
+		
+		
+		Iterator<Document> cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
+		Proceedings proc = Adaptor.toProceeding(cursor.next());
+		
+		
 		DatabaseHelper.closeConnectionDB();
-		return "";
+		return proc.getTitle();
 	}
 
 	public static String getConferenceYear(String proceedingName) {
@@ -264,19 +268,20 @@ public class DatabaseHelper {
 		return String.valueOf(confE.getYear());
 	}
 
-	public static List<String> getAuthorsOfProceedings(String proceedingsName) {
+	public static List<String> getAuthorsOfProceedings(String proceedingName) {
 		DatabaseHelper.connectToDB();
+		DatabaseHelper.createDB();
+		
+		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
+		Proceedings proc = Adaptor.toProceeding(cursor.next());
 
-		Collection<Proceedings> proceedings = new HashSet<Proceedings>();
 		List<String> result = new ArrayList<String>();
-		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + proceedingsName);
-
-		} else {
-			for (Person i : proceedings.iterator().next().getAuthors()) {
-				result.add(i.getName());
-			}
+		for(Person p : proc.getAuthors()){
+			cursor = myQuery("Person", "_id", p.getId());
+			Person person = Adaptor.toPerson(cursor.next());
+			result.add(person.getName());
 		}
+
 		DatabaseHelper.closeConnectionDB();
 		return result;
 	}
@@ -443,8 +448,9 @@ public class DatabaseHelper {
 
 		MongoCollection<Document> collection = database.getCollection("ConferenceEdition");
 		BasicDBObject query = new BasicDBObject();
-		query.put("title", java.util.regex.Pattern.compile(search));
+		query.put("_id", java.util.regex.Pattern.compile(search));
 
+		
 		FindIterable<Document> iterable = collection.find(query);
 		List<ConferenceEdition> result = new ArrayList<ConferenceEdition>();
 		Iterator it = iterable.iterator();
@@ -871,6 +877,7 @@ public class DatabaseHelper {
 		String id = (new ObjectId()).toString();
 		Person p = new Person();
 		p.setId(id);
+		p.setName(newName);
 		Iterator<String> aPubIter = authoredPublications.iterator();
 		Iterator<String> ePubIter = editedPublications.iterator();
 		Set<Publication> aPublications = new HashSet<Publication>();
@@ -1063,6 +1070,7 @@ public class DatabaseHelper {
 		String id = (new ObjectId()).toString();
 		newProceeding.setId(id);
 		
+		p(authors);
 		//update all authors
 		Iterator<String> authorIter = authors.iterator();
 		List<Person> authorsList = new ArrayList<Person>();
