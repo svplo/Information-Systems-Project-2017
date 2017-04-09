@@ -33,24 +33,32 @@ public class StartWindow extends JFrame {
 					frame.setVisible(true);
 					
 					//Run the queries required for task 1.3
-				//	DatabaseHelper.query1("conf/acm/ColeMM87");
+					//DatabaseHelper.query1("conf/acm/ColeMM87");
 					
+					//diff. to zoodb, since no ordering involved
 				//	DatabaseHelper.query2("expert system", 0, 3);
 					
+					//equal to zoodb output
 				//	DatabaseHelper.query3("expert system", 0, 3);
 					
-				//	DatabaseHelper.query4("William D. Young");
+					//TODO write as regular expression
+					//DatabaseHelper.query4("William D. Young");
+				//	DatabaseHelper.query4("Saindon");
 					
 				//	DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
 					//William D. Young --> William R. Bevier --> J. Thomas Haigh = 2
 					
-				//	DatabaseHelper.query6();
+					//zoodbAverage authors 1.8636056420805172
+					//mongodb Average authors 1.8821040258595356.
+			//		DatabaseHelper.query6();
 					
-				//	DatabaseHelper.query7(1980,1990);
+					//if someone is good in reg. expression, please prettify output
+					//DatabaseHelper.query7(1980,1990);
 					
-				//	DatabaseHelper.query8("Microcomputing");
+					// zoodb 41
+		//			DatabaseHelper.query8("Microcomputing");
 					
-				//	DatabaseHelper.query9("Microcomputing");
+					//DatabaseHelper.query9("Microcomputing");
 
 				//	DatabaseHelper.query10("Microcomputing");
 					
