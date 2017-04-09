@@ -127,10 +127,10 @@ public class ProceedingDetail extends MyJFrame {
 
 				newProc.setVolume(txtVolume.getText());
 				try{
-					//DatabaseHelper.updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),Integer.parseInt(txtConfEdition.getText()));
+					DatabaseHelper.updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),Integer.parseInt(txtConfEdition.getText()));
 				}
 				catch(NumberFormatException e){
-					//DatabaseHelper.updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0);
+					DatabaseHelper.updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0);
 
 				}
 

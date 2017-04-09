@@ -45,7 +45,7 @@ import infsysProj.infsysProj.Series;
 
 public class DatabaseHelper {
 	private static MongoDatabase database;
-	private static String dbStandardName = "TheNoSQLDatabase12";
+	private static String dbStandardName = "TheNoSQLDatabase14";
 	private static MongoClient mongoClient;
 
 	// source: http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/quick-tour/
@@ -211,16 +211,34 @@ public class DatabaseHelper {
 
 	public static String getConferenceName(String proceedingName) {
 		DatabaseHelper.connectToDB();
+		DatabaseHelper.createDB();
+		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
+		Proceedings proc = Adaptor.toProceeding(cursor.next());
+		
+		cursor = myQuery("ConferenceEdition", "_id", proc.getConferenceEdition().getId());
+		ConferenceEdition confE = Adaptor.toConferenceEdition(cursor.next());
+		
+		cursor = myQuery("Conference", "_id", confE.getConference().getId());
+		Conference conf = Adaptor.toConference(cursor.next());
+		
 
 		DatabaseHelper.closeConnectionDB();
-		return "";
+		return conf.getName();
 	}
 
-	public static String getConferenceEditionName(ConferenceEdition proceedingName) {
+	public static String getConferenceEditionName(String proceedingName) {
 		DatabaseHelper.connectToDB();
-
+		DatabaseHelper.createDB();
+		
+		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
+		Proceedings proc = Adaptor.toProceeding(cursor.next());
+		
+		cursor = myQuery("ConferenceEdition", "_id", proc.getConferenceEdition().getId());
+		ConferenceEdition confE = Adaptor.toConferenceEdition(cursor.next());
+		
+		
 		DatabaseHelper.closeConnectionDB();
-		return "";
+		return String.valueOf(confE.getYear());
 	}
 
 	public static String getConferenceEditionProceeding(ConferenceEdition proceedingName) {
@@ -232,19 +250,17 @@ public class DatabaseHelper {
 
 	public static String getConferenceYear(String proceedingName) {
 		DatabaseHelper.connectToDB();
-
-		Collection<Proceedings> proceedings = new HashSet<Proceedings>();
-
-		String result = null;
-		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with name: " + proceedingName);
-
-		} else {
-			result = String.valueOf(proceedings.iterator().next().getConferenceEdition().getYear());
-		}
-
+		DatabaseHelper.createDB();
+		
+		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
+		Proceedings proc = Adaptor.toProceeding(cursor.next());
+		
+		cursor = myQuery("ConferenceEdition", "_id", proc.getConferenceEdition().getId());
+		ConferenceEdition confE = Adaptor.toConferenceEdition(cursor.next());
+		
+		
 		DatabaseHelper.closeConnectionDB();
-		return result;
+		return String.valueOf(confE.getYear());
 	}
 
 	public static List<String> getAuthorsOfProceedings(String proceedingsName) {
@@ -490,7 +506,7 @@ public class DatabaseHelper {
 		List<Publication> result = new ArrayList<Publication>();
 		Iterator it = iterable.iterator();
 		while (it.hasNext()) {
-			result.add(Adaptor.toProceeding((Document) it.next()));
+			result.add(Adaptor.toInProceedings((Document) it.next()));
 		}
 		closeConnectionDB();
 
@@ -763,6 +779,12 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 
+	public static void updateProceeding(String title,Proceedings newProc,List<String> authors,List<String> inProcNames, String publisherName, String seriesName, String conferenceName,int confYear){
+		
+		deleteProceeding(title);
+		addProceeding(newProc,authors,inProcNames,publisherName,seriesName,conferenceName,confYear);
+	}
+
 	
 	public static void deleteProceeding(String title) {
 		connectToDB();
@@ -941,40 +963,52 @@ public class DatabaseHelper {
 	public static void deleteInProceeding(String id) {
 		connectToDB();
 		createDB();
-		MongoCollection<Document> collection = database.getCollection("InProceeding");
-		BasicDBObject whereQuery = new BasicDBObject();
-		whereQuery.put("_id", id);
-		collection.deleteOne(whereQuery);
+		
+		//remove InProceeding from Author's authored Publication list
+		Iterator<Document> cursor0 = myQuery("InProceedings","_id",id);
+		InProceedings oldInProceeding = Adaptor.toInProceedings(cursor0.next());
+		for(Person aut : oldInProceeding.getAuthors()){
+			Iterator<Document> cursor1 = myQuery("Person","_id",aut.getId());
+			Person author = Adaptor.toPerson(cursor1.next());
+			Set<Publication> newAuthoredPublications = new HashSet<Publication>();
+			for(Publication pub : author.getAuthoredPublications()){
+				if(!pub.getId().equals(oldInProceeding.getId())){
+					newAuthoredPublications.add(pub);
+				}
+			}
+			author.setAuthoredPublications(newAuthoredPublications);
+			myReplacement("Person", "_id", author.getId(),Adaptor.toDBDocument(author));
+		}
+		
+		
+		//remove InProceeding from Proceeding
+		if(!oldInProceeding.getProceedings().getId().equals("")){
+			Iterator<Document> cursor1 = myQuery("Proceedings","_id",oldInProceeding.getProceedings().getId());
+			Proceedings proceeding = Adaptor.toProceeding(cursor1.next());
+			
+			Set<InProceedings> newInProceedings = new HashSet<InProceedings>();
+			for(InProceedings pub : proceeding.getInProceedings()){
+				if(!pub.getId().equals(oldInProceeding.getId())){
+					newInProceedings.add(pub);
+				}
+			}
+			proceeding.setInProceedings(newInProceedings);
+			
+			
+			myReplacement("Proceedings", "_id", proceeding.getId(),Adaptor.toDBDocument(proceeding));
+		}
+		
+		myDelete("InProceedings","_id", oldInProceeding.getId());
 		closeConnectionDB();
 	}
 
-	public static void updateInProceeding(String id, InProceedings newInProceeding, String procId, List<String> authors) {
+	public static void updateInProceeding(String id, InProceedings newInProceeding, String procTitle, List<String> authors) {
 		connectToDB();
 		createDB();
 
+		deleteInProceeding(id);
+		addInProceeding(newInProceeding,procTitle,authors);
 		
-		
-		MongoCollection<Document> collection = database.getCollection("InProceeding");
-		BasicDBObject whereQuery = new BasicDBObject();
-		Iterator<String> authorsIter = authors.iterator();
-		List<Person> authorsN = new LinkedList<Person>();
-		while (authorsIter.hasNext()) {
-			whereQuery.put("name", authorsIter.next());
-			Iterator<Document> cursor = collection.find(whereQuery).iterator();
-			while (cursor.hasNext()) {
-				authorsN.add(Adaptor.toPerson(cursor.next()));
-			}
-		}
-
-		MongoCollection<Document> collection1 = database.getCollection("Proceedings");
-		BasicDBObject query = new BasicDBObject("_id", procId);
-		FindIterable<Document> iterable = collection1.find(query);
-		Proceedings p = Adaptor.toProceeding(iterable.first());
-		InProceedings inProc = new InProceedings(id, newInProceeding.getTitle(), authorsN, newInProceeding.getYear(), newInProceeding.getElectronicEdition(), newInProceeding.getNote(), newInProceeding.getPages(), p);
-		BasicDBObject findInProceeding = new BasicDBObject();
-		findInProceeding.put("id", id);
-		// instead of updating only specific fields, replace them all
-		collection.replaceOne(findInProceeding, Adaptor.toDBDocument(inProc));
 		closeConnectionDB();
 	}
 	
@@ -1006,12 +1040,14 @@ public class DatabaseHelper {
 		}
 		newInProceeding.setAuthors(authorsList);
 		
-		//update Proceeding
-		Iterator<Document> cursor = myQuery("Proceedings", "title", procTitle);
-		Proceedings proceedings = Adaptor.toProceeding(cursor.next());
-		proceedings.addInProceedings(newInProceeding);
-		myReplacement("Proceedings", "_id",proceedings.getId(),Adaptor.toDBDocument(proceedings));
-		newInProceeding.setProceedings(proceedings);
+		if(!procTitle.equals("")){
+			//update Proceeding
+			Iterator<Document> cursor = myQuery("Proceedings", "title", procTitle);
+			Proceedings proceedings = Adaptor.toProceeding(cursor.next());
+			proceedings.addInProceedings(newInProceeding);
+			myReplacement("Proceedings", "_id",proceedings.getId(),Adaptor.toDBDocument(proceedings));
+			newInProceeding.setProceedings(proceedings);
+		}
 		
 		
 		MongoCollection<Document> collection = database.getCollection("InProceedings");
@@ -1109,7 +1145,6 @@ public class DatabaseHelper {
 		confE.setYear(confYear);
 		confE.setId((new ObjectId()).toString());
 		confE.setProceedings(newProceeding);
-		confE.setConference(conference);
 
 		if(!cursor.hasNext()){
 			conference.setName(confName);
@@ -1119,11 +1154,13 @@ public class DatabaseHelper {
 			confEList.add(confE);
 			conference.setEditions(confEList);
 			conference.setId((new ObjectId()).toString());
+			confE.setConference(conference);
 			myInsert("Conference", Adaptor.toDBDocument(conference));
 		}
 		else{
 			conference = Adaptor.toConference(cursor.next());
 			conference.addEdition(confE);
+			confE.setConference(conference);
 			myReplacement("Conference", "_id",conference.getId(),Adaptor.toDBDocument(conference));
 		}
 
