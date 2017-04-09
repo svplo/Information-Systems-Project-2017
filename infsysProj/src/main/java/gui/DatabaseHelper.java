@@ -13,7 +13,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.bson.BsonDocument;
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
@@ -1100,18 +1103,36 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 	
-	// global average of authors / publication (InProceedings + Proceedings)
+	private static String extractId(Document next) {
+		return (next.toString().replaceAll("\\{", "")).replaceAll("\\}", "").replaceAll("Document", "").replaceAll("_id", "");
+	}
+
+		// global average of authors / publication (InProceedings + Proceedings)
 		//TODO: verify, if persons are added correctly. zoodb gave different result
 		public static void query6() {
 			String thisQuery = "Query 6";
 			connectToDB();
 			createDB();
-
-			MongoCollection<Document> pers = database.getCollection("Person");
-			double authors = pers.count();
+			int authors = 0;
 			MongoCollection<Document> inProc = database.getCollection("InProceedings");
 			MongoCollection<Document> proc = database.getCollection("Proceedings");
 			double publications = inProc.count() + proc.count();
+			Bson field1 = new BasicDBObject("authors", 1);
+			Iterator<Document> itr = inProc.find().projection(field1).iterator();
+			while (itr.hasNext()){
+				String str = itr.next().toString();
+				//System.out.println(str);
+				String oldStr = str;
+				//plus 1, because there is one superfluous _id
+				authors += (str.length() - oldStr.replaceAll("_id", "").length()) / 3 + 1;
+			}
+			itr = proc.find().projection(field1).iterator();
+			while (itr.hasNext()){
+				String str = itr.next().toString();
+				String oldStr = str;
+				//plus 1, because there is one superfluous _id
+				authors += (str.length() - oldStr.replaceAll("_id", "").length()) / 3 + 1;
+			}
 			closeConnectionDB();
 			try {
 				PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
