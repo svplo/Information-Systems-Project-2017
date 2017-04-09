@@ -26,4 +26,7 @@ public class Conference extends DomainObject {
 		this.editions = editions;
 	}
 
+	public void addEdition(ConferenceEdition edition){
+		editions.add(edition);
+	}
 }

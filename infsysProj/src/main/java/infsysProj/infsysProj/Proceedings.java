@@ -95,4 +95,7 @@ public class Proceedings extends Publication {
 		this.inProceedings = inProceedings;
 	}
 
+	public void addInProceedings(InProceedings i){
+		this.inProceedings.add(i);
+	}
 }

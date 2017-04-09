@@ -94,7 +94,8 @@ public class AddInProceeding extends MyJFrame {
 				newInProc.setTitle(txtTitle.getText());
 				newInProc.setElectronicEdition(txtElect.getText());
 				newInProc.setNote(txtNote.getText());
-				newInProc.setPages(txtPages.getText());
+				newInProc.setPages(txtPages.getText());	
+				
 				try{
 					newInProc.setYear(Integer.parseInt(txtYear.getText()));
 				}

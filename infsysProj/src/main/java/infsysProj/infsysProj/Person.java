@@ -59,4 +59,14 @@ public class Person extends DomainObject {
 	public void setEditedPublications(Set<Publication> editedPublications) {
 		this.editedPublications = editedPublications;
 	}
+	
+	public void addAuthoredPublication(Publication p){
+		this.authoredPublications.add(p);
+	}
+	
+	public void addEditedPublication(Publication p){
+		this.authoredPublications.add(p);
+	}
+
+	
 }

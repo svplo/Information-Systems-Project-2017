@@ -25,5 +25,9 @@ public class Publisher extends DomainObject {
 	public void setPublications(Set<Publication> publications) {
 		this.publications = publications;
 	}
+	
+	public void addPublication(Publication p){
+		this.publications.add(p);
+	}
 
 }

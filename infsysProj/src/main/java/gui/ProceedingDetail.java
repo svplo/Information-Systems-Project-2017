@@ -657,7 +657,7 @@ public class ProceedingDetail extends MyJFrame {
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				//DatabaseHelper.DeleteProceeding(proceeding.getTitle());
+				DatabaseHelper.deleteProceeding(proceeding.getTitle());
 				//JOptionPane.showMessageDialog(null, "Proceeding successfully deleted");
 				caller.reloadDataFromDatabase();
 				dispose();

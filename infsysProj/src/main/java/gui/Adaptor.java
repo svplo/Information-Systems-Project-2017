@@ -58,6 +58,7 @@ public class Adaptor {
 				.append("proceedings", confEdition.getProceedings().getId())
 				.append("year", confEdition.getYear());
 		
+		
 		return doc;
 	}
 	
@@ -66,6 +67,9 @@ public class Adaptor {
 		confEdition.setId((String)doc.get("_id"));
 		confEdition.setYear((int)doc.getInteger("year"));
 
+		Conference conference = new Conference();
+		conference.setId(doc.getString("conference"));
+		confEdition.setConference(conference);
 		return confEdition;
 	}
 
@@ -111,7 +115,10 @@ public class Adaptor {
 		
 		proc.setAuthors(authors);
 
-
+		
+		Proceedings pr = new Proceedings();
+		pr.setId((String) doc.get("proceedings"));
+		proc.setProceedings(pr);
 		return proc;
 	}
 
@@ -311,6 +318,17 @@ public class Adaptor {
 		}
 		proc.setAuthors(authors);
 
+		Series series = new Series();
+		series.setId(doc.getString("series"));
+		proc.setSeries(series);
+		
+		Publisher publisher = new Publisher();
+		publisher.setId(doc.getString("publisher"));
+		proc.setPublisher(publisher);
+
+		ConferenceEdition confE = new ConferenceEdition();
+		confE.setId(doc.getString("conferenceEdition"));
+		proc.setConferenceEdition(confE);
 
 		return proc;
 	}

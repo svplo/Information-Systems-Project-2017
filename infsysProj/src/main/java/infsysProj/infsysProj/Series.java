@@ -26,4 +26,8 @@ public class Series extends DomainObject {
 		this.publications = publications;
 	}
 
+	public void addPublication(Publication p){
+		this.publications.add(p);
+	}
+
 }
