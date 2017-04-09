@@ -1,0 +1,4 @@
+Query 2
+Consulting without consultants: expert systems applications in user services.
+A written text processing expert system for text to phoneme conversion.
+A prototype real-time intrusion-detection expert system.

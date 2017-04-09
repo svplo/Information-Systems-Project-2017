@@ -1,0 +1,534 @@
+Query 12
+List of 532 authors that are also editor in the corresponding proceeding.
+Charles R. Weisbin
+E. P. Miles Jr.
+Robert M. Keller
+Pierre Deransart
+Jan Maluszynski
+Bernard Lorho
+John H. Williams
+Gerald J. Popek
+Jim Gray
+Klaus Lagally
+Brian Randell
+Anita K. Jones
+Michael J. Flynn
+Jerome H. Saltzer
+Hans-Rüdiger Wiehle
+Holger Opderbeck
+Sushil Jajodia
+Peter A. Ng
+C. V. Ramamoorthy
+Raymond T. Yeh
+Yutaka Ohno
+Aravind K. Joshi
+Joseph Y. Halpern
+Kenneth D. Forbus
+Howard E. Shrobe
+S. Bing Yao
+Shamkant B. Navathe
+Jay-Louise Weldon
+Tosiyasu L. Kunii
+Stephen A. Szygenda
+David W. Hightower
+Robert J. Smith II
+Edwin B. Hassler Jr.
+Nitta P. Dooner
+Frederick H. Lochovsky
+Peter P. Chen
+Jerry R. Hobbs
+Mitchell P. Marcus
+Robert Balzer
+Robert M. Akscyn
+Peter Schnupp
+Sigram Schindler
+Dirk Heger
+Werner Zorn
+Nina Gerner
+Joachim Majus
+Otto Spaniol
+Dieter Wall
+Walter Ameling
+Jörgen P. Foith
+Horst Bunke
+Geoff P. Mullery
+Jean-Pierre Ansart
+Mack W. Alford
+Leslie Lamport
+Günter Hommel
+Barbara Liskov
+Fred B. Schneider
+Hans-Wilm Wippermann
+Otto Lange
+Wolfgang Händler
+Paul J. Kühn
+Johannes Retti
+Karl Leidlmair
+Harald Trost
+Antonio Zampolli
+Nicoletta Calzolari
+C. J. van Rijsbergen
+Josef Herget
+Rainer Kuhlen
+Roland Traunmüller
+Herbert Fiedler
+Heinrich Reinermann
+Klaus Grimmer
+Klaus Lenk
+Irene Greif
+Herb Krasner
+Wolfgang Reisig
+Claude Girault
+Janos Simon
+Grzegorz Rozenberg
+Arto Salomaa
+Egon Börger
+Hans Kleine Büning
+Dieter Rödding
+Gisbert Hasenjaeger
+Thomas Christaller
+Hartmut Wedekind
+Kesav V. Nori
+C. E. Veni Madhavan
+Cornelis H. A. Koster
+J. E. L. Peck
+Edward K. Blum
+Manfred Paul
+Uta Schwatlo
+Gerhard Dirlich
+Christian Freksa
+Klaus Wimmer
+Mark A. Fulk
+Manfred K. Warmuth
+David Haussler
+Richard A. DeMillo
+Jeffrey D. Ullman
+Alfred V. Aho
+Robert L. Constable
+Mario Tokoro
+Hideo Aiso
+Theodore S. Papatheodorou
+Constantine D. Polychronopoulos
+Dieter Müller-Wichards
+Hans-Martin Wacker
+Gio Wiederhold
+Peter M. G. Apers
+Paolo Atzeni
+Alfons A. M. Kuijk
+Wolfgang Straßer
+Richard J. Lipton
+Patrick C. Fischer
+Arnold L. Rosenberg
+Serge Abiteboul
+Hans-Jörg Schek
+N. S. Sridharan
+Haran Boral
+David R. Ditzel
+Ashok K. Agrawala
+Friedrich L. Bauer
+Douglas S. Kerr
+David K. Hsiao
+John L. McCarthy
+H. V. Jagadish
+Hermann Kopetz
+Jacques Calmet
+Donald E. Knuth
+Andrei P. Ershov
+Martin Jourdan
+Susan L. Graham
+Charles E. Radke
+Won Kim
+Yahiko Kambayashi
+Hideko S. Kunii
+Georges Gardarin
+Malcolm P. Atkinson
+Peter Buneman
+Ronald Morrison
+David W. Stemple
+Richard Hull
+Magdalena Zoeppritz
+Albrecht Blaser
+Joachim W. Schmidt
+Stefano Ceri
+Francesca Cesarini
+Silvio Salza
+Jan A. Bergstra
+Klaus P. Jantke
+Wolfgang Bibel
+Jos C. M. Baeten
+Bernard Domanski
+Jason G. Shane
+John P. Pilch
+Sue Felix
+H. Pat Artis
+Sidney Finehirsh
+Alan M. Sherkow
+J. William Mullen
+Jerry L. Rosenberg
+Ellen M. Friedman
+Carolyn Hanna
+John J. Grefenstette
+J. David Schaffer
+Norman K. Sondheimer
+Jean-Claude Syre
+Takuya Katayama
+Corrado Böhm
+Peter Kornerup
+David W. Matula
+Alfred Z. Spector
+Stephen N. Zilles
+Michael L. Brodie
+Frans C. A. Groen
+Louis O. Hertzberger
+Olivier D. Faugeras
+Keith D. Baker
+John P. Frisby
+Christopher J. Taylor
+Akinori Yonezawa
+Reiji Nakajima
+Taiichi Yuasa
+Eiichi Goto
+Ehud Y. Shapiro
+Bruce W. Char
+James H. Davenport
+Patrizia M. Gianni
+Paul S. Wang
+Richard D. Jenks
+Edward W. Ng
+Michael R. Genesereth
+Butler W. Lampson
+Charles B. Ross
+Anneliese von Mayrhauser
+Mehmet Dincbas
+Didier Feuerstein
+Józef Winkowski
+Andrzej Blikle
+Dominique Perrin
+Christiane Floyd
+Kai Hwang
+Jack Dongarra
+C. William Gear
+Robert G. Voigt
+Onno J. Boxma
+Giuseppe Iazeolla
+Jochen A. G. Jess
+Ronald Fagin
+Daniel J. Rosenkrantz
+Joachim Biskup
+Jan Paredaens
+Bernhard Thalheim
+János Demetrovics
+Umeshwar Dayal
+Klaus R. Dittrich
+Alan Dearle
+Gail M. Shaw
+Stanley B. Zdonik
+Helmut K. Berg
+Wolfgang K. Giloi
+Edgar Nett
+Howard Jay Siegel
+Benjamin W. Wah
+William R. Swartout
+David L. Waltz
+Ronald J. Brachman
+David S. Touretzky
+Christian Fluhr
+Richard H. Austing
+Wolfgang Wahlster
+Mark E. Stickel
+Herbert Stoyan
+Tse-Yun Feng
+G. Jack Lipovski
+Norbert A. Streitz
+Peter A. Gloor
+Andreas Reuter
+Mícheál Mac an Airchinnigh
+Cliff B. Jones
+Dines Bjørner
+Erich J. Neuhold
+Elöd Knuth
+Christian Benoît
+Gérard Bailly
+Walter G. Kropatsch
+Karl Heinz Höhne
+Georg Hartmann
+Rudolf E. Großkopf
+Jack Minker
+Sam Rosenfeld
+Giacomo Ferrari
+Luis B. Almeida
+David Chaum
+G. R. Blakley
+Ronald L. Rivest
+Alan T. Sherman
+Carl A. Sunshine
+Robert P. Blanc
+Günter Müller
+Robert E. Strom
+Shaula Yemini
+Yechiam Yemini
+John Hughes
+Kei Davis
+Amir Pnueli
+Behnam Banieqbal
+Howard Barringer
+Michael G. Main
+Glynn Winskel
+A. W. Roscoe
+Stephen D. Brookes
+Lothar Budach
+R. K. Shyamasundar
+Hartmut Ehrig
+Manfred Nagl
+Azriel Rosenfeld
+Jürgen Nehmer
+Alan J. Demers
+Karl-Erwin Großpietsch
+Mario Dal Cin
+Erol Gelenbe
+Claude Kaiser
+Heinz Beilner
+Dietmar P. F. Möller
+Felix Breitenecker
+Manuel Goller
+Bernard Robinet
+Guy Cousineau
+Pierre-Louis Curien
+Irène Guessarian
+Kurt Mehlhorn
+Neil D. Jones
+Harald Ganzinger
+Christoph G. Günther
+Hugh C. Williams
+David E. Rydeheard
+Axel Poigné
+David H. Pitt
+Samson Abramsky
+Edmund M. Clarke
+Dexter Kozen
+Shafi Goldwasser
+Michael W. Mislove
+Marco Vanneschi
+Philip C. Treleaven
+Elmar Holler
+Alwine Schmitt
+Bernhard Gollan
+Wolfgang J. Paul
+Heinz Schecher
+Werner Remmele
+Thomas Beth
+Laveen N. Kanal
+John F. Lemmer
+Ross D. Shachter
+Tod S. Levitt
+Max Henrion
+Dan Diaper
+Dylan M. Jones
+Edward A. MacNair
+Willis K. King
+Daniel P. Siewiorek
+David A. Padua
+Deepak Kumar
+João P. Martins
+Klaus Haefner
+Peter Paul Spies
+E. F. Codd
+Hartmut Noltemeier
+Klaus Indermark
+Jürgen F. H. Winkler
+Scott E. Hudson
+Pierre-Jacques Courtois
+Alan H. Rutan
+Horst Morgenbrod
+Werner Sammer
+Manfred Sommer
+Peter Stahlknecht
+Albert R. Meyer
+Ronald R. Yager
+Bernadette Bouchon-Meunier
+Christoph Schlier
+Werner Geiger
+Bernd Page
+Jean-Eric Pin
+Jörg H. Siekmann
+Colin Potts
+Colin Tully
+Takao Nishizeki
+Tetsuo Asano
+Toshihide Ibaraki
+Hiroshi Imai
+Nobuji Saito
+Alain Poli
+Jean-Jacques Quisquater
+Joos Vandewalle
+Joseph O'Rourke
+Michael A. Harrison
+Philip A. Bernstein
+Eric D. Carlson
+Osman Balci
+James E. Miller
+Miriam Leeser
+John Fitch
+Wolfgang Schröder-Preikschat
+Daniel E. Atkins
+James J. Pottmyer
+Elias M. Awad
+Per Svensson
+John C. Klensin
+Maurizio Rafanelli
+Gultekin Özsoyoglu
+Zbigniew Michalewicz
+Norman K. Meyrowitz
+D. W. Barron
+Norman E. Gibbs
+William E. Riddle
+Henry F. Korth
+Harry Rudin
+Michel Diaz
+Son T. Vuong
+Andrzej Skowron
+Katharina Morik
+Philippe Jorrand
+Stéphane Kaplan
+Horst Herrlich
+Hans-Jörg Kreowski
+Gerhard Preuß
+Austin Melton
+Jeffrey M. Mohr
+George W. Dodson
+Connie U. Smith
+S. Ramani
+Raman Chandrasekar
+K. S. R. Anjaneyulu
+Andrzej Tarlecki
+Per Martin-Löf
+Grigori Mints
+Gunther Schmidt
+Andrzej Lingas
+Mamoru Maekawa
+Laszlo A. Belady
+Hristo Djidjev
+Bernd Radig
+Roland Glowinski
+Jacques-Louis Lions
+Willard L. Miranker
+Ulrich W. Kulisch
+Christian P. Ullrich
+J. A. van Hulzen
+Manfred Broy
+Horst Nowacki
+Jürgen Schönhut
+Fevzi Belli
+Manfred H. Seifert
+Silvia Pfleger
+Richard Cooper
+Raymund Carrick
+John Rosenberg
+V. A. Nepomniaschy
+J. Michael Galey
+Josef Krems
+Gerhard Heyer
+Günther Görz
+Henry Lieberman
+Jürgen Krause
+Burkhard Schaeder
+Hubert Lehmann
+Gerhard Rahmstorf
+Christopher Habel
+Ernst E. Triendl
+Karl Nickel
+Gérard Roucairol
+Ursula Linder-Kostka
+Helmut Balzert
+Rainer Lutze
+D. Swiderski
+Rüdiger Dillmann
+Ulrich Rembold
+Hans-Jörg Bullinger
+Gavriel Salvendy
+Steven L. Sauter
+Joseph J. Hurrell Jr.
+John B. Smith
+Frank G. Halasz
+Fred Long
+Reiner Creutzburg
+Mario Lucertini
+Georg Gottlob
+Wolfgang Nejdl
+Johan de Kleer
+Erik Sandewall
+Matthew L. Ginsberg
+Rohit Parikh
+Mark Green
+Jean-Paul Laumond
+Jean-Daniel Boissonnat
+Vincent Hayward
+Oussama Khatib
+Gérard D. Cohen
+Jacques Wolfmann
+Philippe Godlewski
+Dietrich Meyer-Ebrecht
+Hans-Otto Leilich
+Ignaz Eisele
+Jörg D. Becker
+Ulrich Herzog
+Martin Paterok
+Martin A. Graef
+Anna-Maria Emde
+Mireille Ducassé
+Ross A. Gagliano
+Stephen M. Pizer
+Paul Messina
+Melvin R. Scott
+Eugene D. Denman
+Bart Childs
+James W. Daniel
+Paul Nelson
+Arie Hordijk
+David Maier
+Peter C. Lockemann
+Jørgen Staunstrup
+A. Nico Habermann
+Zenon Kulpa
+Robert Trappl
+Ernest G. Manes
+Franz Pichler
+Roberto Moreno-Díaz
+Chris Langton
+Josef Pieprzyk
+Jennifer Seberry
+Olga Stepánková
+Vladimír Marík
+Zdenek Zdráhal
+Georg Dorffner
+Thomas R. G. Green
+Michael J. Tauber
+Gerrit C. van der Veer
+Peter Gorny
+David Hutchison
+Maurice Gross
+Christian Choffrut
+Robert H. Halstead Jr.
+Takayasu Ito
+David Ackermann
+Paul Schmitz
+Sergio Bittanti
+Andreas Heuer
+Klaus Stieger
+Dipak Khakhar
+Albert T. Kündig
+Neville Harris
+Siegfried J. Pöppl
+D. C. Handscomb
+Asbjørn Rolstadås
+John R. Talburt
+John P. Walter
+Günther Cyranek
+Heidrun Kaiser
+Asha Purna Kachru
+Johannes G. G. van de Vorst
+Gerrit A. van Zee
+David J. Winter
+Thomas Storer
+Ole N. Oest
+Ernst Specker

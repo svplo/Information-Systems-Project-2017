@@ -1,0 +1,76 @@
+Query 10
+List of all authors and editors at the conference Microcomputing:
+
+Authors:
+P. Levi
+Mario Dal Cin
+Otto Spaniol
+R. Brause
+Yeung-Cho Ip
+Andreas Reber
+Hans Wojtkowiak
+Erik Maehle
+Werner Remmele
+Alexander Gerybadze
+Heinrich Krebs
+Andreas Merkel
+Peter G. Cazacu
+Wilhelm F. Bürger
+Elmar Dilger
+Wolfgang Wenderoth
+H.-W. Büdenbender
+V. Sigmund
+Heinrich Dietsch
+Monika Gonauser
+Sven-Axel Nilsson
+Peter Meinen
+E. Ammann
+H. J. Schuh
+Hans-Georg Mitscherlich
+M. Göbel
+Ernst Piller
+Ewald von Puttkamer
+J. Lutz
+T. Norgall
+Thomas Risse
+Werner Konrad
+Josef Schöffel
+Bernhard Quatember
+Arndt Bode
+Erika Mühlmann
+Rolf Strothmann
+A. Sauer
+Rudolf Thurmayr
+H. Reiß
+A. Schuler
+R. Nägele
+Franz Dernoschek
+Helmar Burkhart
+Hans-Jürgen Appelrath
+D. Krömker
+Alberto Giordano
+Victor Cherniavsky
+Heinz Schecher
+P. Groß
+Peter Albrich
+Raul Camposano
+Franz J. Rammig
+H. Anlauff
+R. Lindner
+Zeljko Stojadinovic
+Leo Geissmann
+Peter Fischer
+Anton Sauer
+H. Bittner
+M. Smoliner
+H. Schreiber
+Manfred Czerwinski
+H. Broer
+Rudolf Kober
+Niklaus Wirth
+E. Reiß
+Olaf Kaestner
+
+Editors:
+Heinz Schecher
+Werner Remmele

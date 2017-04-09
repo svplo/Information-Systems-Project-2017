@@ -1,0 +1,2 @@
+Query 6
+Average authors 1.8636056420805172.

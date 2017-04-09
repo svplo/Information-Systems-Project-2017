@@ -1,0 +1,4 @@
+Query 3
+A "bee hive" model for heterogenous knowledge in expert systems (abstract).
+A course on "expert systems" for electrical engineering students.
+A field-based investigation into the effect of expert system use on the information processing capacity of the firm.

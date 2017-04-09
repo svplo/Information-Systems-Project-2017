@@ -1,0 +1,3 @@
+Query 1
+The title of the publication with id conf/acm/ColeMM87 is An expert system for selecting a development tool (abstract only)..
+11170

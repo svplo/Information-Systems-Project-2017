@@ -1,0 +1,2 @@
+Query 8
+The number of in proceedings presented at the conference Microcomputing was 41.
