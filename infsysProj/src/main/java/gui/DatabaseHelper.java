@@ -1038,47 +1038,34 @@ public class DatabaseHelper {
 	}
 
 	// returns name of the co-authors of a given author
+	//TODO: field of coauthors is empty. See also Query 8
 	public static void query4(String author) {
 		String thisQuery = "Query 4";
 		connectToDB();
 		createDB();
 
-		MongoCollection<Document> pers = database.getCollection("Person");
-		// field.put("authoredPublication", 1);
-		FindIterable<Document> authoredPubIds = pers.find(Filters.regex("name", author)).projection(Projections.fields(Projections.include("editedPublications"), Projections.excludeId()));
-		Iterator<Document> itrAuthPubId = authoredPubIds.iterator();
-		// go through all publications
-		while (itrAuthPubId.hasNext()) {
-			String temp = itrAuthPubId.next().toString();
-			if(!temp.contains("_id")){
-				//empty publications array
-				continue;
-			}
-			System.out.println(temp);
-			//46 for authorePub, 44 for edited
-			String curAuthoredPubId = temp.substring(44).replaceAll("\\}", "").replaceAll("\\]", "");
-			System.out.println("authored Pub " + curAuthoredPubId);
-			MongoCollection<Document> inProc = database.getCollection("Proceedings");
-			// get authors of corresponding inProceedings
-			FindIterable<Document> resultInProc = inProc.find(Filters.eq("_id", curAuthoredPubId)).projection(Projections.fields(Projections.include("authors"), Projections.excludeId()));
-			Iterator<Document> itrInProc = resultInProc.iterator();
-			System.out.println(resultInProc.first());
+		MongoCollection<Document> persons = database.getCollection("Person");
+		AggregateIterable<Document> pers = persons.aggregate(Arrays.asList(
+				Aggregates.match(Filters.regex("name", author)), 
+			//	Aggregates.unwind("$authoredPublications"), 
+			//	Aggregates.lookup("InProceedings", "authoredPublications", "_id", "authored"),
+			//	Aggregates.unwind("$authors"), 
+				Aggregates.lookup("InProceedings", "editedPublications", "_id", "authored"),
+				Aggregates.lookup("Person", "authors", "_id", "coAuthors"),
+				Aggregates.project(Projections.include("coAuthors")),
+				Aggregates.project(Projections.excludeId())));
+		Iterator<Document> itrCoAuth = pers.iterator();
 			try {
 				PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
 				writer.println(thisQuery);
-				if (!itrInProc.hasNext()) {
+				if (!itrCoAuth.hasNext()) {
 					writer.println("Error: Did not find any person named: " + author);
 				} else {
-					while (itrInProc.hasNext()) {
-						//String coAuth = itrInProc.next().toJson().substring(33).replaceAll("\\{", "").replaceAll("\\}", "").replaceAll("\\[", "").replaceAll("\\]", "");
-						// field.put("authoredPublication", 1);
-						FindIterable<Document> coAuthor = pers.find(Filters.in("name", itrInProc.next()));
-						System.out.println(coAuthor.first());
-						Person p = Adaptor.toPerson(coAuthor.first());
-						System.out.println(p.getName());
-						if (!p.getName().contains(author)) {
-							writer.println(p.getName());
-						}
+					System.out.println(pers.first());
+					while (itrCoAuth.hasNext()) {
+						//if (!p.getName().contains(author)) {
+							writer.println(itrCoAuth.next());
+						//}
 					}
 				}
 			
@@ -1086,7 +1073,6 @@ public class DatabaseHelper {
 			} catch (IOException e) {
 				System.out.println("Could not print to file.");
 			}
-		}
 		closeConnectionDB();
 	}
 
@@ -1173,9 +1159,18 @@ public class DatabaseHelper {
 		createDB();
 
 		MongoCollection<Document> confs = database.getCollection("Conference");
-		AggregateIterable<Document> conferences = confs.aggregate(Arrays.asList(Aggregates.match(Filters.eq("name", conferenceName)), Aggregates.unwind("$conferenceEditions"), Aggregates.lookup("ConferenceEdition", "conferenceEditions", "proceedings", "proceedings"),
-				// TODO proceedings seem to be empty :/
-				Aggregates.group("$proceedings", Accumulators.sum("proceedings", 1))));
+		AggregateIterable<Document> conferences = confs.aggregate(Arrays.asList(
+				Aggregates.match(Filters.eq("name", conferenceName)), 
+				Aggregates.unwind("$conferenceEditions"), 
+				Aggregates.lookup("ConferenceEdition", "conferenceEditions", "_id", "proc"),
+				//problem: proceedings are empty, TODO: verify, that it is not a parser error
+				Aggregates.lookup("Proceedings", "proceedings", "_id", "proceedings"),
+				//Aggregates.project(Projections.include("inProceedings")),
+				Aggregates.project(Projections.excludeId()),
+				//Aggregates.unwind("$inProceedings"), //does not work
+				//Problem: counts empty inProceedings as one
+				Aggregates.group("$inProceedings", Accumulators.sum("inProceedings", 1)),
+				Aggregates.project(Projections.excludeId())));
 		try {
 			PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
@@ -1189,12 +1184,41 @@ public class DatabaseHelper {
 		}
 		closeConnectionDB();
 	}
+	
+	//all publications, where given author is mentioned last
+	public static void query13 (String author){
+			int count = 0;
+			String thisQuery = "Query 13";
+			connectToDB();
+			createDB();
 
-	/***
-	 * * *Helper functions for queries *
-	 */
-
-	private static String extractId(Document doc) {
-		return (doc.toString().replaceAll("\\{", "")).replaceAll("\\}", "").replaceAll("Document", "").replaceAll("_id", "").replaceAll("=", "");
+			MongoCollection<Document> pers = database.getCollection("Person");
+			FindIterable<Document> person = pers.find(Filters.eq("name", author)).projection(Projections.include("_id"));
+			String authorId = person.first().toJson().replaceAll("\\{", "").replaceAll("\\}", "").replaceAll("_id", "").replaceAll(":", "").replaceAll("\"", "").trim();
+			//System.out.println("author id :" + authorId);
+			int idLength = authorId.length();
+			MongoCollection<Document> inProcs = database.getCollection("InProceedings");
+			AggregateIterable<Document> conferences = inProcs.aggregate(Arrays.asList(
+					Aggregates.match(Filters.elemMatch("authors", Filters.eq(authorId))), 
+					Aggregates.project(Projections.include("authors")),
+					Aggregates.project(Projections.excludeId())));
+			try {
+				PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+				writer.println(thisQuery);
+				Iterator<Document> itr = conferences.iterator();
+				while (itr.hasNext()) {
+					String res = itr.next().toJson().replaceAll("\"", "").replaceAll("\\{", "").replaceAll("\\}", "").replaceAll("_id", "").replaceAll("authors", "").replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(":", "").replaceAll(",", "").trim();
+					//System.out.println(res);
+					if(res.substring(res.length()-idLength, res.length()).equals(authorId)){
+						//System.out.println(res.substring(res.length()-idLength, res.length()));
+						count++;
+					}
+				}
+				writer.println("The number of publications where the author named "+author+ " is mentioned last is "+ count +".");
+				writer.close();
+			} catch (IOException e) {
+				System.out.println("Could not print to file.");
+			}
+			closeConnectionDB();
 	}
 }

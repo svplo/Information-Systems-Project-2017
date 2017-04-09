@@ -52,11 +52,11 @@ public class StartWindow extends JFrame {
 					//mongodb Average authors 1.8821040258595356.
 			//		DatabaseHelper.query6();
 					
-					//if someone is good in reg. expression, please prettify output
+					//if someone is good at reg. expression, please prettify output
 					//DatabaseHelper.query7(1980,1990);
 					
 					// zoodb 41
-		//			DatabaseHelper.query8("Microcomputing");
+			//		DatabaseHelper.query8("Microcomputing");
 					
 					//DatabaseHelper.query9("Microcomputing");
 
@@ -66,6 +66,7 @@ public class StartWindow extends JFrame {
 
 				//	DatabaseHelper.query12();
 
+					//seems to work
 				//	DatabaseHelper.query13("Robert Noel");
 					
 				//	DatabaseHelper.query14(1989, 1990);
