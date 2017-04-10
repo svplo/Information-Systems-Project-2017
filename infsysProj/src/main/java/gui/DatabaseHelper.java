@@ -1602,7 +1602,6 @@ public class DatabaseHelper {
 			for(InProceedings i : proc.getInProceedings()){
 				cursor = myQuery("InProceedings", "_id", i.getId());
 				InProceedings inProc = Adaptor.toInProceedings(cursor.next());
-				p(inProc.getTitle());
 				for(Person p : inProc.getAuthors()){
 					if(!resultList.contains(p.getId())){
 						resultList.add(p.getId());
@@ -1617,7 +1616,7 @@ public class DatabaseHelper {
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("Number of authors:" + resultList.size());
+			writer.println("Number of authors and editors:" + resultList.size());
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
@@ -1625,6 +1624,65 @@ public class DatabaseHelper {
 
 		
 	}
+	
+	public static void query10(String confName){
+		connectToDB();
+		createDB();
+
+		String thisQuery = "Query 10";
+		
+		List<String> resultList = new ArrayList<String>();
+		Iterator<Document> cursor = myQuery("Conference", "name", confName);
+		if(!cursor.hasNext()){
+			System.out.println("Did not find a Conference with name:" + confName);
+			return;
+		}
+		Conference conference = Adaptor.toConference(cursor.next());
+		for(ConferenceEdition e : conference.getEditions()){
+			cursor = myQuery("ConferenceEdition", "_id", e.getId());
+			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
+			
+			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
+			Proceedings proc = Adaptor.toProceeding(cursor.next());
+			for(Person p : proc.getAuthors()){
+				if(!resultList.contains(p.getId())){
+
+					resultList.add(p.getId());
+				}
+			}
+			
+			for(InProceedings i : proc.getInProceedings()){
+				cursor = myQuery("InProceedings", "_id", i.getId());
+				InProceedings inProc = Adaptor.toInProceedings(cursor.next());
+				for(Person p : inProc.getAuthors()){
+					if(!resultList.contains(p.getId())){
+						resultList.add(p.getId());
+					}
+				}
+			}
+		}
+		
+
+		try {
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
+			writer.println(thisQuery);
+			writer.println("List of all "+ resultList.size() + " authors and editors");
+			for(String id : resultList){
+				cursor = myQuery("Person", "_id", id);
+				Person person = Adaptor.toPerson(cursor.next());
+
+				writer.println(person.getName());
+			}
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Could not print to file.");
+		}
+
+		closeConnectionDB();
+
+		
+	}
+
 	
 	//all publications, where given author is mentioned last
 	public static void query13 (String author){

@@ -62,7 +62,7 @@ public class StartWindow extends JFrame {
 					//returns 68 whereas Zoodb returns 70
 					//DatabaseHelper.query9("Microcomputing");
 
-				//	DatabaseHelper.query10("Microcomputing");
+					DatabaseHelper.query10("Microcomputing");
 					
 				//	DatabaseHelper.query11("Microcomputing");
 
