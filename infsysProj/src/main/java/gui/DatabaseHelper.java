@@ -1203,7 +1203,7 @@ public class DatabaseHelper {
 		Iterator<Document> itrProc = resultProc.iterator();
 		Iterator<Document> itrInProc = resultInProc.iterator();
 		try {
-			PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
 			if ((!itrProc.hasNext()) && (!itrInProc.hasNext())) {
 				System.out.println("Error: Did not find a publication with ID: " + id);
@@ -1239,7 +1239,7 @@ public class DatabaseHelper {
 		Iterator<Document> itrProc = resultProc.iterator();
 		Iterator<Document> itrInProc = resultInProc.iterator();
 		try {
-			PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
 			if ((!itrProc.hasNext()) && (!itrInProc.hasNext())) {
 				System.out.println("Error: Did not find a publication with title: " + title);
@@ -1295,7 +1295,7 @@ public class DatabaseHelper {
 		}
 
 		try {
-			PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
 			if (non) {
 				System.out.println("Error: Did not find a publication with title: " + title);
@@ -1317,37 +1317,45 @@ public class DatabaseHelper {
 	}
 
 	// returns name of the co-authors of a given author
-	//TODO: field of coauthors is empty. See also Query 8
 	public static void query4(String author) {
 		String thisQuery = "Query 4";
 		connectToDB();
 		createDB();
-
-		MongoCollection<Document> persons = database.getCollection("Person");
-		AggregateIterable<Document> pers = persons.aggregate(Arrays.asList(
-				Aggregates.match(Filters.regex("name", author)), 
-			//	Aggregates.unwind("$authoredPublications"), 
-			//	Aggregates.lookup("InProceedings", "authoredPublications", "_id", "authored"),
-			//	Aggregates.unwind("$authors"), 
-				Aggregates.lookup("InProceedings", "editedPublications", "_id", "authored"),
-				Aggregates.lookup("Person", "authors", "_id", "coAuthors"),
-				Aggregates.project(Projections.include("coAuthors")),
-				Aggregates.project(Projections.excludeId())));
-		Iterator<Document> itrCoAuth = pers.iterator();
+		Iterator<Document> cursor = myQuery("Person", "name", author);
+		
+		HashSet<String> result = new HashSet<String>();
+		if(!cursor.hasNext()){
+			System.out.println("Author not found");
+			return;
+		}
+		Person author1 = Adaptor.toPerson(cursor.next());
+		for(Publication pub : author1.getAuthoredPublications()){
+			Iterator<Document> cursor1 = myQuery("InProceedings", "_id", pub.getId());
+			InProceedings inProc = Adaptor.toInProceedings(cursor1.next());
+			for(Person coAuthor : inProc.getAuthors()){
+				Iterator<Document> cursor2 = myQuery("Person", "_id", coAuthor.getId());
+				Person per = Adaptor.toPerson(cursor2.next());
+				result.add(per.getName());
+			}
+		}
+		
+		for(Publication pub : author1.getEditedPublications()){
+			Iterator<Document> cursor1 = myQuery("Proceedings", "_id", pub.getId());
+			Proceedings proc = Adaptor.toProceeding(cursor1.next());
+			for(Person coAuthor : proc.getAuthors()){
+				Iterator<Document> cursor2 = myQuery("Person", "_id", coAuthor.getId());
+				Person per = Adaptor.toPerson(cursor2.next());
+				result.add(per.getName());
+			}
+		}
+		//remove author's own name
+		result.remove(author);
 			try {
-				PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+				PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 				writer.println(thisQuery);
-				if (!itrCoAuth.hasNext()) {
-					writer.println("Error: Did not find any person named: " + author);
-				} else {
-					System.out.println(pers.first());
-					while (itrCoAuth.hasNext()) {
-						//if (!p.getName().contains(author)) {
-							writer.println(itrCoAuth.next());
-						//}
-					}
-				}
-			
+				for(String str : result){
+					writer.println(str);
+				}		
 				writer.close();
 			} catch (IOException e) {
 				System.out.println("Could not print to file.");
@@ -1398,7 +1406,7 @@ public class DatabaseHelper {
 		System.out.println(minDistance);
 		
 		try {
-			PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
 			if(minDistance == Integer.MAX_VALUE + 1){
 				writer.println("No path between the two authors has been found");
@@ -1490,7 +1498,7 @@ public class DatabaseHelper {
 		}
 		closeConnectionDB();
 		try {
-			PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
 			if (publications != 0) {
 				writer.println("Average authors " + (double) (authors / publications) + ".");
@@ -1503,69 +1511,89 @@ public class DatabaseHelper {
 		}
 	}
 
-	// TODO pretty print, id = no of publications
-	// Returns the number of publications per year between the interval year1 and year 2
-	public static void query7(int year1, int year2) {
-		String thisQuery = "Query 7";
-		connectToDB();
-		createDB();
+	 // Returns the number of publications per year between the interval year1 and year 2
+    public static void query7(int year1, int year2) {
+        String thisQuery = "Query 7";
+        connectToDB();
+        createDB();
 
-		try {
-			PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
-			writer.println(thisQuery);
-			// writer.printf("%-12s%-17s\n", "Year", "No. Publications");
-			MongoCollection<Document> pubs = database.getCollection("Proceedings");
-			AggregateIterable<Document> procs = pubs.aggregate(Arrays.asList(
-					Aggregates.match(Filters.lte("year", year2)), 
-					Aggregates.match(Filters.gte("year", year1)),
-					Aggregates.group("$year", Accumulators.sum("year", 1)),
-					Aggregates.sort(Sorts.ascending("year"))));
-			Iterator<Document> itrProc = procs.iterator();
-			
-			MongoCollection<Document> inProc = database.getCollection("InProceedings");
-			AggregateIterable<Document> inProcs = inProc.aggregate(Arrays.asList(
-					Aggregates.match(Filters.lte("year", year2)), 
-					Aggregates.match(Filters.gte("year", year1)),
-					Aggregates.group("$year", Accumulators.sum("year", 1)),
-					Aggregates.sort(Sorts.ascending("year"))));
-			Iterator<Document> itrInProc = inProcs.iterator();
-			while (itrInProc.hasNext() || itrProc.hasNext()) {
-				writer.println("InProceedings " + itrInProc.next());
-				writer.println("Proceedings "+itrProc.next());
-			}
-		writer.close();
-		} catch (IOException e) {
-			System.out.println("Could not print to file.");
-		}
-		closeConnectionDB();
-	}
+        try {
+            PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+            writer.println(thisQuery);
+            writer.printf("%-20s%-12s%-17s%n%n","Publication Type", "Year", "No. Publications");
+            MongoCollection<Document> pubs = database.getCollection("Proceedings");
+            AggregateIterable<Document> procs = pubs.aggregate(Arrays.asList(
+                    Aggregates.match(Filters.lte("year", year2)), 
+                    Aggregates.match(Filters.gte("year", year1)),
+                    Aggregates.group("$year", Accumulators.sum("year", 1)),
+                    Aggregates.sort(Sorts.ascending("year"))));
+            Iterator<Document> itrProc = procs.iterator();
+            
+            MongoCollection<Document> inProc = database.getCollection("InProceedings");
+            AggregateIterable<Document> inProcs = inProc.aggregate(Arrays.asList(
+                    Aggregates.match(Filters.lte("year", year2)), 
+                    Aggregates.match(Filters.gte("year", year1)),
+                    Aggregates.group("$year", Accumulators.sum("year", 1)),
+                    Aggregates.sort(Sorts.ascending("year"))));
+            Iterator<Document> itrInProc = inProcs.iterator();
+            int no;
+            int year;
+            int all;
+            Document temp;
+            while (itrInProc.hasNext() || itrProc.hasNext()) {
+                temp = itrInProc.next();
+                no = temp.getInteger("_id");
+                year = temp.getInteger("year");
+                all=year;
+                writer.printf("%-20s%-12s%-17s%n","InProceedings ", no, year);
+                temp = itrProc.next();
+                no = temp.getInteger("_id");
+                year = temp.getInteger("year");
+                writer.printf("%-20s%-12s%-17s%n","Proceedings ", no, year);
+                all=all+year;
+                writer.printf("%-20s%-12s%-17s%n%n", "All Publications", no, all);
+                
+            }
+        writer.close();
+        } catch (IOException e) {
+            System.out.println("Could not print to file.");
+        }
+        closeConnectionDB();
+    }
 
 	// No of all publications of a conference, except proceedings
 	public static void query8(String conferenceName) {
-		String thisQuery = "Query 8";
 		connectToDB();
 		createDB();
 
-		MongoCollection<Document> confs = database.getCollection("Conference");
-		AggregateIterable<Document> conferences = confs.aggregate(Arrays.asList(
-				Aggregates.match(Filters.eq("name", conferenceName)), 
-				Aggregates.unwind("$conferenceEditions"), 
-				Aggregates.lookup("ConferenceEdition", "conferenceEditions", "_id", "proc"),
-				//problem: proceedings are empty, TODO: verify, that it is not a parser error
-				Aggregates.lookup("Proceedings", "proceedings", "_id", "proceedings"),
-				//Aggregates.project(Projections.include("inProceedings")),
-				Aggregates.project(Projections.excludeId()),
-				//Aggregates.unwind("$inProceedings"), //does not work
-				//Problem: counts empty inProceedings as one
-				Aggregates.group("$inProceedings", Accumulators.sum("inProceedings", 1)),
-				Aggregates.project(Projections.excludeId())));
-		try {
-			PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
-			writer.println(thisQuery);
-			Iterator<Document> itr = conferences.iterator();
-			while (itr.hasNext()) {
-				writer.println(itr.next());
+		String thisQuery = "Query 8";
+		
+		List<String> resultList = new ArrayList<String>();
+		Iterator<Document> cursor = myQuery("Conference", "name", conferenceName);
+		if(!cursor.hasNext()){
+			System.out.println("Did not find a Conference with name: " + conferenceName);
+			return;
+		}
+		Conference conference = Adaptor.toConference(cursor.next());
+		for(ConferenceEdition e : conference.getEditions()){
+			cursor = myQuery("ConferenceEdition", "_id", e.getId());
+			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
+			
+			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
+			Proceedings proc = Adaptor.toProceeding(cursor.next());
+			
+			for(InProceedings i : proc.getInProceedings()){
+				if(!resultList.contains(i.getId())){
+					resultList.add(i.getId());
+				}
 			}
+		}
+		
+
+		try {
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
+			writer.println(thisQuery);
+			writer.println("The number of all InProceedings of Conference " + conferenceName + "is  "+ resultList.size() + ".");
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
@@ -1669,8 +1697,6 @@ public class DatabaseHelper {
 		}
 
 		closeConnectionDB();
-
-		
 	}
 	
 	
@@ -1799,7 +1825,7 @@ public class DatabaseHelper {
 					Aggregates.project(Projections.include("authors")),
 					Aggregates.project(Projections.excludeId())));
 			try {
-				PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+				PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 				writer.println(thisQuery);
 				Iterator<Document> itr = conferences.iterator();
 				while (itr.hasNext()) {

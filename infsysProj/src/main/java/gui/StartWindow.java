@@ -36,42 +36,42 @@ public class StartWindow extends JFrame {
 					//DatabaseHelper.query1("conf/acm/ColeMM87");
 					
 					//diff. to zoodb, since no ordering involved
-				//	DatabaseHelper.query2("expert system", 0, 3);
+					//DatabaseHelper.query2("expert system", 0, 3);
 					
 					//equal to zoodb output
-				//	DatabaseHelper.query3("expert system", 0, 3);
+					//DatabaseHelper.query3("expert system", 0, 3);
 					
-					//TODO write as regular expression
+					//equal to zoodb output
 					//DatabaseHelper.query4("William D. Young");
-				//	DatabaseHelper.query4("Saindon");
 					
+					//equal to zoodb output
 					//DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
 					//William D. Young --> William R. Bevier --> J. Thomas Haigh = 2
 					//DatabaseHelper.query5( "Guy Dupenloup","Hiroshi Fukuda");
 
 					//zoodbAverage authors 1.8636056420805172
 					//mongodb Average authors 1.8821040258595356.
-			//		DatabaseHelper.query6();
+					//DatabaseHelper.query6();
 					
-					//if someone is good at reg. expression, please prettify output
+					//equal to zoodb output
 					//DatabaseHelper.query7(1980,1990);
 					
-					// zoodb 41
-			//		DatabaseHelper.query8("Microcomputing");
+					//equal to zoodb output
+					//DatabaseHelper.query8("Microcomputing");
 					
 					//returns 68 whereas Zoodb returns 70
 					//DatabaseHelper.query9("Microcomputing");
 
-				//	DatabaseHelper.query10("Microcomputing");
+					//DatabaseHelper.query10("Microcomputing");
 					
-				//	DatabaseHelper.query11("Microcomputing");
+					//DatabaseHelper.query11("Microcomputing");
 
-				//	DatabaseHelper.query12();
+					//DatabaseHelper.query12();
 
-					//seems to work
-				//	DatabaseHelper.query13("Robert Noel");
+					//equal to zoodb output
+					//DatabaseHelper.query13("Robert Noel");
 					
-					DatabaseHelper.query14(1980, 1990);
+					//DatabaseHelper.query14(1980, 1990);
 
 				} catch (Exception e) {
 					e.printStackTrace();
