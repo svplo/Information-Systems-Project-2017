@@ -1839,15 +1839,15 @@ public class DatabaseHelper {
 			resultStr = ("Multiple conferences found with name " + conferenceName);
 		} else {
 			// only interested in 1 conference
+			//one list to avoid double counting elements
 			HashSet<Person> authors = new HashSet<Person>();
-			HashSet<Person> editors = new HashSet<Person>();
 			Iterator<Conference> itr = conferences.iterator();
 			Collection<ConferenceEdition> editions = itr.next().getEditions();
 			Iterator<ConferenceEdition> itrEditions = editions.iterator();
 			while (itrEditions.hasNext()) {
 				ConferenceEdition e = itrEditions.next();
 				Proceedings proc = e.getProceedings();
-				editors.addAll(proc.getAuthors());
+				authors.addAll(proc.getAuthors());
 				Set<InProceedings> inproceedings = proc.getInProceedings();
 				Iterator<InProceedings> inProcItr = inproceedings.iterator();
 				while (inProcItr.hasNext()) {
@@ -1859,7 +1859,7 @@ public class DatabaseHelper {
 					}
 				}
 			}
-			int result = authors.size() + editors.size();
+			int result = authors.size();
 			resultStr = ("Number of authors and editors at the conference " + conferenceName + " was " + result + ".");
 		}
 		DatabaseHelper.closeDB();
@@ -1891,15 +1891,15 @@ public class DatabaseHelper {
 				writer.println("Multiple conferences found with name " + conferenceName);
 			} else {
 				// only interested in 1 conference
+				//only one list to avoid double counting
 				HashSet<Person> authors = new HashSet<Person>();
-				HashSet<Person> editors = new HashSet<Person>();
 				Iterator<Conference> itr = conferences.iterator();
 				Collection<ConferenceEdition> editions = itr.next().getEditions();
 				Iterator<ConferenceEdition> itrEditions = editions.iterator();
 				while (itrEditions.hasNext()) {
 					ConferenceEdition e = itrEditions.next();
 					Proceedings proc = e.getProceedings();
-					editors.addAll(proc.getAuthors());
+					authors.addAll(proc.getAuthors());
 					Set<InProceedings> inproceedings = proc.getInProceedings();
 					Iterator<InProceedings> inProcItr = inproceedings.iterator();
 					while (inProcItr.hasNext()) {
@@ -1913,15 +1913,9 @@ public class DatabaseHelper {
 					}
 				}
 				writer.println("List of all authors and editors at the conference " + conferenceName + ":");
-				writer.println("\nAuthors:");
 				for (Person p : authors) {
 					writer.println(p.getName());
 				}
-				writer.println("\nEditors:");
-				for (Person p : editors) {
-					writer.println(p.getName());
-				}
-
 			}
 			writer.close();
 		} catch (IOException e) {
