@@ -1518,7 +1518,7 @@ public class DatabaseHelper {
         createDB();
 
         try {
-            PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
             writer.println(thisQuery);
             writer.printf("%-20s%-12s%-17s%n%n","Publication Type", "Year", "No. Publications");
             MongoCollection<Document> pubs = database.getCollection("Proceedings");

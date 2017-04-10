@@ -53,19 +53,22 @@ public class StartWindow extends JFrame {
 					//mongodb Average authors 1.8821040258595356.
 					//DatabaseHelper.query6();
 					
-					//equal to zoodb output
+					//equal to zoodb output, only counting separately
 					//DatabaseHelper.query7(1980,1990);
 					
 					//equal to zoodb output
 					//DatabaseHelper.query8("Microcomputing");
 					
-					//returns 68 whereas Zoodb returns 70
+					//equal to zoodb output
 					//DatabaseHelper.query9("Microcomputing");
 
+					//equal to zoodb output
 					//DatabaseHelper.query10("Microcomputing");
 					
+					//equal to zoodb output
 					//DatabaseHelper.query11("Microcomputing");
 
+					//equal to zoodb output
 					//DatabaseHelper.query12();
 
 					//equal to zoodb output
