@@ -64,9 +64,9 @@ public class StartWindow extends JFrame {
 
 				//	DatabaseHelper.query10("Microcomputing");
 					
-					DatabaseHelper.query11("Microcomputing");
+				//	DatabaseHelper.query11("Microcomputing");
 
-				//	DatabaseHelper.query12();
+					DatabaseHelper.query12();
 
 					//seems to work
 				//	DatabaseHelper.query13("Robert Noel");

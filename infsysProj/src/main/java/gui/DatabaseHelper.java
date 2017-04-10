@@ -1672,6 +1672,8 @@ public class DatabaseHelper {
 
 		
 	}
+	
+	
 
 	public static void query10(String confName){
 		connectToDB();
@@ -1719,6 +1721,54 @@ public class DatabaseHelper {
 				cursor = myQuery("Person", "_id", id);
 				Person person = Adaptor.toPerson(cursor.next());
 
+				writer.println(person.getName());
+			}
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Could not print to file.");
+		}
+
+		closeConnectionDB();
+
+		
+	}
+
+	public static void query12(){
+
+		String thisQuery = "Query 12";
+		List<String> resultList = new ArrayList<String>();
+		List<Publication> allProceedings = getAllProceedings();
+		
+		connectToDB();
+		createDB();
+
+		for(Publication p: allProceedings){
+			List<String> authorsOfProc = new ArrayList<String>();
+			for(Person pers : p.getAuthors()){
+				authorsOfProc.add(pers.getId());
+			}
+			
+			for(InProceedings i : ((Proceedings)p).getInProceedings()){
+				Iterator<Document> cursor = myQuery("InProceedings", "_id", i.getId());
+				InProceedings inProceedings = Adaptor.toInProceedings(cursor.next());
+				for(Person pers : inProceedings.getAuthors()){
+					if(authorsOfProc.contains(pers.getId()) && !resultList.contains(pers.getId())){
+						resultList.add(pers.getId());
+					}
+				}
+			}
+
+		}
+				
+
+		try {
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
+			writer.println(thisQuery);
+			writer.println("List of all "+ resultList.size() + " authors that occur as editor in Proceeding as well as in InProceeding as and author:");
+			for(String id : resultList){
+				Iterator<Document> cursor = myQuery("Person", "_id", id);
+				Person person = Adaptor.toPerson(cursor.next());
+				
 				writer.println(person.getName());
 			}
 			writer.close();
