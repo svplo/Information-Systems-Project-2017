@@ -195,6 +195,15 @@ public class Adaptor {
 		pub.setElectronicEdition((String)doc.get("electronicEdition"));
 		pub.setYear((int)doc.getInteger("year"));
 
+		List<Person> authors = new ArrayList<Person>();
+		List<Document> authorsIDsDoc = ((List<Document>)doc.get("authors"));
+		for(Document d: authorsIDsDoc){
+			Person aut = new Person();
+			aut.setId((String)d.get("_id"));
+			authors.add(aut);
+		}
+		pub.setAuthors(authors);
+
 		return pub;
 	}
 

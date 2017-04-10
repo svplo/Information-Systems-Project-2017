@@ -46,7 +46,7 @@ import infsysProj.infsysProj.Series;
 
 public class DatabaseHelper {
 	private static MongoDatabase database;
-	private static String dbStandardName = "TheNoSQLDatabase14";
+	private static String dbStandardName = "TheNoSQLDatabase15";
 	private static MongoClient mongoClient;
 
 	// source: http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/quick-tour/
@@ -1353,6 +1353,115 @@ public class DatabaseHelper {
 				System.out.println("Could not print to file.");
 			}
 		closeConnectionDB();
+	}
+	
+	public static void query5(String name1, String name2){
+		
+		String thisQuery = "Query 5";
+		connectToDB();
+		createDB();
+		
+		Person author1 = new Person();
+		Person author2 = new Person();
+		
+		Iterator<Document> cursor = myQuery("Person", "name", name1);
+		
+		if(!cursor.hasNext()){
+			System.out.println("author 1 not found");
+			return;
+		}
+		else{
+			author1 = Adaptor.toPerson(cursor.next());
+		}
+		
+		cursor = myQuery("Person", "name", name2);
+		
+		if(!cursor.hasNext()){
+			System.out.println("author 2 not found");
+			return;
+		}
+		else{
+			author2 = Adaptor.toPerson(cursor.next());
+		}
+
+		int maxDepth = 15;
+		int minDistance = Integer.MAX_VALUE;
+		
+		for(int i = 2; i<maxDepth; i++){
+			minDistance = query5rec(author1.getId(), author2.getId(), 0, i);
+			if(!(minDistance == Integer.MAX_VALUE + 1)){
+				break;
+			}
+			
+		}
+		
+		System.out.println(minDistance);
+		
+		try {
+			PrintWriter writer = new PrintWriter(thisQuery + ".txt", "UTF-8");
+			writer.println(thisQuery);
+			if(minDistance == Integer.MAX_VALUE + 1){
+				writer.println("No path between the two authors has been found");
+			}
+			else{
+				writer.println("The shortest path between " + name1 + " and " + name2 + " has length:" + minDistance);
+			}
+			writer.close();
+
+				
+		} catch (IOException e) {
+			System.out.println("Could not print to file.");
+		}
+
+		DatabaseHelper.closeConnectionDB();
+	}
+	
+	
+	public static int query5rec(String id1, String id2, int currDepth, int maxDepth){
+				
+		Person author1 = new Person();
+		
+		Iterator<Document> cursor = myQuery("Person", "_id", id1);
+		
+		if(!cursor.hasNext()){
+			System.out.println("author 1 not found");
+			return 100;
+		}
+		else{
+			author1 = Adaptor.toPerson(cursor.next());
+		}
+		for(Publication pub : author1.getAuthoredPublications()){
+			cursor = myQuery("InProceedings", "_id", pub.getId());
+			InProceedings inProc = Adaptor.toInProceedings(cursor.next());
+			for(Person coAuthor : inProc.getAuthors()){
+				if(coAuthor.getId().equals(id2)){
+					return 1;
+				}
+			}
+		}
+		if(currDepth > maxDepth){
+			return Integer.MAX_VALUE;
+		}
+		int currentMinDistance = Integer.MAX_VALUE;
+		
+		for(Publication pub : author1.getAuthoredPublications()){
+			cursor = myQuery("InProceedings", "_id", pub.getId());
+			InProceedings inProc = Adaptor.toInProceedings(cursor.next());
+			for(Person coAuthor : inProc.getAuthors()){
+				if(!coAuthor.getId().equals(id1)){
+					int distance = query5rec(coAuthor.getId(),id2, currDepth + 1, maxDepth);
+					if(distance == 1){
+						return distance + 1;
+					}
+					if(currentMinDistance>distance){
+						currentMinDistance = distance;
+					}
+				}
+			}
+		}
+
+		return currentMinDistance + 1;
+
 	}
 
 	// global average of authors / publication (InProceedings + Proceedings)
