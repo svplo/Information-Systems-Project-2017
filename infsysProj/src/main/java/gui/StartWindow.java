@@ -66,12 +66,12 @@ public class StartWindow extends JFrame {
 					
 				//	DatabaseHelper.query11("Microcomputing");
 
-					DatabaseHelper.query12();
+				//	DatabaseHelper.query12();
 
 					//seems to work
 				//	DatabaseHelper.query13("Robert Noel");
 					
-				//	DatabaseHelper.query14(1989, 1990);
+					DatabaseHelper.query14(1980, 1990);
 
 				} catch (Exception e) {
 					e.printStackTrace();

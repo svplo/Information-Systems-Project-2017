@@ -1817,4 +1817,59 @@ public class DatabaseHelper {
 			}
 			closeConnectionDB();
 	}
+	
+	
+	public static void query14(int year1, int year2){
+
+		String thisQuery = "Query 14";
+		List<String> resultList = new ArrayList<String>();
+		List<Publication> allProceedings = getAllProceedings();
+		List<Publication> allInProceedings = getAllInProceedings();
+		connectToDB();
+		createDB();
+
+		for(Publication p: allProceedings){
+			List<String> authorsOfProc = new ArrayList<String>();
+			for(Person pers : p.getAuthors()){
+				authorsOfProc.add(pers.getId());
+			}
+			boolean found = false;
+			for(Publication i : allInProceedings){
+				for(Person pers : i.getAuthors()){
+					if(authorsOfProc.contains(pers.getId()) && i.getYear() >= year1 && i.getYear() <= year2){
+						String pubID = ((Proceedings)p).getPublisher().getId();
+						if(!resultList.contains(pubID)){
+							resultList.add(pubID);
+						}
+						found = true;
+						break;
+					}
+				}
+				if(found){
+					break;
+				}
+			}
+
+		}
+				
+
+		try {
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
+			writer.println(thisQuery);
+			writer.println("List of all "+ resultList.size() + " Publishers.....:");
+			for(String id : resultList){
+				Iterator<Document> cursor = myQuery("Publisher", "_id", id);
+				Publisher publisher = Adaptor.toPublisher(cursor.next());
+				
+				writer.println(publisher.getName());
+			}
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Could not print to file.");
+		}
+
+		closeConnectionDB();
+
+		
+	}	
 }
