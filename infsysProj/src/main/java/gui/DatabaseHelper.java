@@ -702,17 +702,17 @@ public class DatabaseHelper {
 		}
 
 		// remove Person from authorList of edited Publications
-		for (Publication inProc : oldPerson.getEditedPublications()) {
-			Iterator<Document> cursor1 = myQuery("Proceedings", "_id", inProc.getId());
-			Proceedings inProceeding = Adaptor.toProceeding(cursor1.next());
+		for (Publication proc : oldPerson.getEditedPublications()) {
+			Iterator<Document> cursor1 = myQuery("Proceedings", "_id", proc.getId());
+			Proceedings proceeding = Adaptor.toProceeding(cursor1.next());
 			List<Person> newAuthors = new ArrayList<Person>();
-			for (Person aut : inProceeding.getAuthors()) {
+			for (Person aut : proceeding.getAuthors()) {
 				if (!aut.getId().equals(id)) {
 					newAuthors.add(aut);
 				}
 			}
-			inProceeding.setAuthors(newAuthors);
-			myReplacement("Proceedings", "_id", inProc.getId(), Adaptor.toDBDocument(inProceeding));
+			proceeding.setAuthors(newAuthors);
+			myReplacement("Proceedings", "_id", proc.getId(), Adaptor.toDBDocument(proceeding));
 		}
 
 		Iterator<String> aPubIter = authoredPublications.iterator();
@@ -733,10 +733,10 @@ public class DatabaseHelper {
 		while (ePubIter.hasNext()) {
 			Iterator<Document> cursor = myQuery("Proceedings", "title", ePubIter.next());
 			while (cursor.hasNext()) {
-				Proceedings inProceeding = Adaptor.toProceeding(cursor.next());
-				inProceeding.addAuthor(oldPerson);
-				myReplacement("Proceedings", "_id", inProceeding.getId(), Adaptor.toDBDocument(inProceeding));
-				aPublications.add(inProceeding);
+				Proceedings proceeding = Adaptor.toProceeding(cursor.next());
+				proceeding.addAuthor(oldPerson);
+				myReplacement("Proceedings", "_id", proceeding.getId(), Adaptor.toDBDocument(proceeding));
+				ePublications.add(proceeding);
 			}
 		}
 		Person p = new Person(id, name, aPublications, ePublications);
