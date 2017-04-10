@@ -330,6 +330,15 @@ public class Adaptor {
 		}
 		proc.setAuthors(authors);
 
+		Set<InProceedings> inProceedings = new HashSet<InProceedings>();
+		List<Document> inProcsIds = ((List<Document>)doc.get("inProceedings"));
+		for(Document d: inProcsIds){
+			InProceedings aut = new InProceedings();
+			aut.setId((String)d.get("_id"));
+			inProceedings.add(aut);
+		}
+		proc.setInProceedings(inProceedings);
+
 		Series series = new Series();
 		series.setId(doc.getString("series"));
 		proc.setSeries(series);

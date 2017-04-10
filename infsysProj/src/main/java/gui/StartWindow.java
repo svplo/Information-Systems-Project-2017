@@ -45,9 +45,9 @@ public class StartWindow extends JFrame {
 					//DatabaseHelper.query4("William D. Young");
 				//	DatabaseHelper.query4("Saindon");
 					
-					DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
+					//DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
 					//William D. Young --> William R. Bevier --> J. Thomas Haigh = 2
-					DatabaseHelper.query5( "Guy Dupenloup","Hiroshi Fukuda");
+					//DatabaseHelper.query5( "Guy Dupenloup","Hiroshi Fukuda");
 
 					//zoodbAverage authors 1.8636056420805172
 					//mongodb Average authors 1.8821040258595356.
@@ -59,6 +59,7 @@ public class StartWindow extends JFrame {
 					// zoodb 41
 			//		DatabaseHelper.query8("Microcomputing");
 					
+					//returns 68 whereas Zoodb returns 70
 					//DatabaseHelper.query9("Microcomputing");
 
 				//	DatabaseHelper.query10("Microcomputing");

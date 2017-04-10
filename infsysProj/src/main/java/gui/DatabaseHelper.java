@@ -1575,6 +1575,10 @@ public class DatabaseHelper {
 	
 	
 	public static void query9(String confName){
+		connectToDB();
+		createDB();
+
+		String thisQuery = "Query 9";
 		
 		List<String> resultList = new ArrayList<String>();
 		Iterator<Document> cursor = myQuery("Conference", "name", confName);
@@ -1589,7 +1593,6 @@ public class DatabaseHelper {
 			
 			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
 			Proceedings proc = Adaptor.toProceeding(cursor.next());
-			
 			for(Person p : proc.getAuthors()){
 				if(!resultList.contains(p.getId())){
 					resultList.add(p.getId());
@@ -1599,6 +1602,7 @@ public class DatabaseHelper {
 			for(InProceedings i : proc.getInProceedings()){
 				cursor = myQuery("InProceedings", "_id", i.getId());
 				InProceedings inProc = Adaptor.toInProceedings(cursor.next());
+				p(inProc.getTitle());
 				for(Person p : inProc.getAuthors()){
 					if(!resultList.contains(p.getId())){
 						resultList.add(p.getId());
@@ -1606,6 +1610,19 @@ public class DatabaseHelper {
 				}
 			}
 		}
+		
+		closeConnectionDB();
+
+		p(resultList.size());
+		try {
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
+			writer.println(thisQuery);
+			writer.println("Number of authors:" + resultList.size());
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Could not print to file.");
+		}
+
 		
 	}
 	
