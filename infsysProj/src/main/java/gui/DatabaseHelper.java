@@ -46,7 +46,7 @@ import infsysProj.infsysProj.Series;
 
 public class DatabaseHelper {
 	private static MongoDatabase database;
-	private static String dbStandardName = "TheNoSQLDatabase15";
+	private static String dbStandardName = "TheNoSQLDatabase16";
 	private static MongoClient mongoClient;
 
 	// source: http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/quick-tour/
