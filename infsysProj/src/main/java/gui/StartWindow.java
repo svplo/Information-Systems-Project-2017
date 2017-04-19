@@ -72,7 +72,7 @@ public class StartWindow extends JFrame {
 					//DatabaseHelper.query12();
 
 					//equal to zoodb output
-					//DatabaseHelper.query13("Robert Noel");
+					//DatabaseHelper.query13("Adi Shamir");
 					
 					//DatabaseHelper.query14(1980, 1990);
 
@@ -219,8 +219,9 @@ public class StartWindow extends JFrame {
 		final JButton reloadXMLButton = new JButton("Reload XML");
 		reloadXMLButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				XMLParser xmlparser = new XMLParser();
-				xmlparser.parse();
+				//XMLParser xmlparser = new XMLParser();
+				//xmlparser.parse();
+				DatabaseHelper.createDB();
 			}
 		});
 		// modify button

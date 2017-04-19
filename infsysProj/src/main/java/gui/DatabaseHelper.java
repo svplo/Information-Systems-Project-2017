@@ -1,21 +1,19 @@
 package gui;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.bson.BsonDocument;
 import org.bson.Document;
-import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
@@ -43,37 +41,73 @@ import infsysProj.infsysProj.Proceedings;
 import infsysProj.infsysProj.Publication;
 import infsysProj.infsysProj.Publisher;
 import infsysProj.infsysProj.Series;
+import org.basex.*;
+import org.basex.core.BaseXException;
+import org.basex.core.Context;
+import org.basex.core.cmd.Close;
+import org.basex.core.cmd.CreateDB;
+import org.basex.core.cmd.CreateIndex;
+import org.basex.core.cmd.DropDB;
+import org.basex.core.cmd.DropIndex;
+import org.basex.core.cmd.InfoDB;
+import org.basex.core.cmd.Open;
+import org.basex.core.cmd.XQuery;
+import org.basex.io.serial.Serializer;
+import org.basex.query.QueryException;
+import org.basex.query.QueryProcessor;
+import org.basex.query.iter.Iter;
+import org.basex.query.value.Value;
+import org.basex.query.value.item.Item;
+
 
 public class DatabaseHelper {
-	private static MongoDatabase database;
-	private static String dbStandardName = "TheNoSQLDatabase16";
-	private static MongoClient mongoClient;
+	private static Context context;
+	private static String dbStandardName = "TheBaseXDatabase";
 
 	// source: http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/quick-tour/
 	public static void connectToDB() {
-		// if using the default port
-		// mongoClient = new MongoClient();
-		// MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
-		Builder builder = MongoClientOptions.builder().connectTimeout(3000);
-		mongoClient = new MongoClient("localhost", 27017);
-		try {
-			mongoClient.getAddress();
-		} catch (Exception e) {
-			System.out.println("Database unavailable!");
-			mongoClient.close();
-			return;
+		
+		try{
+		    new Open(dbStandardName).execute(context);
+		}
+		catch(BaseXException e){
+		    System.out.println("There was an Error closing the Database");
+		    
 		}
 
-		// DB db = mongoClient.getDB( "mydb" );
 	}
 
 	public static void closeConnectionDB() {
-		mongoClient.close();
+		try{
+		    new Close().execute(context);
+		}
+		catch(BaseXException e){
+		    System.out.println("There was an Error closing the Database");
+		}
 	}
+	
 
 	public static void createDB() {
-		// database will be created automatically if it does not exist
-		database = mongoClient.getDatabase(dbStandardName);
+		
+	    context = new Context();
+
+	    System.out.println("Creating Database");
+
+	    // Create a database from a local or remote XML document or XML String
+	    try{
+		    new CreateDB(dbStandardName, "dblp_filtered.xml").execute(context);		    
+
+		    System.out.print(new InfoDB().execute(context));
+
+	    }
+	    catch(BaseXException e){
+	    	System.out.println("Something went wrong while creating the database");
+	    	e.printStackTrace();
+	    }
+
+	    // Close the database context
+	    context.close();
+	  
 	}
 
 	public static List<Publication> getAllPublications() {
@@ -84,18 +118,10 @@ public class DatabaseHelper {
 
 	public static List<Publication> getAllProceedings() {
 		connectToDB();
-		createDB();
 
-		MongoCollection<Document> collection = database.getCollection("Proceedings");
-		List<Publication> result = new ArrayList<Publication>();
-		FindIterable<Document> iterable = collection.find();
+	    String query = "/root/proceedings[year = 1966]";
+	    System.out.println(new XQuery(query).execute(context));
 
-		iterable.forEach(new Block<Document>() {
-			@Override
-			public void apply(final Document document) {
-				result.add(Adaptor.toProceeding(document));
-			}
-		});
 
 		closeConnectionDB();
 		return result;
