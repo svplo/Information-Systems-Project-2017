@@ -32,6 +32,8 @@ public class StartWindow extends JFrame {
 					StartWindow frame = new StartWindow();
 					frame.setVisible(true);
 					
+					//print something out
+					DatabaseHelper.test();
 					//Run the queries required for task 1.3
 					//DatabaseHelper.query1("conf/acm/ColeMM87");
 					

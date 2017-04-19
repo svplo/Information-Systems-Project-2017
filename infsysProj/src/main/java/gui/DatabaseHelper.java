@@ -1,8 +1,6 @@
 package gui;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,25 +11,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
+import javax.swing.text.Document;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.Block;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientOptions.Builder;
-import com.mongodb.client.AggregateIterable;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Projections;
-import com.mongodb.client.model.Sorts;
+
+import org.basex.core.*;
+import org.basex.core.cmd.*;
+import org.basex.io.serial.*;
+import org.basex.query.*;
+import org.basex.query.iter.*;
+import org.basex.query.value.*;
+import org.basex.query.value.item.*;
 
 import infsysProj.infsysProj.Conference;
 import infsysProj.infsysProj.ConferenceEdition;
@@ -41,30 +30,141 @@ import infsysProj.infsysProj.Proceedings;
 import infsysProj.infsysProj.Publication;
 import infsysProj.infsysProj.Publisher;
 import infsysProj.infsysProj.Series;
-import org.basex.*;
-import org.basex.core.BaseXException;
-import org.basex.core.Context;
-import org.basex.core.cmd.Close;
-import org.basex.core.cmd.CreateDB;
-import org.basex.core.cmd.CreateIndex;
-import org.basex.core.cmd.DropDB;
-import org.basex.core.cmd.DropIndex;
-import org.basex.core.cmd.InfoDB;
-import org.basex.core.cmd.Open;
-import org.basex.core.cmd.XQuery;
-import org.basex.io.serial.Serializer;
-import org.basex.query.QueryException;
-import org.basex.query.QueryProcessor;
-import org.basex.query.iter.Iter;
-import org.basex.query.value.Value;
-import org.basex.query.value.item.Item;
 
 
 public class DatabaseHelper {
 	private static Context context;
 	private static String dbStandardName = "TheBaseXDatabase";
 
-	// source: http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/quick-tour/
+	//trying something out here: Problem: Query does not return any results
+	// source: https://github.com/BaseXdb/basex/blob/master/basex-examples/src/main/java/org/basex/examples/local/RunQueries.java
+	public static void test () {
+		context = new Context();
+		String query =
+		        "for $inproceedings in doc('dblp_filtered.xml')/inproceedings return data($inproceedings)";
+
+		    // Process the query by using the database command
+		    System.out.println("\n* Use the database command:");
+
+		    try {
+				query(query);
+			} catch (BaseXException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+		    // Directly use the query processor
+		    System.out.println("\n* Use the query processor:");
+
+		    try {
+				process(query);
+			} catch (QueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		    // Iterate through all query results
+		    System.out.println("\n* Serialize each single result:");
+
+		    try {
+				serialize(query);
+			} catch (QueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		    // Iterate through all query results
+		    System.out.println("\n* Convert each result to its Java representation:");
+
+		    try {
+				iterate(query);
+			} catch (QueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		    // Uncomment this line to see how erroneous queries are handled
+		    // iterate("for error s$x in . return $x");
+
+		    // ------------------------------------------------------------------------
+		    // Flush output
+		System.out.println();
+		context.close();
+
+	}
+	
+	static void query(final String query) throws BaseXException {
+	    System.out.println(new XQuery(query).execute(context));
+	  }
+
+	  /**
+	   * This method uses the {@link QueryProcessor} to evaluate a query.
+	   * The resulting items are passed on to a serializer.
+	   * @param query query to be evaluated
+	   * @throws QueryException if an error occurs while evaluating the query
+	   */
+	  static void process(final String query) throws QueryException {
+	    // Create a query processor
+	    try(QueryProcessor proc = new QueryProcessor(query, context)) {
+	      // Execute the query
+	      Value result = proc.value();
+
+	      // Print result as string.
+	      System.out.println(result);
+	    }
+	  }
+
+	  /**
+	   * This method uses the {@link QueryProcessor} to evaluate a query.
+	   * The results are iterated one by one and converted to their Java
+	   * representation, using {{@link Item#toJava()}. This variant is especially
+	   * efficient if large result sets are expected.
+	   * @param query query to be evaluated
+	   * @throws QueryException if an error occurs while evaluating the query
+	   */
+	  static void iterate(final String query) throws QueryException {
+	    // Create a query processor
+	    try(QueryProcessor proc = new QueryProcessor(query, context)) {
+	      // Store the pointer to the result in an iterator:
+	      Iter iter = proc.iter();
+	      // Iterate through all items and serialize
+	      for(Item item; (item = iter.next()) != null;) {
+	    	  System.out.println(item.toJava());
+	      }
+	    }
+	  }
+
+	  /**
+	   * This method uses the {@link QueryProcessor} to evaluate a query.
+	   * The results are iterated one by one and passed on to an serializer.
+	   * This variant is especially efficient if large result sets are expected.
+	   * @param query query to be evaluated
+	   * @throws QueryException if an error occurs while evaluating the query
+	   * @throws IOException if an error occurs while serializing the results
+	   */
+	  static void serialize(final String query) throws QueryException, IOException {
+	    // Create a query processor
+	    try(QueryProcessor proc = new QueryProcessor(query, context)) {
+
+	      // Store the pointer to the result in an iterator:
+	      Iter iter = proc.iter();
+
+	      // Create a serializer instance
+	      try(Serializer ser = proc.getSerializer(System.out)) {
+	        // Iterate through all items and serialize contents
+	        for(Item item; (item = iter.next()) != null;) {
+	          ser.serialize(item);
+	        }
+	      }
+	      System.out.println();
+	    }
+	}
+	  
+	  
+	  //end of test methods
 	public static void connectToDB() {
 		
 		try{
