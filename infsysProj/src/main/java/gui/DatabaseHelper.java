@@ -124,6 +124,9 @@ public class DatabaseHelper {
 
 	}
 
+	public static String escape(String s){
+		return(s.replaceAll("\"", "&#34;"));
+	}
 	public static List<Publication> getAllPublications() {
 		List<Publication> result = getAllInProceedings();
 		result.addAll(getAllProceedings());
@@ -238,7 +241,6 @@ public class DatabaseHelper {
 		
 	}
 
-
 	public static String getPublisherName(String proceedingName) {
 		DatabaseHelper.connectToDB();
 
@@ -255,23 +257,16 @@ public class DatabaseHelper {
 
 	public static String getConferenceName(String proceedingName) {
 		DatabaseHelper.connectToDB();
-		DatabaseHelper.createDB();
-		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
-		Proceedings proc = Adaptor.toProceeding(cursor.next());
 
-		cursor = myQuery("ConferenceEdition", "_id", proc.getConferenceEdition().getId());
-		ConferenceEdition confE = Adaptor.toConferenceEdition(cursor.next());
-
-		cursor = myQuery("Conference", "_id", confE.getConference().getId());
-		Conference conf = Adaptor.toConference(cursor.next());
-
+		String query = "/root/proceedings[title = \"" + escape(proceedingName) + "\"]/booktitle";
+		
 		DatabaseHelper.closeConnectionDB();
-		return conf.getName();
+		return myQuery(query).get(0);
 	}
 
 	public static String getConferenceEditionName(ConferenceEdition edition) {
 		DatabaseHelper.connectToDB();
-		String query = "for $x in distinct-values(root/proceedings[title = \""+edition.getProceedings().getTitle().replaceAll("\"", "'")+"\"]/booktitle) return <name>{$x}</name>";
+		String query = "for $x in distinct-values(root/proceedings[title = \""+escape(edition.getProceedings().getTitle())+"\"]/booktitle) return <name>{$x}</name>";
 		List<Conference> result =(List<Conference>)(List<?>) myQuery(query, Conference.class);
 
 		DatabaseHelper.closeConnectionDB();
@@ -482,18 +477,8 @@ public class DatabaseHelper {
 
 	public static List<Publication> searchForProceedings(String search) {
 		connectToDB();
-		createDB();
-
-		MongoCollection<Document> collection = database.getCollection("Proceedings");
-		BasicDBObject query = new BasicDBObject();
-		query.put("title", java.util.regex.Pattern.compile(search));
-
-		FindIterable<Document> iterable = collection.find(query);
-		List<Publication> result = new ArrayList<Publication>();
-		Iterator it = iterable.iterator();
-		while (it.hasNext()) {
-			result.add(Adaptor.toProceeding((Document) it.next()));
-		}
+		String query = "for $x in /root/proceedings where contains($x/title,\""+escape(search)+"\") return $x";
+		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, Proceedings.class);
 		closeConnectionDB();
 
 		return result;
@@ -502,18 +487,8 @@ public class DatabaseHelper {
 
 	public static List<Publication> searchForInProceedings(String search) {
 		connectToDB();
-		createDB();
-
-		MongoCollection<Document> collection = database.getCollection("InProceedings");
-		BasicDBObject query = new BasicDBObject();
-		query.put("title", java.util.regex.Pattern.compile(search));
-
-		FindIterable<Document> iterable = collection.find(query);
-		List<Publication> result = new ArrayList<Publication>();
-		Iterator it = iterable.iterator();
-		while (it.hasNext()) {
-			result.add(Adaptor.toInProceedings((Document) it.next()));
-		}
+		String query = "for $x in /root/inproceedings where contains($x/title,\""+escape(search)+"\") return $x";
+		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, InProceedings.class);
 		closeConnectionDB();
 
 		return result;
