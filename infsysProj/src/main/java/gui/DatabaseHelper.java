@@ -168,8 +168,16 @@ public class DatabaseHelper {
 	public static List<Conference> getAllConference() {
 		connectToDB();
 
-		String query = "/root/inproceedings";
+		
+		String query = "for $x in distinct-values(root/proceedings/booktitle) return <name>{$x}</name>";
 		List<Conference> result =(List<Conference>)(List<?>) myQuery(query, Conference.class);
+		for(Conference conf : result){
+			query = "count(/root/proceedings[booktitle = \"" + conf.getName().replaceAll("\"", "'") + "\"])";
+			int size = Integer.valueOf(myQuery(query).get(0));
+			for(int i = 0; i<size;i++){
+				conf.addEdition(new ConferenceEdition());
+			}
+		}
 		
 		closeConnectionDB();
 		return result;
@@ -177,19 +185,18 @@ public class DatabaseHelper {
 
 	public static List<Series> getAllSeries() {
 		connectToDB();
-		createDB();
 
-		MongoCollection<Document> collection = database.getCollection("Series");
-		List<Series> result = new ArrayList<Series>();
-		FindIterable<Document> iterable = collection.find();
+		String query = "for $x in distinct-values(root/proceedings/series)    order by $x    return <name>{$x}</name>";
+		List<Series> result =(List<Series>)(List<?>) myQuery(query, Series.class);
 
-		iterable.forEach(new Block<Document>() {
-			@Override
-			public void apply(final Document document) {
-				result.add(Adaptor.toSeries(document));
+		for(Series s : result){
+			query = "count(for $x in (root/proceedings[series = \""+s.getName()+"\"]/series)  return <series>{$x}</series>)";
+			int size = Integer.valueOf(myQuery(query).get(0));
+			for(int i = 0; i<size; i++){
+				s.addPublication(new Proceedings());
 			}
-		});
-
+		}
+		
 		closeConnectionDB();
 		return result;
 	}
@@ -206,21 +213,17 @@ public class DatabaseHelper {
 	}
 
 	public static List<ConferenceEdition> getAllConferenceEdition() {
-		connectToDB();
-		createDB();
-
-		MongoCollection<Document> collection = database.getCollection("ConferenceEdition");
+		List<Publication> proceedings = getAllProceedings();
 		List<ConferenceEdition> result = new ArrayList<ConferenceEdition>();
-		FindIterable<Document> iterable = collection.find();
-
-		iterable.forEach(new Block<Document>() {
-			@Override
-			public void apply(final Document document) {
-				result.add(Adaptor.toConferenceEdition(document));
-			}
-		});
-
-		closeConnectionDB();
+		for(Publication p : proceedings){
+			ConferenceEdition e = new ConferenceEdition();
+			e.setYear(p.getYear());
+			e.setProceedings((Proceedings)p);
+			Conference conf = new Conference();
+			conf.setName(getConferenceEditionName(e));
+			e.setConference(conf);
+			result.add(e);
+		}
 		return result;
 	}
 	
@@ -268,24 +271,20 @@ public class DatabaseHelper {
 
 	public static String getConferenceEditionName(ConferenceEdition edition) {
 		DatabaseHelper.connectToDB();
-		DatabaseHelper.createDB();
-
-		Iterator<Document> cursor = myQuery("Conference", "_id", edition.getConference().getId());
-		Conference conf = Adaptor.toConference(cursor.next());
+		String query = "for $x in distinct-values(root/proceedings[title = \""+edition.getProceedings().getTitle().replaceAll("\"", "'")+"\"]/booktitle) return <name>{$x}</name>";
+		List<Conference> result =(List<Conference>)(List<?>) myQuery(query, Conference.class);
 
 		DatabaseHelper.closeConnectionDB();
-		return conf.getName();
+		if(result.size() != 0){
+			return result.get(0).getName();
+		}
+		else{
+			return "";
+		}
 	}
 
 	public static String getConferenceEditionProceeding(ConferenceEdition edition) {
-		DatabaseHelper.connectToDB();
-		DatabaseHelper.createDB();
-
-		Iterator<Document> cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
-		Proceedings proc = Adaptor.toProceeding(cursor.next());
-
-		DatabaseHelper.closeConnectionDB();
-		return proc.getTitle();
+		return edition.getProceedings().getTitle();
 	}
 
 	public static String getConferenceYear(String proceedingName) {

@@ -34,6 +34,9 @@ public class Adaptor {
 				}
 			}
 			else{
+				if(((DBNode)n).attributes().size()>1){
+					result = updateObject((DBNode)n,"key", result);
+				}
 				Iterator<ANode> i = ((DBNode)n).children().iterator();
 				
 				while (i.hasNext()) {
@@ -49,7 +52,7 @@ public class Adaptor {
 
 			return result;
 
-		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException  e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -59,39 +62,53 @@ public class Adaptor {
 	private static DomainObject updateObject(ANode n, String qName, DomainObject o) {
 
 		try {
-			String value = n.children().next().serialize().toString();
+			String value;
 			switch (qName) {
 			case "title":
+				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setTitle", String.class).invoke(o, value);
 				break;
 			case "year":
+				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setYear", int.class).invoke(o, Integer.valueOf(value));
 				break;
 			case "ee":
+				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setElectronicEdition", String.class).invoke(o, value);
 				break;
 			case "number":
+				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setNumber", int.class).invoke(o, Integer.valueOf(value));
 				break;
 			case "isbn":
+				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setIsbn", String.class).invoke(o, value);
 				break;
 			case "note":
+				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setNote", String.class).invoke(o, value);
 				break;
 			case "volume":
+				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setVolume", String.class).invoke(o, value);
 				break;
 			case "name":
+				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setName", String.class).invoke(o, value);
 				break;
 			case "pages":
+				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setPages", String.class).invoke(o, value);
 				break;
 			case "publisher":
+				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setName", String.class).invoke(o, value);
 				break;
+			case "key":
+				value = n.attributes().get(1).serialize().toString();
+				o.getClass().getMethod("setId", String.class).invoke(o, value);
 
+				break;
 
 
 			default:
