@@ -62,15 +62,24 @@ public class DatabaseHelper {
 		return result;
 	}
 	
-	static String myQuery(final String query) {
+	static List<String> myQuery(final String query) {
 
-	    try {
-			return (new XQuery(query).execute(context)).toString();
-		} catch (BaseXException e) {
-			// TODO Auto-generated catch block
+		List<String> result = new ArrayList<String>();
+		// Create a query processor
+		try (QueryProcessor proc = new QueryProcessor(query, context)) {
+			// Store the pointer to the result in an iterator:
+			Iter iter = proc.iter();
+			// Iterate through all items and serialize
+			for (Item item; (item = iter.next()) != null;) {
+				
+				result.add(item.serialize().toString());
+
+			}
+		}
+		catch(QueryException | QueryIOException e){
 			e.printStackTrace();
 		}
-	    return "";
+	    return result;
 	}
 
 
@@ -133,9 +142,25 @@ public class DatabaseHelper {
 
 	public static List<Person> getAllPeople() {
 		connectToDB();
-		String query = "/root/inproceedings";
-		List<Publication> result =(List<Publication>)(List<?>) myQuery(query);
+		
+		String query = "for $x in distinct-values((root/proceedings/editor|root/inproceedings/author)) return <name>{$x}</name>";
+		List<Person> result =(List<Person>)(List<?>) myQuery(query, Person.class);
 
+		for(Person p : result){
+			query = "count(for $x in distinct-values((root/proceedings[editor = \"" +p.getName()+"\"]/title)) return $x)";
+			int size = Integer.valueOf(myQuery(query).get(0));
+			for(int i = 0; i<size;i++){
+				p.addEditedPublication(new Proceedings());
+			}			
+			
+			query = "count(for $x in distinct-values((root/inproceedings[author = \"" +p.getName()+"\"]/title)) return $x)";
+			size = Integer.valueOf(myQuery(query).get(0));
+			for(int i = 0; i<size;i++){
+				p.addAuthoredPublication(new InProceedings());
+			}			
+
+		}
+		
 		closeConnectionDB();
 		return result;
 	}
@@ -202,7 +227,7 @@ public class DatabaseHelper {
 	public static String getNumberOfPublicationsForPublisher(String name){
 		connectToDB();
 		String query = "count(root/proceedings[publisher = \""+name+"\"])";
-		String result = myQuery(query);
+		String result = myQuery(query).get(0);
 
 		closeConnectionDB();
 		return result;
@@ -329,40 +354,16 @@ public class DatabaseHelper {
 
 	public static List<String> getAuthoredPublicationsForPerson(String personName) {
 		DatabaseHelper.connectToDB();
-		createDB();
-
-		MongoCollection<Document> collection = database.getCollection("Person");
-		BasicDBObject query = new BasicDBObject("name", personName);
-		FindIterable<Document> iterable = collection.find(query);
-
-		List<String> result = new ArrayList<String>();
-		for (Publication inProc : Adaptor.toPerson(iterable.first()).getAuthoredPublications()) {
-			collection = database.getCollection("InProceedings");
-			query = new BasicDBObject("_id", inProc.getId());
-			iterable = collection.find(query);
-			result.add(Adaptor.toInProceedings(iterable.first()).getTitle());
-		}
-
+		String query = "for $x in distinct-values((root/inproceedings[author = \"" +personName+"\"]/title)) return $x";
+		List<String> result = myQuery(query);
 		DatabaseHelper.closeConnectionDB();
 		return result;
 	}
 
 	public static List<String> getEditedPublicationsForPerson(String personName) {
 		DatabaseHelper.connectToDB();
-		createDB();
-
-		MongoCollection<Document> collection = database.getCollection("Person");
-		BasicDBObject query = new BasicDBObject("name", personName);
-		FindIterable<Document> iterable = collection.find(query);
-
-		List<String> result = new ArrayList<String>();
-		for (Publication inProc : Adaptor.toPerson(iterable.first()).getEditedPublications()) {
-			collection = database.getCollection("Proceedings");
-			query = new BasicDBObject("_id", inProc.getId());
-			iterable = collection.find(query);
-			result.add(Adaptor.toInProceedings(iterable.first()).getTitle());
-		}
-
+		String query = "for $x in distinct-values((root/proceedings[editor = \"" +personName+"\"]/title)) return $x";
+		List<String> result = myQuery(query);
 		DatabaseHelper.closeConnectionDB();
 		return result;
 	}
