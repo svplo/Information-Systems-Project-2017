@@ -5,24 +5,46 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import org.basex.query.QueryIOException;
+import org.basex.query.value.item.Item;
 import org.basex.query.value.node.ANode;
 import org.basex.query.value.node.DBNode;
-
+import org.basex.query.value.node.FElem;
 
 import infsysProj.infsysProj.DomainObject;
 
 public class Adaptor {
 
-	public static DomainObject toJava(DBNode n, Class<? extends DomainObject> c) {
+	public static DomainObject toJava(Item n, Class<? extends DomainObject> c) {
 
 		try {
 			Constructor<?> constructor;
 			constructor = c.getConstructor();
 			DomainObject result = (DomainObject) constructor.newInstance(new Object[] { });
 			
-			Iterator<ANode> i = n.children().iterator();
-			while (i.hasNext()) {
-				result = updateObject(i.next(), i.next().qname().toString(), result);
+			if(n instanceof FElem){
+				Iterator<ANode> i = ((FElem)n).children().iterator();
+				
+				while (i.hasNext()) {
+					if(i.next().qname() == null){
+						result = updateObject(((FElem)n),((FElem)n).qname().toString(), result);
+					}
+					else{
+						result = updateObject(i.next(), i.next().qname().toString(), result);
+					}
+				}
+			}
+			else{
+				Iterator<ANode> i = ((DBNode)n).children().iterator();
+				
+				while (i.hasNext()) {
+					if(i.next().qname() == null){
+						result = updateObject(((DBNode)n),((DBNode)n).qname().toString(), result);
+					}
+					else{
+						result = updateObject(i.next(), i.next().qname().toString(), result);
+					}
+				}
+
 			}
 
 			return result;
@@ -66,6 +88,10 @@ public class Adaptor {
 			case "pages":
 				o.getClass().getMethod("setPages", String.class).invoke(o, value);
 				break;
+			case "publisher":
+				o.getClass().getMethod("setName", String.class).invoke(o, value);
+				break;
+
 
 
 			default:

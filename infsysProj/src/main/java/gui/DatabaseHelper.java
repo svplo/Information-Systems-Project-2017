@@ -50,7 +50,7 @@ public class DatabaseHelper {
 			Iter iter = proc.iter();
 			// Iterate through all items and serialize
 			for (Item item; (item = iter.next()) != null;) {
-				DomainObject obj = Adaptor.toJava((DBNode) item, c);
+				DomainObject obj = Adaptor.toJava(item, c);
 				result.add(obj);
 
 			}
@@ -61,6 +61,18 @@ public class DatabaseHelper {
 
 		return result;
 	}
+	
+	static String myQuery(final String query) {
+
+	    try {
+			return (new XQuery(query).execute(context)).toString();
+		} catch (BaseXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return "";
+	}
+
 
 	public static void connectToDB() {
 		context = new Context();
@@ -130,19 +142,10 @@ public class DatabaseHelper {
 
 	public static List<Conference> getAllConference() {
 		connectToDB();
-		createDB();
 
-		MongoCollection<Document> collection = database.getCollection("Conference");
-		List<Conference> result = new ArrayList<Conference>();
-		FindIterable<Document> iterable = collection.find();
-
-		iterable.forEach(new Block<Document>() {
-			@Override
-			public void apply(final Document document) {
-				result.add(Adaptor.toConference(document));
-			}
-		});
-
+		String query = "/root/inproceedings";
+		List<Conference> result =(List<Conference>)(List<?>) myQuery(query, Conference.class);
+		
 		closeConnectionDB();
 		return result;
 	}
@@ -168,19 +171,11 @@ public class DatabaseHelper {
 
 	public static List<Publisher> getAllPublisher() {
 		connectToDB();
-		createDB();
 
-		MongoCollection<Document> collection = database.getCollection("Publisher");
-		List<Publisher> result = new ArrayList<Publisher>();
-		FindIterable<Document> iterable = collection.find();
+		String query = "for $x in distinct-values(root/proceedings/publisher)    order by $x    return <publisher>{$x}</publisher>";
+		List<Publisher> result =(List<Publisher>)(List<?>) myQuery(query,Publisher.class);
 
-		iterable.forEach(new Block<Document>() {
-			@Override
-			public void apply(final Document document) {
-				result.add(Adaptor.toPublisher(document));
-			}
-		});
-
+		
 		closeConnectionDB();
 		return result;
 	}
@@ -203,6 +198,18 @@ public class DatabaseHelper {
 		closeConnectionDB();
 		return result;
 	}
+	
+	public static String getNumberOfPublicationsForPublisher(String name){
+		connectToDB();
+		String query = "count(root/proceedings[publisher = \""+name+"\"])";
+		String result = myQuery(query);
+
+		closeConnectionDB();
+		return result;
+
+		
+	}
+
 
 	public static String getPublisherName(String proceedingName) {
 		DatabaseHelper.connectToDB();
