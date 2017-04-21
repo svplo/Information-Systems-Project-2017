@@ -13,7 +13,6 @@ import java.util.Set;
 
 import javax.swing.text.Document;
 
-
 import org.basex.core.*;
 import org.basex.core.cmd.*;
 import org.basex.io.serial.*;
@@ -21,9 +20,12 @@ import org.basex.query.*;
 import org.basex.query.iter.*;
 import org.basex.query.value.*;
 import org.basex.query.value.item.*;
+import org.basex.query.value.node.DBNode;
+import org.basex.query.value.node.FElem;
 
 import infsysProj.infsysProj.Conference;
 import infsysProj.infsysProj.ConferenceEdition;
+import infsysProj.infsysProj.DomainObject;
 import infsysProj.infsysProj.InProceedings;
 import infsysProj.infsysProj.Person;
 import infsysProj.infsysProj.Proceedings;
@@ -31,183 +33,74 @@ import infsysProj.infsysProj.Publication;
 import infsysProj.infsysProj.Publisher;
 import infsysProj.infsysProj.Series;
 
-
 public class DatabaseHelper {
 	private static Context context;
 	private static String dbStandardName = "TheBaseXDatabase";
 
-	//trying something out here: Problem: Query does not return any results
-	// source: https://github.com/BaseXdb/basex/blob/master/basex-examples/src/main/java/org/basex/examples/local/RunQueries.java
-	public static void test () {
-		context = new Context();
-		String query =
-		        "for $inproceedings in doc('dblp_filtered.xml')/inproceedings return data($inproceedings)";
-
-		    // Process the query by using the database command
-		    System.out.println("\n* Use the database command:");
-
-		    try {
-				query(query);
-			} catch (BaseXException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-		    // Directly use the query processor
-		    System.out.println("\n* Use the query processor:");
-
-		    try {
-				process(query);
-			} catch (QueryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		    // Iterate through all query results
-		    System.out.println("\n* Serialize each single result:");
-
-		    try {
-				serialize(query);
-			} catch (QueryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		    // Iterate through all query results
-		    System.out.println("\n* Convert each result to its Java representation:");
-
-		    try {
-				iterate(query);
-			} catch (QueryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		    // Uncomment this line to see how erroneous queries are handled
-		    // iterate("for error s$x in . return $x");
-
-		    // ------------------------------------------------------------------------
-		    // Flush output
-		System.out.println();
-		context.close();
-
-	}
-	
-	static void query(final String query) throws BaseXException {
-	    System.out.println(new XQuery(query).execute(context));
-	  }
-
-	  /**
-	   * This method uses the {@link QueryProcessor} to evaluate a query.
-	   * The resulting items are passed on to a serializer.
-	   * @param query query to be evaluated
-	   * @throws QueryException if an error occurs while evaluating the query
-	   */
-	  static void process(final String query) throws QueryException {
-	    // Create a query processor
-	    try(QueryProcessor proc = new QueryProcessor(query, context)) {
-	      // Execute the query
-	      Value result = proc.value();
-
-	      // Print result as string.
-	      System.out.println(result);
-	    }
-	  }
-
-	  /**
-	   * This method uses the {@link QueryProcessor} to evaluate a query.
-	   * The results are iterated one by one and converted to their Java
-	   * representation, using {{@link Item#toJava()}. This variant is especially
-	   * efficient if large result sets are expected.
-	   * @param query query to be evaluated
-	   * @throws QueryException if an error occurs while evaluating the query
-	   */
-	  static void iterate(final String query) throws QueryException {
-	    // Create a query processor
-	    try(QueryProcessor proc = new QueryProcessor(query, context)) {
-	      // Store the pointer to the result in an iterator:
-	      Iter iter = proc.iter();
-	      // Iterate through all items and serialize
-	      for(Item item; (item = iter.next()) != null;) {
-	    	  System.out.println(item.toJava());
-	      }
-	    }
-	  }
-
-	  /**
-	   * This method uses the {@link QueryProcessor} to evaluate a query.
-	   * The results are iterated one by one and passed on to an serializer.
-	   * This variant is especially efficient if large result sets are expected.
-	   * @param query query to be evaluated
-	   * @throws QueryException if an error occurs while evaluating the query
-	   * @throws IOException if an error occurs while serializing the results
-	   */
-	  static void serialize(final String query) throws QueryException, IOException {
-	    // Create a query processor
-	    try(QueryProcessor proc = new QueryProcessor(query, context)) {
-
-	      // Store the pointer to the result in an iterator:
-	      Iter iter = proc.iter();
-
-	      // Create a serializer instance
-	      try(Serializer ser = proc.getSerializer(System.out)) {
-	        // Iterate through all items and serialize contents
-	        for(Item item; (item = iter.next()) != null;) {
-	          ser.serialize(item);
-	        }
-	      }
-	      System.out.println();
-	    }
-	}
-	  
-	  
-	  //end of test methods
-	public static void connectToDB() {
+	public static void test(){
 		
-		try{
-		    new Open(dbStandardName).execute(context);
+	}
+
+	static List<DomainObject> myQuery(final String query, Class<? extends DomainObject> c) {
+
+		List<DomainObject> result = new ArrayList<DomainObject>();
+		// Create a query processor
+		try (QueryProcessor proc = new QueryProcessor(query, context)) {
+			// Store the pointer to the result in an iterator:
+			Iter iter = proc.iter();
+			// Iterate through all items and serialize
+			for (Item item; (item = iter.next()) != null;) {
+				DomainObject obj = Adaptor.toJava((DBNode) item, c);
+				result.add(obj);
+
+			}
 		}
-		catch(BaseXException e){
-		    System.out.println("There was an Error closing the Database");
-		    
+		catch(QueryException e){
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	public static void connectToDB() {
+		context = new Context();
+		try {
+			new Open(dbStandardName).execute(context);
+		} catch (BaseXException e) {
+			System.out.println("There was an Error closing the Database");
+
 		}
 
 	}
 
 	public static void closeConnectionDB() {
-		try{
-		    new Close().execute(context);
-		}
-		catch(BaseXException e){
-		    System.out.println("There was an Error closing the Database");
+		try {
+			new Close().execute(context);
+		} catch (BaseXException e) {
+			System.out.println("There was an Error closing the Database");
 		}
 	}
-	
 
 	public static void createDB() {
-		
-	    context = new Context();
 
-	    System.out.println("Creating Database");
+		context = new Context();
 
-	    // Create a database from a local or remote XML document or XML String
-	    try{
-		    new CreateDB(dbStandardName, "dblp_filtered.xml").execute(context);		    
+		System.out.println("Creating Database");
 
-		    System.out.print(new InfoDB().execute(context));
+		// Create a database from a local or remote XML document or XML String
+		try {
+			new CreateDB(dbStandardName, "dblp_filtered.xml").execute(context);
 
-	    }
-	    catch(BaseXException e){
-	    	System.out.println("Something went wrong while creating the database");
-	    	e.printStackTrace();
-	    }
+			System.out.print(new InfoDB().execute(context));
 
-	    // Close the database context
-	    context.close();
-	  
+		} catch (BaseXException e) {
+			System.out.println("Something went wrong while creating the database");
+			e.printStackTrace();
+		}
+
+		// Close the database context
+		context.close();
+
 	}
 
 	public static List<Publication> getAllPublications() {
@@ -219,28 +112,17 @@ public class DatabaseHelper {
 	public static List<Publication> getAllProceedings() {
 		connectToDB();
 
-	    String query = "/root/proceedings[year = 1966]";
-	    System.out.println(new XQuery(query).execute(context));
-
-
+		String query = "/root/proceedings";
+		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, Proceedings.class);
+		
 		closeConnectionDB();
 		return result;
 	}
 
 	public static List<Person> getAllPeople() {
 		connectToDB();
-		createDB();
-
-		MongoCollection<Document> collection = database.getCollection("Person");
-		List<Person> result = new ArrayList<Person>();
-		FindIterable<Document> iterable = collection.find();
-
-		iterable.forEach(new Block<Document>() {
-			@Override
-			public void apply(final Document document) {
-				result.add(Adaptor.toPerson(document));
-			}
-		});
+		String query = "/root/inproceedings";
+		List<Publication> result =(List<Publication>)(List<?>) myQuery(query);
 
 		closeConnectionDB();
 		return result;
@@ -341,13 +223,12 @@ public class DatabaseHelper {
 		DatabaseHelper.createDB();
 		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
 		Proceedings proc = Adaptor.toProceeding(cursor.next());
-		
+
 		cursor = myQuery("ConferenceEdition", "_id", proc.getConferenceEdition().getId());
 		ConferenceEdition confE = Adaptor.toConferenceEdition(cursor.next());
-		
+
 		cursor = myQuery("Conference", "_id", confE.getConference().getId());
 		Conference conf = Adaptor.toConference(cursor.next());
-		
 
 		DatabaseHelper.closeConnectionDB();
 		return conf.getName();
@@ -356,12 +237,10 @@ public class DatabaseHelper {
 	public static String getConferenceEditionName(ConferenceEdition edition) {
 		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
-		
-		
+
 		Iterator<Document> cursor = myQuery("Conference", "_id", edition.getConference().getId());
 		Conference conf = Adaptor.toConference(cursor.next());
-		
-		
+
 		DatabaseHelper.closeConnectionDB();
 		return conf.getName();
 	}
@@ -369,12 +248,10 @@ public class DatabaseHelper {
 	public static String getConferenceEditionProceeding(ConferenceEdition edition) {
 		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
-		
-		
+
 		Iterator<Document> cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
 		Proceedings proc = Adaptor.toProceeding(cursor.next());
-		
-		
+
 		DatabaseHelper.closeConnectionDB();
 		return proc.getTitle();
 	}
@@ -382,14 +259,13 @@ public class DatabaseHelper {
 	public static String getConferenceYear(String proceedingName) {
 		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
-		
+
 		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
 		Proceedings proc = Adaptor.toProceeding(cursor.next());
-		
+
 		cursor = myQuery("ConferenceEdition", "_id", proc.getConferenceEdition().getId());
 		ConferenceEdition confE = Adaptor.toConferenceEdition(cursor.next());
-		
-		
+
 		DatabaseHelper.closeConnectionDB();
 		return String.valueOf(confE.getYear());
 	}
@@ -397,12 +273,12 @@ public class DatabaseHelper {
 	public static List<String> getAuthorsOfProceedings(String proceedingName) {
 		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
-		
+
 		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
 		Proceedings proc = Adaptor.toProceeding(cursor.next());
 
 		List<String> result = new ArrayList<String>();
-		for(Person p : proc.getAuthors()){
+		for (Person p : proc.getAuthors()) {
 			cursor = myQuery("Person", "_id", p.getId());
 			Person person = Adaptor.toPerson(cursor.next());
 			result.add(person.getName());
@@ -486,18 +362,9 @@ public class DatabaseHelper {
 
 	public static List<Publication> getAllInProceedings() {
 		connectToDB();
-		createDB();
 
-		MongoCollection<Document> collection = database.getCollection("InProceedings");
-		List<Publication> result = new ArrayList<Publication>();
-		FindIterable<Document> iterable = collection.find();
-
-		iterable.forEach(new Block<Document>() {
-			@Override
-			public void apply(final Document document) {
-				result.add(Adaptor.toInProceedings(document));
-			}
-		});
+		String query = "/root/inproceedings";
+		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, InProceedings.class);
 
 		closeConnectionDB();
 		return result;
@@ -576,7 +443,6 @@ public class DatabaseHelper {
 		BasicDBObject query = new BasicDBObject();
 		query.put("_id", java.util.regex.Pattern.compile(search));
 
-		
 		FindIterable<Document> iterable = collection.find(query);
 		List<ConferenceEdition> result = new ArrayList<ConferenceEdition>();
 		Iterator it = iterable.iterator();
@@ -789,17 +655,16 @@ public class DatabaseHelper {
 		return cursor;
 
 	}
-	
-	public static void myInsert(String collection, Document doc){
-		
+
+	public static void myInsert(String collection, Document doc) {
+
 		MongoCollection<Document> coll = database.getCollection(collection);
 		coll.insertOne(doc);
 
 	}
 
-	
-	public static void myReplacement(String collection, String key, String compareString, Document doc){
-		
+	public static void myReplacement(String collection, String key, String compareString, Document doc) {
+
 		BasicDBObject find = new BasicDBObject();
 		find.put(key, compareString);
 		MongoCollection<Document> coll = database.getCollection(collection);
@@ -908,92 +773,85 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 
-	public static void updateProceeding(String title,Proceedings newProc,List<String> authors,List<String> inProcNames, String publisherName, String seriesName, String conferenceName,int confYear){
-		
+	public static void updateProceeding(String title, Proceedings newProc, List<String> authors, List<String> inProcNames, String publisherName, String seriesName, String conferenceName, int confYear) {
+
 		deleteProceeding(title);
-		addProceeding(newProc,authors,inProcNames,publisherName,seriesName,conferenceName,confYear);
+		addProceeding(newProc, authors, inProcNames, publisherName, seriesName, conferenceName, confYear);
 	}
 
-	
 	public static void deleteProceeding(String title) {
 		connectToDB();
 		createDB();
-		
-		//remove Proceeding from Author's edited Publication list
-		Iterator<Document> cursor0 = myQuery("Proceedings","title",title);
+
+		// remove Proceeding from Author's edited Publication list
+		Iterator<Document> cursor0 = myQuery("Proceedings", "title", title);
 		Proceedings oldProceeding = Adaptor.toProceeding(cursor0.next());
-		for(Person aut : oldProceeding.getAuthors()){
-			Iterator<Document> cursor1 = myQuery("Person","_id",aut.getId());
+		for (Person aut : oldProceeding.getAuthors()) {
+			Iterator<Document> cursor1 = myQuery("Person", "_id", aut.getId());
 			Person author = Adaptor.toPerson(cursor1.next());
 			Set<Publication> newEditedPublications = new HashSet<Publication>();
-			for(Publication pub : author.getEditedPublications()){
-				if(!pub.getId().equals(oldProceeding.getID())){
+			for (Publication pub : author.getEditedPublications()) {
+				if (!pub.getId().equals(oldProceeding.getID())) {
 					newEditedPublications.add(pub);
 				}
 			}
 			author.setEditedPublications(newEditedPublications);
-			myReplacement("Person", "_id", author.getId(),Adaptor.toDBDocument(author));
+			myReplacement("Person", "_id", author.getId(), Adaptor.toDBDocument(author));
 		}
-		
-		//remove Proceeding from InProceeding
-		for(InProceedings inProc : oldProceeding.getInProceedings()){
-			Iterator<Document> cursor1 = myQuery("InProceedings","_id",inProc.getId());
+
+		// remove Proceeding from InProceeding
+		for (InProceedings inProc : oldProceeding.getInProceedings()) {
+			Iterator<Document> cursor1 = myQuery("InProceedings", "_id", inProc.getId());
 			InProceedings inProceeding = Adaptor.toInProceedings(cursor1.next());
 			inProceeding.setProceedings(null);
-			myReplacement("InProceedings", "_id", inProceeding.getId(),Adaptor.toDBDocument(inProceeding));
+			myReplacement("InProceedings", "_id", inProceeding.getId(), Adaptor.toDBDocument(inProceeding));
 		}
-		
-		
-		//remove Proceeding from Series
-		Iterator<Document> cursor1 = myQuery("Series","_id",oldProceeding.getSeries().getId());
+
+		// remove Proceeding from Series
+		Iterator<Document> cursor1 = myQuery("Series", "_id", oldProceeding.getSeries().getId());
 		Series series = Adaptor.toSeries(cursor1.next());
 		Set<Publication> newPublications = new HashSet<Publication>();
-		for(Publication pub : series.getPublications()){
-			if(!pub.getId().equals(oldProceeding.getID())){
+		for (Publication pub : series.getPublications()) {
+			if (!pub.getId().equals(oldProceeding.getID())) {
 				newPublications.add(pub);
 			}
 		}
 		series.setPublications(newPublications);
-		
-		myReplacement("Series", "_id", series.getId(),Adaptor.toDBDocument(series));
 
-		
-		
-		//remove Proceeding from Publisher
-		cursor1 = myQuery("Publisher","_id",oldProceeding.getPublisher().getId());
+		myReplacement("Series", "_id", series.getId(), Adaptor.toDBDocument(series));
+
+		// remove Proceeding from Publisher
+		cursor1 = myQuery("Publisher", "_id", oldProceeding.getPublisher().getId());
 		Publisher publisher = Adaptor.toPublisher(cursor1.next());
 		newPublications = new HashSet<Publication>();
-		for(Publication pub : publisher.getPublications()){
-			if(!pub.getId().equals(oldProceeding.getID())){
+		for (Publication pub : publisher.getPublications()) {
+			if (!pub.getId().equals(oldProceeding.getID())) {
 				newPublications.add(pub);
 			}
 		}
 		publisher.setPublications(newPublications);
-		
-		myReplacement("Publisher", "_id", publisher.getId(),Adaptor.toDBDocument(publisher));
 
-		
-		//delete ConferenceEdition and remove confID from Conference
-		cursor1 = myQuery("ConferenceEdition","_id",oldProceeding.getConferenceEdition().getId());
+		myReplacement("Publisher", "_id", publisher.getId(), Adaptor.toDBDocument(publisher));
+
+		// delete ConferenceEdition and remove confID from Conference
+		cursor1 = myQuery("ConferenceEdition", "_id", oldProceeding.getConferenceEdition().getId());
 		ConferenceEdition conferenceEdition = Adaptor.toConferenceEdition(cursor1.next());
-		
-		Iterator<Document> cursor2 = myQuery("Conference","_id",conferenceEdition.getConference().getId());
+
+		Iterator<Document> cursor2 = myQuery("Conference", "_id", conferenceEdition.getConference().getId());
 		Conference conference = Adaptor.toConference(cursor2.next());
 
 		Set<ConferenceEdition> newConfEds = new HashSet<ConferenceEdition>();
-		for(ConferenceEdition confEd : conference.getEditions()){
-			if(!conferenceEdition.getId().equals(confEd.getId())){
+		for (ConferenceEdition confEd : conference.getEditions()) {
+			if (!conferenceEdition.getId().equals(confEd.getId())) {
 				newConfEds.add(confEd);
 			}
 		}
 		conference.setEditions(newConfEds);
-		
-		myReplacement("Conference", "_id", conference.getId(),Adaptor.toDBDocument(conference));
+
+		myReplacement("Conference", "_id", conference.getId(), Adaptor.toDBDocument(conference));
 		myDelete("ConferenceEdition", "_id", conferenceEdition.getId());
 
-		
-
-		myDelete("Proceedings","_id", oldProceeding.getId());
+		myDelete("Proceedings", "_id", oldProceeding.getId());
 		closeConnectionDB();
 	}
 
@@ -1061,11 +919,11 @@ public class DatabaseHelper {
 		p = Adaptor.toInProceedings(iterable.first());
 		String proceedingID = p.getProceedings().getId();
 		Proceedings result = new Proceedings();
-		if(!proceedingID.equals("")){
+		if (!proceedingID.equals("")) {
 			Iterator<Document> cursor = myQuery("Proceedings", "_id", proceedingID);
 			result = Adaptor.toProceeding(cursor.next());
 		}
-		
+
 		closeConnectionDB();
 		return result;
 	}
@@ -1093,42 +951,40 @@ public class DatabaseHelper {
 	public static void deleteInProceeding(String id) {
 		connectToDB();
 		createDB();
-		
-		//remove InProceeding from Author's authored Publication list
-		Iterator<Document> cursor0 = myQuery("InProceedings","_id",id);
+
+		// remove InProceeding from Author's authored Publication list
+		Iterator<Document> cursor0 = myQuery("InProceedings", "_id", id);
 		InProceedings oldInProceeding = Adaptor.toInProceedings(cursor0.next());
-		for(Person aut : oldInProceeding.getAuthors()){
-			Iterator<Document> cursor1 = myQuery("Person","_id",aut.getId());
+		for (Person aut : oldInProceeding.getAuthors()) {
+			Iterator<Document> cursor1 = myQuery("Person", "_id", aut.getId());
 			Person author = Adaptor.toPerson(cursor1.next());
 			Set<Publication> newAuthoredPublications = new HashSet<Publication>();
-			for(Publication pub : author.getAuthoredPublications()){
-				if(!pub.getId().equals(oldInProceeding.getId())){
+			for (Publication pub : author.getAuthoredPublications()) {
+				if (!pub.getId().equals(oldInProceeding.getId())) {
 					newAuthoredPublications.add(pub);
 				}
 			}
 			author.setAuthoredPublications(newAuthoredPublications);
-			myReplacement("Person", "_id", author.getId(),Adaptor.toDBDocument(author));
+			myReplacement("Person", "_id", author.getId(), Adaptor.toDBDocument(author));
 		}
-		
-		
-		//remove InProceeding from Proceeding
-		if(!oldInProceeding.getProceedings().getId().equals("")){
-			Iterator<Document> cursor1 = myQuery("Proceedings","_id",oldInProceeding.getProceedings().getId());
+
+		// remove InProceeding from Proceeding
+		if (!oldInProceeding.getProceedings().getId().equals("")) {
+			Iterator<Document> cursor1 = myQuery("Proceedings", "_id", oldInProceeding.getProceedings().getId());
 			Proceedings proceeding = Adaptor.toProceeding(cursor1.next());
-			
+
 			Set<InProceedings> newInProceedings = new HashSet<InProceedings>();
-			for(InProceedings pub : proceeding.getInProceedings()){
-				if(!pub.getId().equals(oldInProceeding.getId())){
+			for (InProceedings pub : proceeding.getInProceedings()) {
+				if (!pub.getId().equals(oldInProceeding.getId())) {
 					newInProceedings.add(pub);
 				}
 			}
 			proceeding.setInProceedings(newInProceedings);
-			
-			
-			myReplacement("Proceedings", "_id", proceeding.getId(),Adaptor.toDBDocument(proceeding));
+
+			myReplacement("Proceedings", "_id", proceeding.getId(), Adaptor.toDBDocument(proceeding));
 		}
-		
-		myDelete("InProceedings","_id", oldInProceeding.getId());
+
+		myDelete("InProceedings", "_id", oldInProceeding.getId());
 		closeConnectionDB();
 	}
 
@@ -1137,49 +993,47 @@ public class DatabaseHelper {
 		createDB();
 
 		deleteInProceeding(id);
-		addInProceeding(newInProceeding,procTitle,authors);
-		
+		addInProceeding(newInProceeding, procTitle, authors);
+
 		closeConnectionDB();
 	}
-	
-	public static void p(Object o){
+
+	public static void p(Object o) {
 		System.out.println(o);
 	}
 
 	public static void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors) {
 		connectToDB();
 		createDB();
-		
-		
-		//create new ID for new InProceedings
+
+		// create new ID for new InProceedings
 		String id = (new ObjectId()).toString();
 		newInProceeding.setId(id);
-		
-		//update all authors
+
+		// update all authors
 		Iterator<String> authorIter = authors.iterator();
 		List<Person> authorsList = new ArrayList<Person>();
 		while (authorIter.hasNext()) {
-			
+
 			Iterator<Document> cursor = myQuery("Person", "name", authorIter.next());
 			while (cursor.hasNext()) {
 				Person p = Adaptor.toPerson(cursor.next());
 				p.addAuthoredPublication(newInProceeding);
-				myReplacement("Person", "_id",p.getId(),Adaptor.toDBDocument(p));
+				myReplacement("Person", "_id", p.getId(), Adaptor.toDBDocument(p));
 				authorsList.add(p);
 			}
 		}
 		newInProceeding.setAuthors(authorsList);
-		
-		if(!procTitle.equals("")){
-			//update Proceeding
+
+		if (!procTitle.equals("")) {
+			// update Proceeding
 			Iterator<Document> cursor = myQuery("Proceedings", "title", procTitle);
 			Proceedings proceedings = Adaptor.toProceeding(cursor.next());
 			proceedings.addInProceedings(newInProceeding);
-			myReplacement("Proceedings", "_id",proceedings.getId(),Adaptor.toDBDocument(proceedings));
+			myReplacement("Proceedings", "_id", proceedings.getId(), Adaptor.toDBDocument(proceedings));
 			newInProceeding.setProceedings(proceedings);
 		}
-		
-		
+
 		MongoCollection<Document> collection = database.getCollection("InProceedings");
 		collection.insertOne(Adaptor.toDBDocument(newInProceeding));
 
@@ -1187,97 +1041,91 @@ public class DatabaseHelper {
 
 	}
 
-	public static void addProceeding(Proceedings newProceeding,List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear) {
+	public static void addProceeding(Proceedings newProceeding, List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear) {
 		connectToDB();
 		createDB();
-		
-		
-		//create new ID for new InProceedings
+
+		// create new ID for new InProceedings
 		String id = (new ObjectId()).toString();
 		newProceeding.setId(id);
-		
+
 		p(authors);
-		//update all authors
+		// update all authors
 		Iterator<String> authorIter = authors.iterator();
 		List<Person> authorsList = new ArrayList<Person>();
 		while (authorIter.hasNext()) {
-			
+
 			Iterator<Document> cursor = myQuery("Person", "name", authorIter.next());
 			while (cursor.hasNext()) {
 				Person p = Adaptor.toPerson(cursor.next());
 				p.addEditedPublication(newProceeding);
-				myReplacement("Person", "_id",p.getId(),Adaptor.toDBDocument(p));
+				myReplacement("Person", "_id", p.getId(), Adaptor.toDBDocument(p));
 				authorsList.add(p);
 			}
 		}
 		newProceeding.setAuthors(authorsList);
-		
-		//update all authors
+
+		// update all authors
 		Iterator<String> inProcIter = inProceedings.iterator();
 		Set<InProceedings> inProcList = new HashSet<InProceedings>();
 		while (inProcIter.hasNext()) {
-			
+
 			Iterator<Document> cursor = myQuery("InProceedings", "title", inProcIter.next());
 			while (cursor.hasNext()) {
 				InProceedings p = Adaptor.toInProceedings(cursor.next());
 				p.setProceedings(newProceeding);
-				myReplacement("InProceedings", "_id",p.getId(),Adaptor.toDBDocument(p));
+				myReplacement("InProceedings", "_id", p.getId(), Adaptor.toDBDocument(p));
 				inProcList.add(p);
 			}
 		}
 		newProceeding.setInProceedings(inProcList);
-		
-		
-		//handle Publisher
+
+		// handle Publisher
 		Iterator<Document> cursor = myQuery("Publisher", "name", pubName);
 		Publisher pub = new Publisher();
-		if(!cursor.hasNext()){
+		if (!cursor.hasNext()) {
 			pub.setName(pubName);
 			Set<Publication> set = new HashSet<Publication>();
 			set.add(newProceeding);
 			pub.setPublications(set);
 			pub.setId((new ObjectId()).toString());
 			myInsert("Publisher", Adaptor.toDBDocument(pub));
-		}
-		else{
+		} else {
 			pub = Adaptor.toPublisher(cursor.next());
 			pub.addPublication(newProceeding);
-			myReplacement("Publisher", "_id",pub.getId(),Adaptor.toDBDocument(pub));
+			myReplacement("Publisher", "_id", pub.getId(), Adaptor.toDBDocument(pub));
 		}
 
 		newProceeding.setPublisher(pub);
-		
-		
-		//handle Series
+
+		// handle Series
 		cursor = myQuery("Series", "name", seriesName);
 		Series series = new Series();
-		if(!cursor.hasNext()){
+		if (!cursor.hasNext()) {
 			series.setName(seriesName);
 			Set<Publication> set = new HashSet<Publication>();
 			set.add(newProceeding);
 			series.setPublications(set);
 			series.setId((new ObjectId()).toString());
 			myInsert("Series", Adaptor.toDBDocument(series));
-		}
-		else{
+		} else {
 			series = Adaptor.toSeries(cursor.next());
 			series.addPublication(newProceeding);
-			myReplacement("Series", "_id",series.getId(),Adaptor.toDBDocument(series));
+			myReplacement("Series", "_id", series.getId(), Adaptor.toDBDocument(series));
 		}
 
 		newProceeding.setSeries(series);
 
-		
-		//handle Conference/ConferenceEdition
+		// handle Conference/ConferenceEdition
 		cursor = myQuery("Conference", "name", confName);
 		Conference conference = new Conference();
-		
+
 		ConferenceEdition confE = new ConferenceEdition();
 		confE.setYear(confYear);
 		confE.setId((new ObjectId()).toString());
 		confE.setProceedings(newProceeding);
 
-		if(!cursor.hasNext()){
+		if (!cursor.hasNext()) {
 			conference.setName(confName);
 			Set<Publication> set = new HashSet<Publication>();
 			set.add(newProceeding);
@@ -1287,25 +1135,21 @@ public class DatabaseHelper {
 			conference.setId((new ObjectId()).toString());
 			confE.setConference(conference);
 			myInsert("Conference", Adaptor.toDBDocument(conference));
-		}
-		else{
+		} else {
 			conference = Adaptor.toConference(cursor.next());
 			conference.addEdition(confE);
 			confE.setConference(conference);
-			myReplacement("Conference", "_id",conference.getId(),Adaptor.toDBDocument(conference));
+			myReplacement("Conference", "_id", conference.getId(), Adaptor.toDBDocument(conference));
 		}
 
 		newProceeding.setConferenceEdition(confE);
 		myInsert("ConferenceEdition", Adaptor.toDBDocument(confE));
-		
 
-		
 		myInsert("Proceedings", Adaptor.toDBDocument(newProceeding));
 
 		closeConnectionDB();
 
 	}
-
 
 	/**
 	 * 
@@ -1448,146 +1292,140 @@ public class DatabaseHelper {
 		connectToDB();
 		createDB();
 		Iterator<Document> cursor = myQuery("Person", "name", author);
-		
+
 		HashSet<String> result = new HashSet<String>();
-		if(!cursor.hasNext()){
+		if (!cursor.hasNext()) {
 			System.out.println("Author not found");
 			return;
 		}
 		Person author1 = Adaptor.toPerson(cursor.next());
-		for(Publication pub : author1.getAuthoredPublications()){
+		for (Publication pub : author1.getAuthoredPublications()) {
 			Iterator<Document> cursor1 = myQuery("InProceedings", "_id", pub.getId());
 			InProceedings inProc = Adaptor.toInProceedings(cursor1.next());
-			for(Person coAuthor : inProc.getAuthors()){
+			for (Person coAuthor : inProc.getAuthors()) {
 				Iterator<Document> cursor2 = myQuery("Person", "_id", coAuthor.getId());
 				Person per = Adaptor.toPerson(cursor2.next());
 				result.add(per.getName());
 			}
 		}
-		
-		for(Publication pub : author1.getEditedPublications()){
+
+		for (Publication pub : author1.getEditedPublications()) {
 			Iterator<Document> cursor1 = myQuery("Proceedings", "_id", pub.getId());
 			Proceedings proc = Adaptor.toProceeding(cursor1.next());
-			for(Person coAuthor : proc.getAuthors()){
+			for (Person coAuthor : proc.getAuthors()) {
 				Iterator<Document> cursor2 = myQuery("Person", "_id", coAuthor.getId());
 				Person per = Adaptor.toPerson(cursor2.next());
 				result.add(per.getName());
 			}
 		}
-		//remove author's own name
+		// remove author's own name
 		result.remove(author);
-			try {
-				PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
-				writer.println(thisQuery);
-				for(String str : result){
-					writer.println(str);
-				}		
-				writer.close();
-			} catch (IOException e) {
-				System.out.println("Could not print to file.");
+		try {
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
+			writer.println(thisQuery);
+			for (String str : result) {
+				writer.println(str);
 			}
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Could not print to file.");
+		}
 		closeConnectionDB();
 	}
-	
-	public static void query5(String name1, String name2){
-		
+
+	public static void query5(String name1, String name2) {
+
 		String thisQuery = "Query 5";
 		connectToDB();
 		createDB();
-		
+
 		Person author1 = new Person();
 		Person author2 = new Person();
-		
+
 		Iterator<Document> cursor = myQuery("Person", "name", name1);
-		
-		if(!cursor.hasNext()){
+
+		if (!cursor.hasNext()) {
 			System.out.println("author 1 not found");
 			return;
-		}
-		else{
+		} else {
 			author1 = Adaptor.toPerson(cursor.next());
 		}
-		
+
 		cursor = myQuery("Person", "name", name2);
-		
-		if(!cursor.hasNext()){
+
+		if (!cursor.hasNext()) {
 			System.out.println("author 2 not found");
 			return;
-		}
-		else{
+		} else {
 			author2 = Adaptor.toPerson(cursor.next());
 		}
 
 		int maxDepth = 15;
 		int minDistance = Integer.MAX_VALUE;
-		
-		for(int i = 2; i<maxDepth; i++){
+
+		for (int i = 2; i < maxDepth; i++) {
 			minDistance = query5rec(author1.getId(), author2.getId(), 0, i);
-			if(!(minDistance == Integer.MAX_VALUE + 1)){
+			if (!(minDistance == Integer.MAX_VALUE + 1)) {
 				break;
 			}
-			
+
 		}
-		
+
 		System.out.println(minDistance);
-		
+
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			if(minDistance == Integer.MAX_VALUE + 1){
+			if (minDistance == Integer.MAX_VALUE + 1) {
 				writer.println("No path between the two authors has been found");
-			}
-			else{
+			} else {
 				writer.println("The shortest path between " + name1 + " and " + name2 + " has length:" + minDistance);
 			}
 			writer.close();
 
-				
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
 
 		DatabaseHelper.closeConnectionDB();
 	}
-	
-	
-	public static int query5rec(String id1, String id2, int currDepth, int maxDepth){
-				
+
+	public static int query5rec(String id1, String id2, int currDepth, int maxDepth) {
+
 		Person author1 = new Person();
-		
+
 		Iterator<Document> cursor = myQuery("Person", "_id", id1);
-		
-		if(!cursor.hasNext()){
+
+		if (!cursor.hasNext()) {
 			System.out.println("author 1 not found");
 			return 100;
-		}
-		else{
+		} else {
 			author1 = Adaptor.toPerson(cursor.next());
 		}
-		for(Publication pub : author1.getAuthoredPublications()){
+		for (Publication pub : author1.getAuthoredPublications()) {
 			cursor = myQuery("InProceedings", "_id", pub.getId());
 			InProceedings inProc = Adaptor.toInProceedings(cursor.next());
-			for(Person coAuthor : inProc.getAuthors()){
-				if(coAuthor.getId().equals(id2)){
+			for (Person coAuthor : inProc.getAuthors()) {
+				if (coAuthor.getId().equals(id2)) {
 					return 1;
 				}
 			}
 		}
-		if(currDepth > maxDepth){
+		if (currDepth > maxDepth) {
 			return Integer.MAX_VALUE;
 		}
 		int currentMinDistance = Integer.MAX_VALUE;
-		
-		for(Publication pub : author1.getAuthoredPublications()){
+
+		for (Publication pub : author1.getAuthoredPublications()) {
 			cursor = myQuery("InProceedings", "_id", pub.getId());
 			InProceedings inProc = Adaptor.toInProceedings(cursor.next());
-			for(Person coAuthor : inProc.getAuthors()){
-				if(!coAuthor.getId().equals(id1)){
-					int distance = query5rec(coAuthor.getId(),id2, currDepth + 1, maxDepth);
-					if(distance == 1){
+			for (Person coAuthor : inProc.getAuthors()) {
+				if (!coAuthor.getId().equals(id1)) {
+					int distance = query5rec(coAuthor.getId(), id2, currDepth + 1, maxDepth);
+					if (distance == 1) {
 						return distance + 1;
 					}
-					if(currentMinDistance>distance){
+					if (currentMinDistance > distance) {
 						currentMinDistance = distance;
 					}
 				}
@@ -1611,11 +1449,11 @@ public class DatabaseHelper {
 		Iterator<Document> itr = inProc.find(new Document()).projection(Projections.fields(Projections.include("authors"), Projections.excludeId())).iterator();
 		while (itr.hasNext()) {
 			String str = itr.next().toJson();
-			//System.out.println(str);
-			//System.out.println(str.replaceAll("_id", ""));
+			// System.out.println(str);
+			// System.out.println(str.replaceAll("_id", ""));
 			// plus 1, because there is one superfluous _id
 			authors += (str.length() - str.replaceAll("_id", "").length()) / 3;
-			//System.out.println((str.length() - str.replaceAll("_id", "").length()) / 3);
+			// System.out.println((str.length() - str.replaceAll("_id", "").length()) / 3);
 		}
 		itr = proc.find(new Document()).projection(field1).iterator();
 		while (itr.hasNext()) {
@@ -1637,55 +1475,47 @@ public class DatabaseHelper {
 		}
 	}
 
-	 // Returns the number of publications per year between the interval year1 and year 2
-    public static void query7(int year1, int year2) {
-        String thisQuery = "Query 7";
-        connectToDB();
-        createDB();
+	// Returns the number of publications per year between the interval year1 and year 2
+	public static void query7(int year1, int year2) {
+		String thisQuery = "Query 7";
+		connectToDB();
+		createDB();
 
-        try {
+		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
-            writer.println(thisQuery);
-            writer.printf("%-20s%-12s%-17s%n%n","Publication Type", "Year", "No. Publications");
-            MongoCollection<Document> pubs = database.getCollection("Proceedings");
-            AggregateIterable<Document> procs = pubs.aggregate(Arrays.asList(
-                    Aggregates.match(Filters.lte("year", year2)), 
-                    Aggregates.match(Filters.gte("year", year1)),
-                    Aggregates.group("$year", Accumulators.sum("year", 1)),
-                    Aggregates.sort(Sorts.ascending("year"))));
-            Iterator<Document> itrProc = procs.iterator();
-            
-            MongoCollection<Document> inProc = database.getCollection("InProceedings");
-            AggregateIterable<Document> inProcs = inProc.aggregate(Arrays.asList(
-                    Aggregates.match(Filters.lte("year", year2)), 
-                    Aggregates.match(Filters.gte("year", year1)),
-                    Aggregates.group("$year", Accumulators.sum("year", 1)),
-                    Aggregates.sort(Sorts.ascending("year"))));
-            Iterator<Document> itrInProc = inProcs.iterator();
-            int no;
-            int year;
-            int all;
-            Document temp;
-            while (itrInProc.hasNext() || itrProc.hasNext()) {
-                temp = itrInProc.next();
-                no = temp.getInteger("_id");
-                year = temp.getInteger("year");
-                all=year;
-                writer.printf("%-20s%-12s%-17s%n","InProceedings ", no, year);
-                temp = itrProc.next();
-                no = temp.getInteger("_id");
-                year = temp.getInteger("year");
-                writer.printf("%-20s%-12s%-17s%n","Proceedings ", no, year);
-                all=all+year;
-                writer.printf("%-20s%-12s%-17s%n%n", "All Publications", no, all);
-                
-            }
-        writer.close();
-        } catch (IOException e) {
-            System.out.println("Could not print to file.");
-        }
-        closeConnectionDB();
-    }
+			writer.println(thisQuery);
+			writer.printf("%-20s%-12s%-17s%n%n", "Publication Type", "Year", "No. Publications");
+			MongoCollection<Document> pubs = database.getCollection("Proceedings");
+			AggregateIterable<Document> procs = pubs.aggregate(Arrays.asList(Aggregates.match(Filters.lte("year", year2)), Aggregates.match(Filters.gte("year", year1)), Aggregates.group("$year", Accumulators.sum("year", 1)), Aggregates.sort(Sorts.ascending("year"))));
+			Iterator<Document> itrProc = procs.iterator();
+
+			MongoCollection<Document> inProc = database.getCollection("InProceedings");
+			AggregateIterable<Document> inProcs = inProc.aggregate(Arrays.asList(Aggregates.match(Filters.lte("year", year2)), Aggregates.match(Filters.gte("year", year1)), Aggregates.group("$year", Accumulators.sum("year", 1)), Aggregates.sort(Sorts.ascending("year"))));
+			Iterator<Document> itrInProc = inProcs.iterator();
+			int no;
+			int year;
+			int all;
+			Document temp;
+			while (itrInProc.hasNext() || itrProc.hasNext()) {
+				temp = itrInProc.next();
+				no = temp.getInteger("_id");
+				year = temp.getInteger("year");
+				all = year;
+				writer.printf("%-20s%-12s%-17s%n", "InProceedings ", no, year);
+				temp = itrProc.next();
+				no = temp.getInteger("_id");
+				year = temp.getInteger("year");
+				writer.printf("%-20s%-12s%-17s%n", "Proceedings ", no, year);
+				all = all + year;
+				writer.printf("%-20s%-12s%-17s%n%n", "All Publications", no, all);
+
+			}
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Could not print to file.");
+		}
+		closeConnectionDB();
+	}
 
 	// No of all publications of a conference, except proceedings
 	public static void query8(String conferenceName) {
@@ -1693,77 +1523,75 @@ public class DatabaseHelper {
 		createDB();
 
 		String thisQuery = "Query 8";
-		
+
 		List<String> resultList = new ArrayList<String>();
 		Iterator<Document> cursor = myQuery("Conference", "name", conferenceName);
-		if(!cursor.hasNext()){
+		if (!cursor.hasNext()) {
 			System.out.println("Did not find a Conference with name: " + conferenceName);
 			return;
 		}
 		Conference conference = Adaptor.toConference(cursor.next());
-		for(ConferenceEdition e : conference.getEditions()){
+		for (ConferenceEdition e : conference.getEditions()) {
 			cursor = myQuery("ConferenceEdition", "_id", e.getId());
 			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
-			
+
 			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
 			Proceedings proc = Adaptor.toProceeding(cursor.next());
-			
-			for(InProceedings i : proc.getInProceedings()){
-				if(!resultList.contains(i.getId())){
+
+			for (InProceedings i : proc.getInProceedings()) {
+				if (!resultList.contains(i.getId())) {
 					resultList.add(i.getId());
 				}
 			}
 		}
-		
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("The number of all InProceedings of Conference " + conferenceName + "is  "+ resultList.size() + ".");
+			writer.println("The number of all InProceedings of Conference " + conferenceName + "is  " + resultList.size() + ".");
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
 		closeConnectionDB();
 	}
-	
-	
-	public static void query9(String confName){
+
+	public static void query9(String confName) {
 		connectToDB();
 		createDB();
 
 		String thisQuery = "Query 9";
-		
+
 		List<String> resultList = new ArrayList<String>();
 		Iterator<Document> cursor = myQuery("Conference", "name", confName);
-		if(!cursor.hasNext()){
+		if (!cursor.hasNext()) {
 			System.out.println("Did not find a Conference with name:" + confName);
 			return;
 		}
 		Conference conference = Adaptor.toConference(cursor.next());
-		for(ConferenceEdition e : conference.getEditions()){
+		for (ConferenceEdition e : conference.getEditions()) {
 			cursor = myQuery("ConferenceEdition", "_id", e.getId());
 			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
-			
+
 			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
 			Proceedings proc = Adaptor.toProceeding(cursor.next());
-			for(Person p : proc.getAuthors()){
-				if(!resultList.contains(p.getId())){
+			for (Person p : proc.getAuthors()) {
+				if (!resultList.contains(p.getId())) {
 					resultList.add(p.getId());
 				}
 			}
-			
-			for(InProceedings i : proc.getInProceedings()){
+
+			for (InProceedings i : proc.getInProceedings()) {
 				cursor = myQuery("InProceedings", "_id", i.getId());
 				InProceedings inProc = Adaptor.toInProceedings(cursor.next());
-				for(Person p : inProc.getAuthors()){
-					if(!resultList.contains(p.getId())){
+				for (Person p : inProc.getAuthors()) {
+					if (!resultList.contains(p.getId())) {
 						resultList.add(p.getId());
 					}
 				}
 			}
 		}
-		
+
 		closeConnectionDB();
 
 		p(resultList.size());
@@ -1776,42 +1604,40 @@ public class DatabaseHelper {
 			System.out.println("Could not print to file.");
 		}
 
-		
 	}
-	
-	public static void query11(String confName){
+
+	public static void query11(String confName) {
 		connectToDB();
 		createDB();
 
 		String thisQuery = "Query 11";
-		
+
 		List<String> resultList = new ArrayList<String>();
 		Iterator<Document> cursor = myQuery("Conference", "name", confName);
-		if(!cursor.hasNext()){
+		if (!cursor.hasNext()) {
 			System.out.println("Did not find a Conference with name:" + confName);
 			return;
 		}
 		Conference conference = Adaptor.toConference(cursor.next());
-		for(ConferenceEdition e : conference.getEditions()){
+		for (ConferenceEdition e : conference.getEditions()) {
 			cursor = myQuery("ConferenceEdition", "_id", e.getId());
 			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
-			
+
 			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
 			Proceedings proc = Adaptor.toProceeding(cursor.next());
-			
-			for(InProceedings i : proc.getInProceedings()){
-				if(!resultList.contains(i.getId())){
+
+			for (InProceedings i : proc.getInProceedings()) {
+				if (!resultList.contains(i.getId())) {
 					resultList.add(i.getId());
 				}
 			}
 		}
-		
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("List of all "+ resultList.size() + " InProceedings of Conference " + confName);
-			for(String id : resultList){
+			writer.println("List of all " + resultList.size() + " InProceedings of Conference " + confName);
+			for (String id : resultList) {
 				cursor = myQuery("InProceedings", "_id", id);
 				InProceedings inProc = Adaptor.toInProceedings(cursor.next());
 
@@ -1824,52 +1650,49 @@ public class DatabaseHelper {
 
 		closeConnectionDB();
 	}
-	
-	
 
-	public static void query10(String confName){
+	public static void query10(String confName) {
 		connectToDB();
 		createDB();
 
 		String thisQuery = "Query 10";
-		
+
 		List<String> resultList = new ArrayList<String>();
 		Iterator<Document> cursor = myQuery("Conference", "name", confName);
-		if(!cursor.hasNext()){
+		if (!cursor.hasNext()) {
 			System.out.println("Did not find a Conference with name:" + confName);
 			return;
 		}
 		Conference conference = Adaptor.toConference(cursor.next());
-		for(ConferenceEdition e : conference.getEditions()){
+		for (ConferenceEdition e : conference.getEditions()) {
 			cursor = myQuery("ConferenceEdition", "_id", e.getId());
 			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
-			
+
 			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
 			Proceedings proc = Adaptor.toProceeding(cursor.next());
-			for(Person p : proc.getAuthors()){
-				if(!resultList.contains(p.getId())){
+			for (Person p : proc.getAuthors()) {
+				if (!resultList.contains(p.getId())) {
 
 					resultList.add(p.getId());
 				}
 			}
-			
-			for(InProceedings i : proc.getInProceedings()){
+
+			for (InProceedings i : proc.getInProceedings()) {
 				cursor = myQuery("InProceedings", "_id", i.getId());
 				InProceedings inProc = Adaptor.toInProceedings(cursor.next());
-				for(Person p : inProc.getAuthors()){
-					if(!resultList.contains(p.getId())){
+				for (Person p : inProc.getAuthors()) {
+					if (!resultList.contains(p.getId())) {
 						resultList.add(p.getId());
 					}
 				}
 			}
 		}
-		
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("List of all "+ resultList.size() + " authors and editors");
-			for(String id : resultList){
+			writer.println("List of all " + resultList.size() + " authors and editors");
+			for (String id : resultList) {
 				cursor = myQuery("Person", "_id", id);
 				Person person = Adaptor.toPerson(cursor.next());
 
@@ -1882,45 +1705,43 @@ public class DatabaseHelper {
 
 		closeConnectionDB();
 
-		
 	}
 
-	public static void query12(){
+	public static void query12() {
 
 		String thisQuery = "Query 12";
 		List<String> resultList = new ArrayList<String>();
 		List<Publication> allProceedings = getAllProceedings();
-		
+
 		connectToDB();
 		createDB();
 
-		for(Publication p: allProceedings){
+		for (Publication p : allProceedings) {
 			List<String> authorsOfProc = new ArrayList<String>();
-			for(Person pers : p.getAuthors()){
+			for (Person pers : p.getAuthors()) {
 				authorsOfProc.add(pers.getId());
 			}
-			
-			for(InProceedings i : ((Proceedings)p).getInProceedings()){
+
+			for (InProceedings i : ((Proceedings) p).getInProceedings()) {
 				Iterator<Document> cursor = myQuery("InProceedings", "_id", i.getId());
 				InProceedings inProceedings = Adaptor.toInProceedings(cursor.next());
-				for(Person pers : inProceedings.getAuthors()){
-					if(authorsOfProc.contains(pers.getId()) && !resultList.contains(pers.getId())){
+				for (Person pers : inProceedings.getAuthors()) {
+					if (authorsOfProc.contains(pers.getId()) && !resultList.contains(pers.getId())) {
 						resultList.add(pers.getId());
 					}
 				}
 			}
 
 		}
-				
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("List of all "+ resultList.size() + " authors that occur as editor in Proceeding as well as in InProceeding as and author:");
-			for(String id : resultList){
+			writer.println("List of all " + resultList.size() + " authors that occur as editor in Proceeding as well as in InProceeding as and author:");
+			for (String id : resultList) {
 				Iterator<Document> cursor = myQuery("Person", "_id", id);
 				Person person = Adaptor.toPerson(cursor.next());
-				
+
 				writer.println(person.getName());
 			}
 			writer.close();
@@ -1930,48 +1751,43 @@ public class DatabaseHelper {
 
 		closeConnectionDB();
 
-		
 	}
 
-	//all publications, where given author is mentioned last
-	public static void query13 (String author){
-			int count = 0;
-			String thisQuery = "Query 13";
-			connectToDB();
-			createDB();
+	// all publications, where given author is mentioned last
+	public static void query13(String author) {
+		int count = 0;
+		String thisQuery = "Query 13";
+		connectToDB();
+		createDB();
 
-			MongoCollection<Document> pers = database.getCollection("Person");
-			FindIterable<Document> person = pers.find(Filters.eq("name", author)).projection(Projections.include("_id"));
-			String authorId = person.first().toJson().replaceAll("\\{", "").replaceAll("\\}", "").replaceAll("_id", "").replaceAll(":", "").replaceAll("\"", "").trim();
-			//System.out.println("author id :" + authorId);
-			int idLength = authorId.length();
-			MongoCollection<Document> inProcs = database.getCollection("InProceedings");
-			AggregateIterable<Document> conferences = inProcs.aggregate(Arrays.asList(
-					Aggregates.match(Filters.elemMatch("authors", Filters.eq(authorId))), 
-					Aggregates.project(Projections.include("authors")),
-					Aggregates.project(Projections.excludeId())));
-			try {
-				PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
-				writer.println(thisQuery);
-				Iterator<Document> itr = conferences.iterator();
-				while (itr.hasNext()) {
-					String res = itr.next().toJson().replaceAll("\"", "").replaceAll("\\{", "").replaceAll("\\}", "").replaceAll("_id", "").replaceAll("authors", "").replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(":", "").replaceAll(",", "").trim();
-					//System.out.println(res);
-					if(res.substring(res.length()-idLength, res.length()).equals(authorId)){
-						//System.out.println(res.substring(res.length()-idLength, res.length()));
-						count++;
-					}
+		MongoCollection<Document> pers = database.getCollection("Person");
+		FindIterable<Document> person = pers.find(Filters.eq("name", author)).projection(Projections.include("_id"));
+		String authorId = person.first().toJson().replaceAll("\\{", "").replaceAll("\\}", "").replaceAll("_id", "").replaceAll(":", "").replaceAll("\"", "").trim();
+		// System.out.println("author id :" + authorId);
+		int idLength = authorId.length();
+		MongoCollection<Document> inProcs = database.getCollection("InProceedings");
+		AggregateIterable<Document> conferences = inProcs.aggregate(Arrays.asList(Aggregates.match(Filters.elemMatch("authors", Filters.eq(authorId))), Aggregates.project(Projections.include("authors")), Aggregates.project(Projections.excludeId())));
+		try {
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
+			writer.println(thisQuery);
+			Iterator<Document> itr = conferences.iterator();
+			while (itr.hasNext()) {
+				String res = itr.next().toJson().replaceAll("\"", "").replaceAll("\\{", "").replaceAll("\\}", "").replaceAll("_id", "").replaceAll("authors", "").replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(":", "").replaceAll(",", "").trim();
+				// System.out.println(res);
+				if (res.substring(res.length() - idLength, res.length()).equals(authorId)) {
+					// System.out.println(res.substring(res.length()-idLength, res.length()));
+					count++;
 				}
-				writer.println("The number of publications where the author named "+author+ " is mentioned last is "+ count +".");
-				writer.close();
-			} catch (IOException e) {
-				System.out.println("Could not print to file.");
 			}
-			closeConnectionDB();
+			writer.println("The number of publications where the author named " + author + " is mentioned last is " + count + ".");
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Could not print to file.");
+		}
+		closeConnectionDB();
 	}
-	
-	
-	public static void query14(int year1, int year2){
+
+	public static void query14(int year1, int year2) {
 
 		String thisQuery = "Query 14";
 		List<String> resultList = new ArrayList<String>();
@@ -1980,39 +1796,38 @@ public class DatabaseHelper {
 		connectToDB();
 		createDB();
 
-		for(Publication p: allProceedings){
+		for (Publication p : allProceedings) {
 			List<String> authorsOfProc = new ArrayList<String>();
-			for(Person pers : p.getAuthors()){
+			for (Person pers : p.getAuthors()) {
 				authorsOfProc.add(pers.getId());
 			}
 			boolean found = false;
-			for(Publication i : allInProceedings){
-				for(Person pers : i.getAuthors()){
-					if(authorsOfProc.contains(pers.getId()) && i.getYear() >= year1 && i.getYear() <= year2){
-						String pubID = ((Proceedings)p).getPublisher().getId();
-						if(!resultList.contains(pubID)){
+			for (Publication i : allInProceedings) {
+				for (Person pers : i.getAuthors()) {
+					if (authorsOfProc.contains(pers.getId()) && i.getYear() >= year1 && i.getYear() <= year2) {
+						String pubID = ((Proceedings) p).getPublisher().getId();
+						if (!resultList.contains(pubID)) {
 							resultList.add(pubID);
 						}
 						found = true;
 						break;
 					}
 				}
-				if(found){
+				if (found) {
 					break;
 				}
 			}
 
 		}
-				
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("List of all "+ resultList.size() + " Publishers.....:");
-			for(String id : resultList){
+			writer.println("List of all " + resultList.size() + " Publishers.....:");
+			for (String id : resultList) {
 				Iterator<Document> cursor = myQuery("Publisher", "_id", id);
 				Publisher publisher = Adaptor.toPublisher(cursor.next());
-				
+
 				writer.println(publisher.getName());
 			}
 			writer.close();
@@ -2022,6 +1837,5 @@ public class DatabaseHelper {
 
 		closeConnectionDB();
 
-		
-	}	
+	}
 }
