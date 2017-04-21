@@ -11,6 +11,8 @@ import org.basex.query.value.node.DBNode;
 import org.basex.query.value.node.FElem;
 
 import infsysProj.infsysProj.DomainObject;
+import infsysProj.infsysProj.Person;
+import infsysProj.infsysProj.Proceedings;
 
 public class Adaptor {
 
@@ -104,6 +106,27 @@ public class Adaptor {
 				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setName", String.class).invoke(o, value);
 				break;
+			case "author":
+				value = n.children().next().serialize().toString();
+				Person author = new Person();
+				author.setName(value);
+				o.getClass().getMethod("addAuthor", Person.class).invoke(o, author);
+				break;
+				
+			case "editor":
+				value = n.children().next().serialize().toString();
+				Person editor = new Person();
+				editor.setName(value);
+				o.getClass().getMethod("addAuthor", Person.class).invoke(o, editor);
+				break;
+				
+			case "crossref":
+				value = n.children().next().serialize().toString();
+				Proceedings proceedings = new Proceedings();
+				proceedings.setId(value);
+				o.getClass().getMethod("setProceedings", Proceedings.class).invoke(o, proceedings);
+				break;
+
 			case "key":
 				value = n.attributes().get(1).serialize().toString();
 				o.getClass().getMethod("setId", String.class).invoke(o, value);

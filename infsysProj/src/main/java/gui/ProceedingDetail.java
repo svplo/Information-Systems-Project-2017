@@ -48,7 +48,7 @@ public class ProceedingDetail extends MyJFrame {
 
 	private JPanel contentPane;
 	private Proceedings proceeding;
-	List<String> authors;
+	List<String> authors = new ArrayList<String>();
 	List<String> inProcNames;
 	JTable authorsTable;
 	JLabel lblAuthors;
@@ -189,7 +189,10 @@ public class ProceedingDetail extends MyJFrame {
 
 		//Load the Authors from DB
 
-		authors = DatabaseHelper.getAuthorsOfProceedings(proceeding.getTitle());
+		for(Person p : proceeding.getAuthors()){
+			authors.add(p.getName());
+		}
+		//authors = DatabaseHelper.getAuthorsOfProceedings(proceeding.getTitle());
 
 		lblAuthors = new JLabel("Authors(" + authors.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;

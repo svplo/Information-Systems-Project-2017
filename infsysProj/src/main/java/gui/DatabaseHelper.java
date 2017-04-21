@@ -82,7 +82,6 @@ public class DatabaseHelper {
 	    return result;
 	}
 
-
 	public static void connectToDB() {
 		context = new Context();
 		try {
@@ -127,6 +126,7 @@ public class DatabaseHelper {
 	public static String escape(String s){
 		return(s.replaceAll("\"", "&#34;"));
 	}
+	
 	public static List<Publication> getAllPublications() {
 		List<Publication> result = getAllInProceedings();
 		result.addAll(getAllProceedings());
@@ -259,9 +259,9 @@ public class DatabaseHelper {
 		DatabaseHelper.connectToDB();
 
 		String query = "/root/proceedings[title = \"" + escape(proceedingName) + "\"]/booktitle";
-		
+		String result = myQuery(query).get(0);
 		DatabaseHelper.closeConnectionDB();
-		return myQuery(query).get(0);
+		return result;
 	}
 
 	public static String getConferenceEditionName(ConferenceEdition edition) {
@@ -284,33 +284,19 @@ public class DatabaseHelper {
 
 	public static String getConferenceYear(String proceedingName) {
 		DatabaseHelper.connectToDB();
-		DatabaseHelper.createDB();
 
-		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
-		Proceedings proc = Adaptor.toProceeding(cursor.next());
+		String query = "/root/proceedings[title = \"" + escape(proceedingName) + "\"]/year";
+		String result = myQuery(query).get(0);
 
-		cursor = myQuery("ConferenceEdition", "_id", proc.getConferenceEdition().getId());
-		ConferenceEdition confE = Adaptor.toConferenceEdition(cursor.next());
-
+		
 		DatabaseHelper.closeConnectionDB();
-		return String.valueOf(confE.getYear());
+		return result;
 	}
 
 	public static List<String> getAuthorsOfProceedings(String proceedingName) {
-		DatabaseHelper.connectToDB();
-		DatabaseHelper.createDB();
-
-		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
-		Proceedings proc = Adaptor.toProceeding(cursor.next());
-
-		List<String> result = new ArrayList<String>();
-		for (Person p : proc.getAuthors()) {
-			cursor = myQuery("Person", "_id", p.getId());
-			Person person = Adaptor.toPerson(cursor.next());
-			result.add(person.getName());
-		}
-
-		DatabaseHelper.closeConnectionDB();
+		
+		
+		
 		return result;
 	}
 
@@ -327,20 +313,11 @@ public class DatabaseHelper {
 	public static List<String> getInProceedingsOfProceedings(String proceedingId) {
 
 		connectToDB();
-		createDB();
+		
+		String query = "for $x in (/root/inproceedings) where $x/crossref = \""+ proceedingId.replace("key=\"", "").replaceAll("\"", "")+"\" return $x/title/text()";
+		List<String> result = myQuery(query);
 
-		MongoCollection<Document> collection = database.getCollection("Proceedings");
-		BasicDBObject query = new BasicDBObject("_id", proceedingId);
-		FindIterable<Document> iterable = collection.find(query);
-		List<String> idList = getIDCollection(iterable.first(), "inProceedings");
-		List<String> result = new ArrayList<String>();
-		collection = database.getCollection("InProceedings");
-		for (String inProceedingID : idList) {
-			query = new BasicDBObject("_id", inProceedingID);
-			iterable = collection.find(query);
-			result.add((Adaptor.toInProceedings(iterable.first())).getTitle());
-		}
-
+		
 		closeConnectionDB();
 		return result;
 
@@ -381,18 +358,24 @@ public class DatabaseHelper {
 
 	public static List<Person> searchForPeople(String search) {
 		connectToDB();
-		createDB();
+		String query = "for $x in distinct-values((root/proceedings/editor|root/inproceedings/author)) where contains($x,\"" + escape(search) + "\" ) return <name>{$x}</name>";
+		List<Person> result =(List<Person>)(List<?>) myQuery(query, Person.class);
 
-		MongoCollection<Document> collection = database.getCollection("Person");
-		BasicDBObject query = new BasicDBObject();
-		query.put("name", java.util.regex.Pattern.compile(search));
+		for(Person p : result){
+			query = "count(for $x in distinct-values((root/proceedings[editor = \"" +p.getName()+"\"]/title)) return $x)";
+			int size = Integer.valueOf(myQuery(query).get(0));
+			for(int i = 0; i<size;i++){
+				p.addEditedPublication(new Proceedings());
+			}			
+			
+			query = "count(for $x in distinct-values((root/inproceedings[author = \"" +p.getName()+"\"]/title)) return $x)";
+			size = Integer.valueOf(myQuery(query).get(0));
+			for(int i = 0; i<size;i++){
+				p.addAuthoredPublication(new InProceedings());
+			}			
 
-		FindIterable<Document> iterable = collection.find(query);
-		List<Person> result = new ArrayList<Person>();
-		Iterator it = iterable.iterator();
-		while (it.hasNext()) {
-			result.add(Adaptor.toPerson((Document) it.next()));
 		}
+
 		closeConnectionDB();
 
 		return result;
@@ -401,18 +384,16 @@ public class DatabaseHelper {
 
 	public static List<Conference> searchForConference(String search) {
 		connectToDB();
-		createDB();
-
-		MongoCollection<Document> collection = database.getCollection("Conference");
-		BasicDBObject query = new BasicDBObject();
-		query.put("name", java.util.regex.Pattern.compile(search));
-
-		FindIterable<Document> iterable = collection.find(query);
-		List<Conference> result = new ArrayList<Conference>();
-		Iterator it = iterable.iterator();
-		while (it.hasNext()) {
-			result.add(Adaptor.toConference((Document) it.next()));
+		String query = "for $x in distinct-values(root/proceedings/booktitle) where contains($x,\"" + escape(search) + "\" ) return <publisher>{$x}</publisher>";
+		List<Conference> result =(List<Conference>)(List<?>) myQuery(query, Conference.class);
+		for(Conference conf : result){
+			query = "count(/root/proceedings[booktitle = \"" + conf.getName().replaceAll("\"", "'") + "\"])";
+			int size = Integer.valueOf(myQuery(query).get(0));
+			for(int i = 0; i<size;i++){
+				conf.addEdition(new ConferenceEdition());
+			}
 		}
+
 		closeConnectionDB();
 
 		return result;
@@ -420,56 +401,41 @@ public class DatabaseHelper {
 
 	public static List<Series> searchForSeries(String search) {
 		connectToDB();
-		createDB();
+		String query = "for $x in distinct-values(root/proceedings/series) where contains($x,\"" + escape(search) + "\" ) return <name>{$x}</name>";
+		List<Series> result =(List<Series>)(List<?>) myQuery(query, Series.class);
 
-		MongoCollection<Document> collection = database.getCollection("Series");
-		BasicDBObject query = new BasicDBObject();
-		query.put("name", java.util.regex.Pattern.compile(search));
-
-		FindIterable<Document> iterable = collection.find(query);
-		List<Series> result = new ArrayList<Series>();
-		Iterator it = iterable.iterator();
-		while (it.hasNext()) {
-			result.add(Adaptor.toSeries((Document) it.next()));
-		}
 		closeConnectionDB();
 
 		return result;
 	}
 
 	public static List<ConferenceEdition> searchForConferenceEdition(String search) {
+		
 		connectToDB();
-		createDB();
-
-		MongoCollection<Document> collection = database.getCollection("ConferenceEdition");
-		BasicDBObject query = new BasicDBObject();
-		query.put("_id", java.util.regex.Pattern.compile(search));
-
-		FindIterable<Document> iterable = collection.find(query);
-		List<ConferenceEdition> result = new ArrayList<ConferenceEdition>();
-		Iterator it = iterable.iterator();
-		while (it.hasNext()) {
-			result.add(Adaptor.toConferenceEdition((Document) it.next()));
-		}
+		String query = "for $x in /root/proceedings where contains($x/year,\""+escape(search)+"\") return $x";
+		List<Publication> proceedings =(List<Publication>)(List<?>) myQuery(query, Proceedings.class);
 		closeConnectionDB();
 
+		List<ConferenceEdition> result = new ArrayList<ConferenceEdition>();
+		for(Publication p : proceedings){
+			ConferenceEdition e = new ConferenceEdition();
+			e.setYear(p.getYear());
+			e.setProceedings((Proceedings)p);
+			Conference conf = new Conference();
+			conf.setName(getConferenceEditionName(e));
+			e.setConference(conf);
+			result.add(e);
+		}
 		return result;
+
 	}
 
 	public static List<Publisher> searchForPublisher(String search) {
 		connectToDB();
-		createDB();
 
-		MongoCollection<Document> collection = database.getCollection("Publisher");
-		BasicDBObject query = new BasicDBObject();
-		query.put("name", java.util.regex.Pattern.compile(search));
+		String query = "for $x in distinct-values(root/proceedings/publisher) where contains($x,\"" + escape(search) + "\" ) return <publisher>{$x}</publisher>";
+		List<Publisher> result =(List<Publisher>)(List<?>) myQuery(query, Publisher.class);
 
-		FindIterable<Document> iterable = collection.find(query);
-		List<Publisher> result = new ArrayList<Publisher>();
-		Iterator it = iterable.iterator();
-		while (it.hasNext()) {
-			result.add(Adaptor.toPublisher((Document) it.next()));
-		}
 		closeConnectionDB();
 
 		return result;
@@ -889,44 +855,28 @@ public class DatabaseHelper {
 		return ((String) refer.get("_id"));
 	}
 
-	public static Proceedings getProceedingOfInproceeding(String InProceedingId) {
+	public static Proceedings getProceedingOfInproceeding(String proceedingsID) {
 		connectToDB();
-		createDB();
-		InProceedings p;
+		
+		String query = "/root/proceedings[@key = \"" + proceedingsID + "\"]";
+		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, Proceedings.class);
 
-		MongoCollection<Document> collection = database.getCollection("InProceedings");
-		BasicDBObject query = new BasicDBObject("_id", InProceedingId);
-		FindIterable<Document> iterable = collection.find(query);
-		collection = database.getCollection("Proceedings");
-		p = Adaptor.toInProceedings(iterable.first());
-		String proceedingID = p.getProceedings().getId();
-		Proceedings result = new Proceedings();
-		if (!proceedingID.equals("")) {
-			Iterator<Document> cursor = myQuery("Proceedings", "_id", proceedingID);
-			result = Adaptor.toProceeding(cursor.next());
-		}
-
+		System.out.println(result.get(0).getTitle());
 		closeConnectionDB();
-		return result;
+		if(result.get(0) == null){
+			return new Proceedings();
+		}
+		else{
+			return (Proceedings) result.get(0);
+		}
 	}
 
-	public static List<String> getAuthorsOfInProceeding(String inProceedingId) {
-		connectToDB();
-		createDB();
-
-		MongoCollection<Document> collection = database.getCollection("InProceedings");
-		BasicDBObject query = new BasicDBObject("_id", inProceedingId);
-		FindIterable<Document> iterable = collection.find(query);
-		List<String> idList = getIDCollection(iterable.first(), "authors");
+	public static List<String> getAuthorsOfInProceeding(InProceedings inProceeding) {
+		
 		List<String> result = new ArrayList<String>();
-		collection = database.getCollection("Person");
-		for (String authorID : idList) {
-			query = new BasicDBObject("_id", authorID);
-			iterable = collection.find(query);
-			result.add((Adaptor.toPerson(iterable.first())).getName());
+		for(Person p: inProceeding.getAuthors()){
+			result.add(p.getName());
 		}
-
-		closeConnectionDB();
 		return result;
 	}
 

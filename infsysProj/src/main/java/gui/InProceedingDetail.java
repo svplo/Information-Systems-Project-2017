@@ -283,7 +283,12 @@ public class InProceedingDetail extends MyJFrame {
 
 		txtProceeding = new JTextField();
 		txtProceeding.setEditable(false);
-		proceedingsName = DatabaseHelper.getProceedingOfInproceeding(this.inProceeding.getId()).getTitle();
+		if(this.inProceeding.getProceedings() != null){
+			proceedingsName = DatabaseHelper.getProceedingOfInproceeding(this.inProceeding.getProceedings().getID()).getTitle();
+		}
+		else{
+			proceedingsName = "";
+		}
 		txtProceeding.setText(proceedingsName);
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
@@ -315,7 +320,7 @@ public class InProceedingDetail extends MyJFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(editProceeding, c);
 
-		authors = DatabaseHelper.getAuthorsOfInProceeding(this.inProceeding.getId());
+		authors = DatabaseHelper.getAuthorsOfInProceeding(this.inProceeding);
 
 		lblAuthors = new JLabel("Authors (" + authors.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;
