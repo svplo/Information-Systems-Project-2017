@@ -19,6 +19,8 @@ public class Adaptor {
 	public static DomainObject toJava(Item n, Class<? extends DomainObject> c) {
 
 		try {
+			
+			//create an object of class c
 			Constructor<?> constructor;
 			constructor = c.getConstructor();
 			DomainObject result = (DomainObject) constructor.newInstance(new Object[] { });

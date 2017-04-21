@@ -133,6 +133,16 @@ public class DatabaseHelper {
 		return result;
 	}
 
+	public static List<Publication> getAllInProceedings() {
+		connectToDB();
+
+		String query = "/root/inproceedings";
+		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, InProceedings.class);
+
+		closeConnectionDB();
+		return result;
+	}
+
 	public static List<Publication> getAllProceedings() {
 		connectToDB();
 
@@ -293,23 +303,6 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<String> getAuthorsOfProceedings(String proceedingName) {
-		
-		
-		
-		return result;
-	}
-
-	public static List<String> getIDCollection(Document doc, String key) {
-		List<String> IDs = new ArrayList<String>();
-
-		List<Document> inProceedingsIDsDoc = ((List<Document>) doc.get(key));
-		for (Document d : inProceedingsIDsDoc) {
-			IDs.add((String) d.get("_id"));
-		}
-		return IDs;
-	}
-
 	public static List<String> getInProceedingsOfProceedings(String proceedingId) {
 
 		connectToDB();
@@ -339,13 +332,28 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<Publication> getAllInProceedings() {
+	public static Proceedings getProceedingOfInproceeding(String proceedingsID) {
 		connectToDB();
+		
+		String query = "/root/proceedings[@key = \"" + proceedingsID + "\"]";
+		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, Proceedings.class);
 
-		String query = "/root/inproceedings";
-		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, InProceedings.class);
-
+		System.out.println(result.get(0).getTitle());
 		closeConnectionDB();
+		if(result.get(0) == null){
+			return new Proceedings();
+		}
+		else{
+			return (Proceedings) result.get(0);
+		}
+	}
+
+	public static List<String> getAuthorsOfInProceeding(InProceedings inProceeding) {
+		
+		List<String> result = new ArrayList<String>();
+		for(Person p: inProceeding.getAuthors()){
+			result.add(p.getName());
+		}
 		return result;
 	}
 
@@ -458,166 +466,6 @@ public class DatabaseHelper {
 		closeConnectionDB();
 
 		return result;
-	}
-
-	public static void addInProceedings(List<InProceedings> list) {
-		MongoCollection<Document> collection = database.getCollection("InProceedings");
-		int length = list.size();
-		List<Document> documents = new ArrayList<Document>();
-		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
-
-			if (i % 500 == 0) {
-				System.out.println(i + " / " + length + " InProceedings added to Database.");
-			}
-		}
-		if (!documents.isEmpty()) {
-			collection.insertMany(documents);
-		} else {
-			System.out.println("No documents (InProceedings) created.");
-		}
-		System.out.println("All InProceedings added to Database");
-	}
-
-	public static void addPersons(List<Person> list) {
-		// Add Persons
-		MongoCollection<Document> collection = database.getCollection("Person");
-		int length = list.size();
-		List<Document> documents = new ArrayList<Document>();
-		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
-		}
-		if (!documents.isEmpty()) {
-			collection.insertMany(documents);
-		} else {
-			System.out.println("No documents (Persons) created.");
-		}
-
-	}
-
-	public static void addSeries(List<Series> list) {
-		// Add Series
-		MongoCollection<Document> collection = database.getCollection("Series");
-		int length = list.size();
-		List<Document> documents = new ArrayList<Document>();
-		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
-		}
-		if (!documents.isEmpty()) {
-			collection.insertMany(documents);
-		} else {
-			System.out.println("No documents (Series) created.");
-		}
-
-	}
-
-	public static void addPublishers(List<Publisher> list) {
-		// Add Publisher
-		MongoCollection<Document> collection = database.getCollection("Publisher");
-		int length = list.size();
-		List<Document> documents = new ArrayList<Document>();
-		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
-		}
-		if (!documents.isEmpty()) {
-			collection.insertMany(documents);
-		} else {
-			System.out.println("No documents (Publisher) created.");
-		}
-
-	}
-
-	public static void addConferences(List<Conference> list) {
-		// Add Conference
-		MongoCollection<Document> collection = database.getCollection("Conference");
-		int length = list.size();
-		List<Document> documents = new ArrayList<Document>();
-		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
-		}
-		if (!documents.isEmpty()) {
-			collection.insertMany(documents);
-		} else {
-			System.out.println("No documents (Conference) created.");
-		}
-
-	}
-
-	public static void addConferenceEditions(List<ConferenceEdition> list) {
-		// Add Conference Editions
-		MongoCollection<Document> collection = database.getCollection("ConferenceEdition");
-		int length = list.size();
-		List<Document> documents = new ArrayList<Document>();
-		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
-		}
-		if (!documents.isEmpty()) {
-			collection.insertMany(documents);
-		} else {
-			System.out.println("No documents (ConferenceEdition) created.");
-		}
-
-	}
-
-	/*
-	 * Person Add/Del/Upd
-	 */
-	public static void addProceedings(List<Proceedings> list) {
-
-		// Add Proceedings
-		MongoCollection<Document> collection = database.getCollection("Proceedings");
-		int length = list.size();
-		List<Document> documents = new ArrayList<Document>();
-		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
-
-			if (i % 500 == 0) {
-				System.out.println(i + " / " + length + " Proceedings added to Database.");
-			}
-		}
-		if (!documents.isEmpty()) {
-			collection.insertMany(documents);
-		} else {
-			System.out.println("No documents (Proceedings) created.");
-		}
-		System.out.println("All Proceedings added to Database");
-
-	}
-
-	public static void myDelete(String collection, String key, String compareString) {
-
-		BasicDBObject find = new BasicDBObject();
-		find.put(key, compareString);
-		MongoCollection<Document> coll = database.getCollection(collection);
-		coll.deleteOne(find);
-
-	}
-
-	public static Iterator<Document> myQuery(String collection, String key, String compareString) {
-
-		BasicDBObject whereQuery = new BasicDBObject();
-		whereQuery.put(key, compareString);
-		MongoCollection<Document> coll = database.getCollection(collection);
-		Iterator<Document> cursor = coll.find(whereQuery).iterator();
-
-		return cursor;
-
-	}
-
-	public static void myInsert(String collection, Document doc) {
-
-		MongoCollection<Document> coll = database.getCollection(collection);
-		coll.insertOne(doc);
-
-	}
-
-	public static void myReplacement(String collection, String key, String compareString, Document doc) {
-
-		BasicDBObject find = new BasicDBObject();
-		find.put(key, compareString);
-		MongoCollection<Document> coll = database.getCollection(collection);
-		coll.replaceOne(find, doc);
-
 	}
 
 	public static void updatePerson(String id, String name, List<String> authoredPublications, List<String> editedPublications) {
@@ -844,41 +692,7 @@ public class DatabaseHelper {
 
 		closeConnectionDB();
 	}
-	/*
-	 * InProceedings stuff
-	 */
 
-	public static String getID(Document doc, String key) {
-		// TODO Maybe someone know how to get _id of sub document
-
-		DBObject refer = (DBObject) doc.get(key);
-		return ((String) refer.get("_id"));
-	}
-
-	public static Proceedings getProceedingOfInproceeding(String proceedingsID) {
-		connectToDB();
-		
-		String query = "/root/proceedings[@key = \"" + proceedingsID + "\"]";
-		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, Proceedings.class);
-
-		System.out.println(result.get(0).getTitle());
-		closeConnectionDB();
-		if(result.get(0) == null){
-			return new Proceedings();
-		}
-		else{
-			return (Proceedings) result.get(0);
-		}
-	}
-
-	public static List<String> getAuthorsOfInProceeding(InProceedings inProceeding) {
-		
-		List<String> result = new ArrayList<String>();
-		for(Person p: inProceeding.getAuthors()){
-			result.add(p.getName());
-		}
-		return result;
-	}
 
 	public static void deleteInProceeding(String id) {
 		connectToDB();
@@ -1083,6 +897,12 @@ public class DatabaseHelper {
 
 	}
 
+	
+	
+	
+	
+	
+	
 	/**
 	 * 
 	 * Queries
