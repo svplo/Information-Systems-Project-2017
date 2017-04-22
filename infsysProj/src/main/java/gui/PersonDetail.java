@@ -102,7 +102,7 @@ public class PersonDetail extends MyJFrame {
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DatabaseHelper.deletePerson(person.getId());
+				DatabaseHelper.deletePerson(person.getName());
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}

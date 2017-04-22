@@ -87,7 +87,7 @@ public class DatabaseHelper {
 		try {
 			new Open(dbStandardName).execute(context);
 		} catch (BaseXException e) {
-			System.out.println("There was an Error closing the Database");
+			System.out.println("There was an Error opening the Database");
 
 		}
 
@@ -531,41 +531,20 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 
-	public static void deletePerson(String id) {
+	public static void deletePerson(String name) {
 		connectToDB();
-		createDB();
-
-		// remove Person from authorList of authored Publications
-		Iterator<Document> cursor0 = myQuery("Person", "_id", id);
-		Person oldPerson = Adaptor.toPerson(cursor0.next());
-		for (Publication inProc : oldPerson.getAuthoredPublications()) {
-			Iterator<Document> cursor1 = myQuery("InProceedings", "_id", inProc.getId());
-			InProceedings inProceeding = Adaptor.toInProceedings(cursor1.next());
-			List<Person> newAuthors = new ArrayList<Person>();
-			for (Person aut : inProceeding.getAuthors()) {
-				if (!aut.getId().equals(id)) {
-					newAuthors.add(aut);
-				}
-			}
-			inProceeding.setAuthors(newAuthors);
-			myReplacement("InProceedings", "_id", inProc.getId(), Adaptor.toDBDocument(inProceeding));
+		
+		String query = "(/root/proceedings/editor[text() = \"" + escape(name)+ "\"]|/root/inproceedings/author[text() = \"" + escape(name)+ "\"])";
+		//myQuery(query);
+		try {
+			String d = new Delete(query).execute(context);
+			String d1 = new Flush().execute(context);
+			System.out.println(d);
+		} catch (BaseXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		// remove Person from authorList of edited Publications
-		for (Publication inProc : oldPerson.getEditedPublications()) {
-			Iterator<Document> cursor1 = myQuery("Proceedings", "_id", inProc.getId());
-			Proceedings inProceeding = Adaptor.toProceeding(cursor1.next());
-			List<Person> newAuthors = new ArrayList<Person>();
-			for (Person aut : inProceeding.getAuthors()) {
-				if (!aut.getId().equals(id)) {
-					newAuthors.add(aut);
-				}
-			}
-			inProceeding.setAuthors(newAuthors);
-			myReplacement("Proceedings", "_id", inProc.getId(), Adaptor.toDBDocument(inProceeding));
-		}
-
-		myDelete("Person", "_id", id);
+		
 		closeConnectionDB();
 	}
 
@@ -577,77 +556,8 @@ public class DatabaseHelper {
 
 	public static void deleteProceeding(String title) {
 		connectToDB();
-		createDB();
-
-		// remove Proceeding from Author's edited Publication list
-		Iterator<Document> cursor0 = myQuery("Proceedings", "title", title);
-		Proceedings oldProceeding = Adaptor.toProceeding(cursor0.next());
-		for (Person aut : oldProceeding.getAuthors()) {
-			Iterator<Document> cursor1 = myQuery("Person", "_id", aut.getId());
-			Person author = Adaptor.toPerson(cursor1.next());
-			Set<Publication> newEditedPublications = new HashSet<Publication>();
-			for (Publication pub : author.getEditedPublications()) {
-				if (!pub.getId().equals(oldProceeding.getID())) {
-					newEditedPublications.add(pub);
-				}
-			}
-			author.setEditedPublications(newEditedPublications);
-			myReplacement("Person", "_id", author.getId(), Adaptor.toDBDocument(author));
-		}
-
-		// remove Proceeding from InProceeding
-		for (InProceedings inProc : oldProceeding.getInProceedings()) {
-			Iterator<Document> cursor1 = myQuery("InProceedings", "_id", inProc.getId());
-			InProceedings inProceeding = Adaptor.toInProceedings(cursor1.next());
-			inProceeding.setProceedings(null);
-			myReplacement("InProceedings", "_id", inProceeding.getId(), Adaptor.toDBDocument(inProceeding));
-		}
-
-		// remove Proceeding from Series
-		Iterator<Document> cursor1 = myQuery("Series", "_id", oldProceeding.getSeries().getId());
-		Series series = Adaptor.toSeries(cursor1.next());
-		Set<Publication> newPublications = new HashSet<Publication>();
-		for (Publication pub : series.getPublications()) {
-			if (!pub.getId().equals(oldProceeding.getID())) {
-				newPublications.add(pub);
-			}
-		}
-		series.setPublications(newPublications);
-
-		myReplacement("Series", "_id", series.getId(), Adaptor.toDBDocument(series));
-
-		// remove Proceeding from Publisher
-		cursor1 = myQuery("Publisher", "_id", oldProceeding.getPublisher().getId());
-		Publisher publisher = Adaptor.toPublisher(cursor1.next());
-		newPublications = new HashSet<Publication>();
-		for (Publication pub : publisher.getPublications()) {
-			if (!pub.getId().equals(oldProceeding.getID())) {
-				newPublications.add(pub);
-			}
-		}
-		publisher.setPublications(newPublications);
-
-		myReplacement("Publisher", "_id", publisher.getId(), Adaptor.toDBDocument(publisher));
-
-		// delete ConferenceEdition and remove confID from Conference
-		cursor1 = myQuery("ConferenceEdition", "_id", oldProceeding.getConferenceEdition().getId());
-		ConferenceEdition conferenceEdition = Adaptor.toConferenceEdition(cursor1.next());
-
-		Iterator<Document> cursor2 = myQuery("Conference", "_id", conferenceEdition.getConference().getId());
-		Conference conference = Adaptor.toConference(cursor2.next());
-
-		Set<ConferenceEdition> newConfEds = new HashSet<ConferenceEdition>();
-		for (ConferenceEdition confEd : conference.getEditions()) {
-			if (!conferenceEdition.getId().equals(confEd.getId())) {
-				newConfEds.add(confEd);
-			}
-		}
-		conference.setEditions(newConfEds);
-
-		myReplacement("Conference", "_id", conference.getId(), Adaptor.toDBDocument(conference));
-		myDelete("ConferenceEdition", "_id", conferenceEdition.getId());
-
-		myDelete("Proceedings", "_id", oldProceeding.getId());
+		String query = "delete node /root/proceedings[title = \"" + escape(title)+ "\"]";
+		myQuery(query);
 		closeConnectionDB();
 	}
 
@@ -696,41 +606,8 @@ public class DatabaseHelper {
 
 	public static void deleteInProceeding(String id) {
 		connectToDB();
-		createDB();
-
-		// remove InProceeding from Author's authored Publication list
-		Iterator<Document> cursor0 = myQuery("InProceedings", "_id", id);
-		InProceedings oldInProceeding = Adaptor.toInProceedings(cursor0.next());
-		for (Person aut : oldInProceeding.getAuthors()) {
-			Iterator<Document> cursor1 = myQuery("Person", "_id", aut.getId());
-			Person author = Adaptor.toPerson(cursor1.next());
-			Set<Publication> newAuthoredPublications = new HashSet<Publication>();
-			for (Publication pub : author.getAuthoredPublications()) {
-				if (!pub.getId().equals(oldInProceeding.getId())) {
-					newAuthoredPublications.add(pub);
-				}
-			}
-			author.setAuthoredPublications(newAuthoredPublications);
-			myReplacement("Person", "_id", author.getId(), Adaptor.toDBDocument(author));
-		}
-
-		// remove InProceeding from Proceeding
-		if (!oldInProceeding.getProceedings().getId().equals("")) {
-			Iterator<Document> cursor1 = myQuery("Proceedings", "_id", oldInProceeding.getProceedings().getId());
-			Proceedings proceeding = Adaptor.toProceeding(cursor1.next());
-
-			Set<InProceedings> newInProceedings = new HashSet<InProceedings>();
-			for (InProceedings pub : proceeding.getInProceedings()) {
-				if (!pub.getId().equals(oldInProceeding.getId())) {
-					newInProceedings.add(pub);
-				}
-			}
-			proceeding.setInProceedings(newInProceedings);
-
-			myReplacement("Proceedings", "_id", proceeding.getId(), Adaptor.toDBDocument(proceeding));
-		}
-
-		myDelete("InProceedings", "_id", oldInProceeding.getId());
+		String query = "delete node /root/inproceedings[@key = \"" + id.replaceAll("key=", "").replaceAll("\"", "")+ "\"]";
+		myQuery(query);
 		closeConnectionDB();
 	}
 
