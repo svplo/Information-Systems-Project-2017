@@ -31,53 +31,6 @@ public class StartWindow extends JFrame {
 				try {
 					StartWindow frame = new StartWindow();
 					frame.setVisible(true);
-					
-					//print something out
-					DatabaseHelper.test();
-					//Run the queries required for task 1.3
-					//DatabaseHelper.query1("conf/acm/ColeMM87");
-					
-					//diff. to zoodb, since no ordering involved
-					//DatabaseHelper.query2("expert system", 0, 3);
-					
-					//equal to zoodb output
-					//DatabaseHelper.query3("expert system", 0, 3);
-					
-					//equal to zoodb output
-					//DatabaseHelper.query4("William D. Young");
-					
-					//equal to zoodb output
-					//DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
-					//William D. Young --> William R. Bevier --> J. Thomas Haigh = 2
-					//DatabaseHelper.query5( "Guy Dupenloup","Hiroshi Fukuda");
-
-					//zoodbAverage authors 1.8636056420805172
-					//mongodb Average authors 1.8821040258595356.
-					//DatabaseHelper.query6();
-					
-					//equal to zoodb output, only counting separately
-					//DatabaseHelper.query7(1980,1990);
-					
-					//equal to zoodb output
-					//DatabaseHelper.query8("Microcomputing");
-					
-					//equal to zoodb output
-					//DatabaseHelper.query9("Microcomputing");
-
-					//equal to zoodb output
-					//DatabaseHelper.query10("Microcomputing");
-					
-					//equal to zoodb output
-					//DatabaseHelper.query11("Microcomputing");
-
-					//equal to zoodb output
-					//DatabaseHelper.query12();
-
-					//equal to zoodb output
-					//DatabaseHelper.query13("Adi Shamir");
-					
-					//DatabaseHelper.query14(1980, 1990);
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -230,6 +183,61 @@ public class StartWindow extends JFrame {
 		reloadXMLButton.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
 		reloadXMLButton.setBounds(250, 15, 150, 25);
 		contentPane.add(reloadXMLButton);
+		
+		//Queries
+		JButton btnQueriesTableFrame = new JButton("Run Queries");
+		btnQueriesTableFrame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//Run the queries required for task 1.3
+				//DatabaseHelper.query1("conf/acm/ColeMM87");
+				
+				//diff. to zoodb, since no ordering involved
+				//DatabaseHelper.query2("expert system", 0, 3);
+				
+				//equal to zoodb output
+				//DatabaseHelper.query3("expert system", 0, 3);
+				
+				//equal to zoodb output
+				DatabaseHelper.query4("William D. Young");
+				
+				//equal to zoodb output
+				//DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
+				//William D. Young --> William R. Bevier --> J. Thomas Haigh = 2
+				//DatabaseHelper.query5( "Guy Dupenloup","Hiroshi Fukuda");
 
+				//zoodbAverage authors 1.8636056420805172
+				//mongodb Average authors 1.8821040258595356.
+				//DatabaseHelper.query6();
+				
+				//equal to zoodb output, only counting separately
+				//DatabaseHelper.query7(1980,1990);
+				
+				//equal to zoodb output
+				//DatabaseHelper.query8("Microcomputing");
+				
+				//equal to zoodb output
+				//DatabaseHelper.query9("Microcomputing");
+
+				//equal to zoodb output
+				//DatabaseHelper.query10("Microcomputing");
+				
+				//equal to zoodb output
+				//DatabaseHelper.query11("Microcomputing");
+
+				//equal to zoodb output
+				//DatabaseHelper.query12();
+
+				//equal to zoodb output
+				//DatabaseHelper.query13("Adi Shamir");
+				
+				//DatabaseHelper.query14(1980, 1990);
+
+			}
+		});
+		// modify button
+		btnQueriesTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
+		btnQueriesTableFrame.setBounds(100, 600, 200, 25);
+		contentPane.add(btnQueriesTableFrame);
 	}
+	
 }

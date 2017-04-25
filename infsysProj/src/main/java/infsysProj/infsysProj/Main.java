@@ -22,7 +22,7 @@ package infsysProj.infsysProj;
 
 import java.util.Collection;
 
-import com.mongodb.DB;
+import org.basex.query.func.db.DbFn;
 
 /**
  * Simple example that creates a database, writes an object to it and then reads the object.
@@ -128,7 +128,7 @@ public class Main {
 	 * @param pm
 	 *            The current PersistenceManager.
 	 */
-	private static void closeDB(DB databaseManager) {
+	private static void closeDB(DbFn databaseManager) {
 /*		if (pm.currentTransaction().isActive()) {
 			pm.currentTransaction().rollback();
 		}

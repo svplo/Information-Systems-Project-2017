@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -36,10 +37,6 @@ import infsysProj.infsysProj.Series;
 public class DatabaseHelper {
 	private static Context context;
 	private static String dbStandardName = "TheBaseXDatabase";
-
-	public static void test(){
-		
-	}
 
 	static List<DomainObject> myQuery(final String query, Class<? extends DomainObject> c) {
 
@@ -786,37 +783,28 @@ public class DatabaseHelper {
 	 * 
 	 **/
 
-	// TODO: add Publication table
-	// find publication by key (according to xml file)
+	// find title of publication by key (according to xml file)
 	public static void query1(String id) {
 		String thisQuery = "Query 1";
 		connectToDB();
-		createDB();
+		String queryProc = "for $x in /root/proceedings where contains($x/@key,\""+escape(id)+"\") return $x/title/text()";
+		List <String> resProc = myQuery(queryProc);
+		String queryInProc = "for $x in /root/inproceedings where contains($x/@key,\""+escape(id)+"\") return $x/title/text()";
+		List <String> resInProc = myQuery(queryInProc);
+		String result ="";
+		if(!resProc.isEmpty()){
+			result = resProc.get(0);
+		} else if(!resInProc.isEmpty()) {
+			result = resInProc.get(0);
+		} else {
+			result = "No proceeding found with id "+id;
+		}
 
-		Document pub;
-		MongoCollection<Document> proc = database.getCollection("Proceedings");
-		FindIterable<Document> resultProc = proc.find(Filters.eq("_id", id));
-		MongoCollection<Document> inProc = database.getCollection("InProceedings");
-		FindIterable<Document> resultInProc = inProc.find(Filters.eq("_id", id));
-
-		Iterator<Document> itrProc = resultProc.iterator();
-		Iterator<Document> itrInProc = resultInProc.iterator();
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			if ((!itrProc.hasNext()) && (!itrInProc.hasNext())) {
-				System.out.println("Error: Did not find a publication with ID: " + id);
-			} else if ((itrProc.hasNext()) && (itrInProc.hasNext())) {
-				System.out.println("Error: Query is ambigous.");
-			} else {
-				if (itrProc.hasNext()) {
-					pub = itrProc.next();
-				} else {
-					pub = itrInProc.next();
-				}
-				writer.println("The title of the publication with id " + id + " is " + Adaptor.toPublication(pub).getTitle() + ".");
-				writer.close();
-			}
+			writer.println(result);
+			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
@@ -827,16 +815,14 @@ public class DatabaseHelper {
 	public static void query2(String title, int startOffset, int endOffset) {
 		String thisQuery = "Query 2";
 		connectToDB();
-		createDB();
-
-		MongoCollection<Document> proc = database.getCollection("Proceedings");
-		FindIterable<Document> resultProc = proc.find(Filters.regex("title", title));
-		MongoCollection<Document> inProc = database.getCollection("InProceedings");
-		FindIterable<Document> resultInProc = inProc.find(Filters.regex("title", title));
-
+		String queryProc = "for $x in /root/proceedings where contains($x/title,\""+escape(title)+"\") return $x/title/text()";
+		List <String> resProc = myQuery(queryProc);
+		String queryInProc = "for $x in /root/inproceedings where contains($x/title,\""+escape(title)+"\") return $x/title/text()";
+		List <String> resInProc = myQuery(queryInProc);
+		String result ="";
 		int i = 0;
-		Iterator<Document> itrProc = resultProc.iterator();
-		Iterator<Document> itrInProc = resultInProc.iterator();
+		Iterator<String> itrProc = resProc.iterator();
+		Iterator<String> itrInProc = resInProc.iterator();
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
@@ -853,11 +839,11 @@ public class DatabaseHelper {
 						i++;
 						continue;
 					} else if (itrProc.hasNext()) {
-						writer.println(Adaptor.toPublication(itrProc.next()).getTitle());
+						writer.println(itrProc);
 						i++;
 
 					} else if (itrInProc.hasNext()) {
-						writer.println(Adaptor.toPublication(itrInProc.next()).getTitle());
+						writer.println(itrInProc.next());
 						i++;
 					}
 				}
@@ -874,23 +860,22 @@ public class DatabaseHelper {
 	public static void query3(String title, int startOffset, int endOffset) {
 		String thisQuery = "Query 3";
 		connectToDB();
-		createDB();
-
-		MongoCollection<Document> proc = database.getCollection("Proceedings");
-		FindIterable<Document> resultProc = proc.find(Filters.regex("title", title));
-		MongoCollection<Document> inProc = database.getCollection("InProceedings");
-		FindIterable<Document> resultInProc = inProc.find(Filters.regex("title", title));
-		ArrayList<Publication> all = new ArrayList<Publication>();
-		Iterator<Document> itrProc = resultProc.iterator();
-		Iterator<Document> itrInProc = resultInProc.iterator();
+		String queryProc = "for $x in /root/proceedings where contains($x/title,\""+escape(title)+"\") return $x/title/text()";
+		List <String> resProc = myQuery(queryProc);
+		String queryInProc = "for $x in /root/inproceedings where contains($x/title,\""+escape(title)+"\") return $x/title/text()";
+		List <String> resInProc = myQuery(queryInProc);
+		String result ="";
+		Iterator<String> itrProc = resProc.iterator();
+		Iterator<String> itrInProc = resInProc.iterator();
+		ArrayList<String> all = new ArrayList<String>();
 		boolean non = true;
 		while (itrProc.hasNext()) {
-			all.add(Adaptor.toPublication(itrProc.next()));
+			all.add(itrProc.next());
 			non = false;
 		}
 		while (itrInProc.hasNext()) {
 			non = false;
-			all.add(Adaptor.toPublication(itrInProc.next()));
+			all.add(itrInProc.next());
 		}
 
 		try {
@@ -899,13 +884,13 @@ public class DatabaseHelper {
 			if (non) {
 				System.out.println("Error: Did not find a publication with title: " + title);
 			} else {
-				Collections.sort(all, new Comparator<Publication>() {
-					public int compare(Publication s1, Publication s2) {
-						return s1.getTitle().compareToIgnoreCase(s2.getTitle());
+				Collections.sort(all, new Comparator<String>() {
+					public int compare(String s1, String s2) {
+						return s1.compareToIgnoreCase(s2);
 					}
 				});
 				for (int i = startOffset; i < endOffset; i++) {
-					writer.println(all.get(i).getTitle());
+					writer.println(all.get(i));
 				}
 			}
 			writer.close();
@@ -919,33 +904,23 @@ public class DatabaseHelper {
 	public static void query4(String author) {
 		String thisQuery = "Query 4";
 		connectToDB();
-		createDB();
-		Iterator<Document> cursor = myQuery("Person", "name", author);
-
-		HashSet<String> result = new HashSet<String>();
-		if (!cursor.hasNext()) {
-			System.out.println("Author not found");
+		String queryAuth = "for $x in /root/person where contains($x/name,\""+escape(author)+"\") return $x/authoredPublications";
+		List <String> resAuth = myQuery(queryAuth);
+		Iterator<String> itr1 = resAuth.iterator();
+		String queryEdit = "for $x in /root/person where contains($x/name,\""+escape(author)+"\") return $x/editedPublications";
+		List <String> resEdit = myQuery(queryEdit);
+		Iterator<String> itr2 = resEdit.iterator();
+		List <String> result = new LinkedList<String>();
+		if (!itr1.hasNext() && ! itr2.hasNext()) {
+			System.out.println("No publications found with author "+author +".");
 			return;
 		}
-		Person author1 = Adaptor.toPerson(cursor.next());
-		for (Publication pub : author1.getAuthoredPublications()) {
-			Iterator<Document> cursor1 = myQuery("InProceedings", "_id", pub.getId());
-			InProceedings inProc = Adaptor.toInProceedings(cursor1.next());
-			for (Person coAuthor : inProc.getAuthors()) {
-				Iterator<Document> cursor2 = myQuery("Person", "_id", coAuthor.getId());
-				Person per = Adaptor.toPerson(cursor2.next());
-				result.add(per.getName());
-			}
+		while (itr1.hasNext()) {
+			System.out.println(itr1.next());
 		}
 
-		for (Publication pub : author1.getEditedPublications()) {
-			Iterator<Document> cursor1 = myQuery("Proceedings", "_id", pub.getId());
-			Proceedings proc = Adaptor.toProceeding(cursor1.next());
-			for (Person coAuthor : proc.getAuthors()) {
-				Iterator<Document> cursor2 = myQuery("Person", "_id", coAuthor.getId());
-				Person per = Adaptor.toPerson(cursor2.next());
-				result.add(per.getName());
-			}
+		while (itr2.hasNext()) {
+			System.out.println(itr2.next());
 		}
 		// remove author's own name
 		result.remove(author);
