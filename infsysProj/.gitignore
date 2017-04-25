@@ -1,6 +1,6 @@
 /target/
 # JDT-specific (Eclipse Java Development Tools)
-.classpath
+**.classpath
 .metadata
 bin/
 tmp/
@@ -17,4 +17,4 @@ local.properties
 .project
 
 #Answers for Queries
-Query*.txt
+**Query*.txt

@@ -904,31 +904,34 @@ public class DatabaseHelper {
 	public static void query4(String author) {
 		String thisQuery = "Query 4";
 		connectToDB();
-		String queryAuth = "for $x in /root/person where contains($x/name,\""+escape(author)+"\") return $x/authoredPublications";
+		String queryAuth = "for $x in /root/proceedings/editor where contains($x,\""+escape(author)+"\") return $x/../title/text()";
 		List <String> resAuth = myQuery(queryAuth);
 		Iterator<String> itr1 = resAuth.iterator();
-		String queryEdit = "for $x in /root/person where contains($x/name,\""+escape(author)+"\") return $x/editedPublications";
+		String queryEdit = "for $x in /root/inproceedings/author where contains($x,\""+escape(author)+"\") return $x/../title/text()";
 		List <String> resEdit = myQuery(queryEdit);
 		Iterator<String> itr2 = resEdit.iterator();
-		List <String> result = new LinkedList<String>();
 		if (!itr1.hasNext() && ! itr2.hasNext()) {
 			System.out.println("No publications found with author "+author +".");
 			return;
 		}
+		HashSet <String> res = new HashSet<String>();
 		while (itr1.hasNext()) {
-			System.out.println(itr1.next());
+			String queryProc = "for $x in /root/proceedings where contains($x/title,\""+escape(itr1.next())+"\") return $x/author/text()";
+			res.addAll(myQuery(queryProc));
 		}
 
 		while (itr2.hasNext()) {
-			System.out.println(itr2.next());
+			String queryProc = "for $x in /root/inproceedings where contains($x/title,\""+escape(itr2.next())+"\") return $x/author/text()";
+			res.addAll(myQuery(queryProc));
 		}
 		// remove author's own name
-		result.remove(author);
+		res.remove(author);
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			for (String str : result) {
-				writer.println(str);
+			Iterator<String> resItr = res.iterator();
+			while (resItr.hasNext()) {
+				writer.println(resItr.next());
 			}
 			writer.close();
 		} catch (IOException e) {
@@ -938,7 +941,6 @@ public class DatabaseHelper {
 	}
 
 	public static void query5(String name1, String name2) {
-
 		String thisQuery = "Query 5";
 		connectToDB();
 		createDB();
@@ -1040,36 +1042,22 @@ public class DatabaseHelper {
 
 	}
 
-	// global average of authors / publication (InProceedings + Proceedings)
+	// global average of authors / publication (InProceedings)
 	public static void query6() {
 		String thisQuery = "Query 6";
 		connectToDB();
-		createDB();
-		double authors = 0.;
-		MongoCollection<Document> inProc = database.getCollection("InProceedings");
-		MongoCollection<Document> proc = database.getCollection("Proceedings");
-		double publications = inProc.count() + proc.count();
-		Bson field1 = new BasicDBObject("authors", 1);
-		Iterator<Document> itr = inProc.find(new Document()).projection(Projections.fields(Projections.include("authors"), Projections.excludeId())).iterator();
-		while (itr.hasNext()) {
-			String str = itr.next().toJson();
-			// System.out.println(str);
-			// System.out.println(str.replaceAll("_id", ""));
-			// plus 1, because there is one superfluous _id
-			authors += (str.length() - str.replaceAll("_id", "").length()) / 3;
-			// System.out.println((str.length() - str.replaceAll("_id", "").length()) / 3);
-		}
-		itr = proc.find(new Document()).projection(field1).iterator();
-		while (itr.hasNext()) {
-			String str = itr.next().toJson();
-			authors += (str.length() - str.replaceAll("_id", "").length()) / 3;
-		}
+		String queryInProc = "count(root/inproceedings)";
+		double noInProc = Double.valueOf(myQuery(queryInProc).get(0));
+		System.out.println(noInProc);
+		String queryAuthor = "count(root/inproceedings/author)";
+		double authors = Double.valueOf(myQuery(queryAuthor).get(0));
+		System.out.println(authors);
 		closeConnectionDB();
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			if (publications != 0) {
-				writer.println("Average authors " + (double) (authors / publications) + ".");
+			if (noInProc != 0) {
+				writer.println("Average authors " + (double) (authors / noInProc) + ".");
 			} else {
 				writer.println("There are no publications available.");
 			}

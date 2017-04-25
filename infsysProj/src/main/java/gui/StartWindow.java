@@ -198,7 +198,7 @@ public class StartWindow extends JFrame {
 				//DatabaseHelper.query3("expert system", 0, 3);
 				
 				//equal to zoodb output
-				DatabaseHelper.query4("William D. Young");
+				//DatabaseHelper.query4("William D. Young");
 				
 				//equal to zoodb output
 				//DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
@@ -207,7 +207,8 @@ public class StartWindow extends JFrame {
 
 				//zoodbAverage authors 1.8636056420805172
 				//mongodb Average authors 1.8821040258595356.
-				//DatabaseHelper.query6();
+				//xml 1.8686696306941513.
+				DatabaseHelper.query6();
 				
 				//equal to zoodb output, only counting separately
 				//DatabaseHelper.query7(1980,1990);
