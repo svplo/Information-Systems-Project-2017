@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +15,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.text.Document;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.basex.core.*;
 import org.basex.core.cmd.*;
@@ -24,6 +28,9 @@ import org.basex.query.value.*;
 import org.basex.query.value.item.*;
 import org.basex.query.value.node.DBNode;
 import org.basex.query.value.node.FElem;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import infsysProj.infsysProj.Conference;
 import infsysProj.infsysProj.ConferenceEdition;
@@ -762,7 +769,6 @@ public class DatabaseHelper {
 		List<String> resProc = myQuery(queryProc);
 		String queryInProc = "for $x in /root/inproceedings where contains($x/title,\"" + escape(title) + "\") return $x/title/text()";
 		List<String> resInProc = myQuery(queryInProc);
-		String result = "";
 		int i = 0;
 		Iterator<String> itrProc = resProc.iterator();
 		Iterator<String> itrInProc = resInProc.iterator();
@@ -807,7 +813,6 @@ public class DatabaseHelper {
 		List<String> resProc = myQuery(queryProc);
 		String queryInProc = "for $x in /root/inproceedings where contains($x/title,\"" + escape(title) + "\") return $x/title/text()";
 		List<String> resInProc = myQuery(queryInProc);
-		String result = "";
 		Iterator<String> itrProc = resProc.iterator();
 		Iterator<String> itrInProc = resInProc.iterator();
 		ArrayList<String> all = new ArrayList<String>();
@@ -969,16 +974,14 @@ public class DatabaseHelper {
 		}
 	}
 
-	// global average of authors / publication (InProceedings)
+	// global average of authors / publication (only InProceedings)
 	public static void query6() {
 		String thisQuery = "Query 6";
 		connectToDB();
 		String queryInProc = "count(root/inproceedings)";
 		double noInProc = Double.valueOf(myQuery(queryInProc).get(0));
-		System.out.println(noInProc);
 		String queryAuthor = "count(root/inproceedings/author)";
 		double authors = Double.valueOf(myQuery(queryAuthor).get(0));
-		System.out.println(authors);
 		closeConnectionDB();
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
@@ -1027,14 +1030,14 @@ public class DatabaseHelper {
 		// TODO: why does below not work? Is this the right approach?
 		// "count(for $x in /root/inproceedings where contains($x/crossref, \""+escape(conferenceName)+"\") return $x)";
 		// this works
-		String queryAuth = "count(for $x in /root/inproceedings where contains($x/@key, \"" + escape(conferenceName) + "\") return $x)";
+		String queryAuth = "count(for $x in /root/inproceedings where contains($x/booktitle, \"" + escape(conferenceName) + "\") return $x)";
 		List<String> resAuth = myQuery(queryAuth);
 		String thisQuery = "Query 8";
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("The number of all InProceedings of Conference " + conferenceName + "is  " + resAuth.get(0) + ".");
+			writer.println("The number of all InProceedings of Conference " + conferenceName + " is  " + resAuth.get(0) + ".");
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
@@ -1046,16 +1049,16 @@ public class DatabaseHelper {
 		connectToDB();
 		String thisQuery = "Query 9";
 
-		String queryAuth = "count (for $x in /root/inproceedings where contains($x/@key, \"" + escape(confName) + "\") return $x/author)";
+		String queryAuth = "count (for $x in /root/inproceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/author)";
 		List<String> resAuth = myQuery(queryAuth);
-		String queryEdit = "count(for $x in /root/proceedings where contains($x/@key, \"" + escape(confName) + "\") return $x/editor)";
+		String queryEdit = "count(for $x in /root/proceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/editor)";
 		List<String> resEdit = myQuery(queryEdit);
 		int result = Integer.valueOf(resEdit.get(0)) + Integer.valueOf(resAuth.get(0));
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("Number of authors and editors:" + result);
+			writer.println("Number of authors and editors: " + result);
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
@@ -1067,27 +1070,28 @@ public class DatabaseHelper {
 		connectToDB();
 		String thisQuery = "Query 10";
 
-		String queryAuth = "for $x in /root/inproceedings where contains($x/@key, \"" + escape(confName) + "\") return $x/author/text()";
+		String queryAuth = "for $x in /root/inproceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/author/text()";
 		List<String> resAuth = myQuery(queryAuth);
 
-		String queryEdit = "for $x in /root/proceedings where contains($x/@key, \"" + escape(confName) + "\") return $x/editor/text()";
+		String queryEdit = "for $x in /root/proceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/editor/text()";
 		List<String> resEdit = myQuery(queryEdit);
 		resAuth.addAll(resEdit);
 		Iterator<String> itr = resAuth.iterator();
 		if (!itr.hasNext()) {
-			System.out.println("Did not find a Conference with any authors with name:" + confName);
+			System.out.println("Did not find a Conference with any authors with name: " + confName);
 			return;
 		}
 		HashSet<String> resultList = new HashSet<String>();
-		int oldSize = 0;
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
 			while (itr.hasNext()) {
 				String next = itr.next();
-				resultList.add(next);
-				if (oldSize < resultList.size()) {
-					oldSize = resultList.size();
+				if(resultList.contains(next)){
+					//already printed
+					continue;
+				} else {
+					resultList.add(next);
 					writer.println(next);
 				}
 			}
@@ -1102,7 +1106,7 @@ public class DatabaseHelper {
 		connectToDB();
 		String thisQuery = "Query 11";
 
-		String queryPub = "for $x in /root/inproceedings where contains($x/@key, \"" + escape(confName) + "\") return $x/title/text()";
+		String queryPub = "for $x in /root/inproceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/title/text()";
 		List<String> resPub = myQuery(queryPub);
 
 		try {
@@ -1120,24 +1124,28 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 
-	public static void query12() {
+	public static void query12() throws ParserConfigurationException, SAXException, IOException {
 		String thisQuery = "Query 12";
 		List<String> resultList = new ArrayList<String>();
 		connectToDB();
 		
+		//crossref is the foreign key in InProceedings to Proceedings (key)
 		String queryPub = "for $x in /root/inproceedings,"
 				+ "$y in /root/proceedings[@key = $x/crossref]"
-				+ "return <item title=\"{$x/title}\" procAuthor=\"{$y/author}\" inAuthor=\"{$x/author}\"/>";
+				+ "return <item procAuthor=\"{$y/editor}\" inAuthor=\"{$x/author}\"/>";
 		List<String> resPub = myQuery(queryPub);
-		System.out.println(resPub.get(0));
-//example output: <item title="Patient management systems: the early years." procAuthor="" inAuthor="W. E. Hammond"/>
+//example output: F. Ron Bailey
+				//inAuthor="Ramesh C. Agarwal Fred G. Gustavson"
 		//TODO parse output, i.e. check if there are matching authors
 		Iterator<String> itr = resPub.iterator();
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+
 		while (itr.hasNext()){
-			String current = itr.next();
-			if (true){
-				resultList.add(current);
-			}
+			org.w3c.dom.Document document = builder.parse(new InputSource(new StringReader(itr.next())));
+			Element rootElement = document.getDocumentElement();
+			System.out.println(rootElement.getAttribute("procAuthor"));
+			System.out.println(rootElement.getAttributeNode("inAuthor"));
 		}
 
 		try {
@@ -1163,13 +1171,13 @@ public class DatabaseHelper {
 		List<String> resPub = myQuery(queryPub);
 		System.out.println(resPub.size());
 		for(int i = 0; i < resPub.size(); i++){
-			//examples
+			//examples outputs for Adi Shadmir
 			//<item title="Polymorphic Arrays: An Architecture for a Programmable Systolic Machine." authors="Amos Fiat Adi Shamir Ehud Y. Shapiro"/>
 			//<item title="Shear Sort: A True Two-Dimensional Sorting Techniques for VLSI Networks." authors="Sandeep Sen Isaac D. Scherson Adi Shamir"/>
-			//TODO parse, check if last author is equal to param author
-			System.out.println(resPub.get(i));
-			Boolean last = false;
-			if(last){
+			//System.out.println(resPub.get(i));
+			String curr = resPub.get(i);
+			String subStr = curr.substring(curr.length()-author.length()-3);
+			if(subStr.contains(author)){
 				count++;
 			}
 		}

@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import infsysProj.infsysProj.Series;
 
@@ -205,7 +209,7 @@ public class StartWindow extends JFrame {
 				//DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
 				//William D. Young --> J. Thomas Haigh = 1
 				//DatabaseHelper.query5( "Guy Dupenloup","Hiroshi Fukuda"); //no path here?
-				DatabaseHelper.query5( "William D. Young","J. Thomas Haigh");
+				//DatabaseHelper.query5( "William D. Young","J. Thomas Haigh");
 				
 				//zoodbAverage authors 1.8636056420805172
 				//mongodb Average authors 1.8821040258595356.
@@ -216,20 +220,31 @@ public class StartWindow extends JFrame {
 				//DatabaseHelper.query7(1980,1990);
 				
 				//equal to zoodb output
-				//DatabaseHelper.query8("conf/microcomputing");
+				//DatabaseHelper.query8("ECHT");
 				
 				//equal to zoodb output
-				//DatabaseHelper.query9("conf/microcomputing");
+				//DatabaseHelper.query9("ECHT");
 
 				//equal to zoodb output
-				//DatabaseHelper.query10("conf/microcomputing");
+				//DatabaseHelper.query10("ECHT");
 				
 				//equal to zoodb output
-				//DatabaseHelper.query11("conf/microcomputing");
+				//DatabaseHelper.query11("ECHT");
 
 				//equal to zoodb output
-				//DatabaseHelper.query12();
-
+/*				try {
+					DatabaseHelper.query12();
+				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SAXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+*/
 				//equal to zoodb output
 				//DatabaseHelper.query13("Adi Shamir");
 				
