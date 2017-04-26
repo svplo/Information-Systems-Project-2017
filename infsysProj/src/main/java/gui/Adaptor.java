@@ -10,9 +10,12 @@ import org.basex.query.value.node.ANode;
 import org.basex.query.value.node.DBNode;
 import org.basex.query.value.node.FElem;
 
+import infsysProj.infsysProj.Conference;
 import infsysProj.infsysProj.DomainObject;
 import infsysProj.infsysProj.Person;
 import infsysProj.infsysProj.Proceedings;
+import infsysProj.infsysProj.Publisher;
+import infsysProj.infsysProj.Series;
 
 public class Adaptor {
 
@@ -104,10 +107,25 @@ public class Adaptor {
 				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setPages", String.class).invoke(o, value);
 				break;
+			case "booktitle":
+				value = n.children().next().serialize().toString();
+				Conference conf = new Conference();
+				conf.setName(value);
+				o.getClass().getMethod("setConference", Conference.class).invoke(o, conf);
+				break;
 			case "publisher":
 				value = n.children().next().serialize().toString();
-				o.getClass().getMethod("setName", String.class).invoke(o, value);
+				Publisher pub = new Publisher();
+				pub.setName(value);
+				o.getClass().getMethod("setPublisher", Publisher.class).invoke(o, pub);
 				break;
+			case "series":
+				value = n.children().next().serialize().toString();
+				Series series = new Series();
+				series.setName(value);
+				o.getClass().getMethod("setSeries", Series.class).invoke(o, series);
+				break;
+
 			case "author":
 				value = n.children().next().serialize().toString();
 				Person author = new Person();

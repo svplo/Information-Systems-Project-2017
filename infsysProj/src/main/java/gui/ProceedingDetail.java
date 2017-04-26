@@ -410,7 +410,9 @@ public class ProceedingDetail extends MyJFrame {
 
 		txtPublisher = new JTextField();
 		txtPublisher.setEditable(false);
-		txtPublisher.setText(DatabaseHelper.getPublisherName(proceeding.getTitle()));
+		if(proceeding.getPublisher() != null){
+			txtPublisher.setText(proceeding.getPublisher().getName());
+		}
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
 		c.weightx = 1;
@@ -477,7 +479,9 @@ public class ProceedingDetail extends MyJFrame {
 
 		txtSeries = new JTextField();
 		txtSeries.setEditable(false);
-		txtSeries.setText(DatabaseHelper.getSeriesName(proceeding.getTitle()));
+		if(proceeding.getSeries() != null){
+			txtSeries.setText(proceeding.getSeries().getName());
+		}
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
 		c.weighty = 0;
