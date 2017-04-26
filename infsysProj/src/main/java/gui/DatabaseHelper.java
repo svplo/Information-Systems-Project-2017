@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -885,103 +886,87 @@ public class DatabaseHelper {
 	public static void query5(String name1, String name2) {
 		String thisQuery = "Query 5";
 		connectToDB();
-		createDB();
 
-		Person author1 = new Person();
-		Person author2 = new Person();
-
-		Iterator<Document> cursor = myQuery("Person", "name", name1);
-
-		if (!cursor.hasNext()) {
-			System.out.println("author 1 not found");
-			return;
-		} else {
-			author1 = Adaptor.toPerson(cursor.next());
-		}
-
-		cursor = myQuery("Person", "name", name2);
-
-		if (!cursor.hasNext()) {
-			System.out.println("author 2 not found");
-			return;
-		} else {
-			author2 = Adaptor.toPerson(cursor.next());
-		}
-
-		int maxDepth = 15;
-		int minDistance = Integer.MAX_VALUE;
-
-		for (int i = 2; i < maxDepth; i++) {
-			minDistance = query5rec(author1.getId(), author2.getId(), 0, i);
-			if (!(minDistance == Integer.MAX_VALUE + 1)) {
-				break;
+		String queryAuth = "for $x in /root/inproceedings/author where contains($x,\"" + escape(name1) + "\") return $x/../author/text()";
+		List<String> resCoAuth = myQuery(queryAuth);
+		HashSet<String> coAuth = new HashSet<String>();
+		boolean found = false;
+		for (String s : resCoAuth){
+			coAuth.add(s);
+			if (s.contains(name2)){
+				found = true;
 			}
-
 		}
-
-		System.out.println(minDistance);
+		int distance = 0;
+		int maxDepth = 15;
+		HashSet<String> done = new HashSet<String>();
+		done.add(name1);
+		if(!found){
+			distance = query5rec(coAuth, done, name1, name2, 2, maxDepth);
+		} else {
+			distance = 1;
+		}
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			if (minDistance == Integer.MAX_VALUE + 1) {
+			if (distance == Integer.MAX_VALUE) {
 				writer.println("No path between the two authors has been found");
 			} else {
-				writer.println("The shortest path between " + name1 + " and " + name2 + " has length:" + minDistance);
+				writer.println("The shortest path between " + name1 + " and " + name2 + " has length:" + distance);
 			}
 			writer.close();
 
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-
-		DatabaseHelper.closeConnectionDB();
+		closeConnectionDB();
 	}
 
-	public static int query5rec(String id1, String id2, int currDepth, int maxDepth) {
-
-		Person author1 = new Person();
-
-		Iterator<Document> cursor = myQuery("Person", "_id", id1);
-
-		if (!cursor.hasNext()) {
-			System.out.println("author 1 not found");
-			return 100;
-		} else {
-			author1 = Adaptor.toPerson(cursor.next());
-		}
-		for (Publication pub : author1.getAuthoredPublications()) {
-			cursor = myQuery("InProceedings", "_id", pub.getId());
-			InProceedings inProc = Adaptor.toInProceedings(cursor.next());
-			for (Person coAuthor : inProc.getAuthors()) {
-				if (coAuthor.getId().equals(id2)) {
-					return 1;
-				}
-			}
-		}
-		if (currDepth > maxDepth) {
+	public static int query5rec(HashSet<String> coAuthors, HashSet<String> done, String name1, String name2, int currDepth, int maxDepth) {
+		Iterator<String> itrCoAuthors = coAuthors.iterator();
+		HashSet<String> nextList = new HashSet<String>();
+		System.out.println(currDepth);
+		if (!itrCoAuthors.hasNext()) {
+			System.out.println("dead end");
 			return Integer.MAX_VALUE;
-		}
-		int currentMinDistance = Integer.MAX_VALUE;
-
-		for (Publication pub : author1.getAuthoredPublications()) {
-			cursor = myQuery("InProceedings", "_id", pub.getId());
-			InProceedings inProc = Adaptor.toInProceedings(cursor.next());
-			for (Person coAuthor : inProc.getAuthors()) {
-				if (!coAuthor.getId().equals(id1)) {
-					int distance = query5rec(coAuthor.getId(), id2, currDepth + 1, maxDepth);
-					if (distance == 1) {
-						return distance + 1;
-					}
-					if (currentMinDistance > distance) {
-						currentMinDistance = distance;
+		} else {
+			while(itrCoAuthors.hasNext()){
+				String curr = itrCoAuthors.next();
+				if(curr.contains(name1)){
+					continue;
+				}
+				System.out.println("Current coAuthor: "+ curr);
+				String queryCoAuth = "for $x in /root/inproceedings/author where contains($x,\"" + escape(curr) + "\") return $x/../author/text()";
+				List<String> resCoCoAuth = myQuery(queryCoAuth);
+				Iterator<String> itrCoCoAuthors = resCoCoAuth.iterator();
+				if(!itrCoCoAuthors.hasNext()){
+					//coauthor does not have any other coauthors, dead end
+					continue;
+				} else {
+					while (itrCoCoAuthors.hasNext()){
+						String coCoAuthor = itrCoCoAuthors.next();
+						System.out.println("CoCoAuthor "+ coCoAuthor);
+						if(coCoAuthor.contains(name2)){
+							return currDepth;
+						} else if(done.contains(coCoAuthor)) {
+							//already visited coCoAuthor
+							continue;
+						} else {
+							//list of co-authors with depth currDepth + 1, will be investigated in next function call
+							nextList.add(coCoAuthor);
+						}
 					}
 				}
+				done.add(curr);
+			}
+			int newDepth = currDepth+1;
+			if(newDepth <= maxDepth){
+				return query5rec( nextList, done, name1, name2, newDepth, maxDepth);
+			} else {
+				return Integer.MAX_VALUE;
 			}
 		}
-
-		return currentMinDistance + 1;
-
 	}
 
 	// global average of authors / publication (InProceedings)
@@ -1018,10 +1003,7 @@ public class DatabaseHelper {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
 			writer.printf("%-20s%-12s%-17s%n%n", "Publication Type", "Year", "No. Publications");
-			int no;
-			int year;
-			int all;
-			Document temp;
+			int all = 0;
 			for (int y = year1; y <= year2; y++) {
 				String queryAuth = "count(for $x in (root/inproceedings/[year=" + y + "]) return $x)";
 				List<String> resAuth = myQuery(queryAuth);
@@ -1141,38 +1123,27 @@ public class DatabaseHelper {
 	public static void query12() {
 		String thisQuery = "Query 12";
 		List<String> resultList = new ArrayList<String>();
-		List<Publication> allProceedings = getAllProceedings();
-
 		connectToDB();
-
-		for (Publication p : allProceedings) {
-			List<String> authorsOfProc = new ArrayList<String>();
-			for (Person pers : p.getAuthors()) {
-				authorsOfProc.add(pers.getId());
+		
+		String queryPub = "for $x in /root/inproceedings,"
+				+ "$y in /root/proceedings[@key = $x/crossref]"
+				+ "return <item title=\"{$x/title}\" procAuthor=\"{$y/author}\" inAuthor=\"{$x/author}\"/>";
+		List<String> resPub = myQuery(queryPub);
+		System.out.println(resPub.get(0));
+//example output: <item title="Patient management systems: the early years." procAuthor="" inAuthor="W. E. Hammond"/>
+		//TODO parse output, i.e. check if there are matching authors
+		Iterator<String> itr = resPub.iterator();
+		while (itr.hasNext()){
+			String current = itr.next();
+			if (true){
+				resultList.add(current);
 			}
-
-			for (InProceedings i : ((Proceedings) p).getInProceedings()) {
-				Iterator<Document> cursor = myQuery("InProceedings", "_id", i.getId());
-				InProceedings inProceedings = Adaptor.toInProceedings(cursor.next());
-				for (Person pers : inProceedings.getAuthors()) {
-					if (authorsOfProc.contains(pers.getId()) && !resultList.contains(pers.getId())) {
-						resultList.add(pers.getId());
-					}
-				}
-			}
-
 		}
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("List of all " + resultList.size() + " authors that occur as editor in Proceeding as well as in InProceeding as and author:");
-			for (String id : resultList) {
-				Iterator<Document> cursor = myQuery("Person", "_id", id);
-				Person person = Adaptor.toPerson(cursor.next());
-
-				writer.println(person.getName());
-			}
+			//writer.println("List of all " + resultList.size() + " authors that occur as editor in Proceeding as well as in InProceeding as and author:");
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
@@ -1188,25 +1159,24 @@ public class DatabaseHelper {
 		String thisQuery = "Query 13";
 		connectToDB();
 
-		MongoCollection<Document> pers = database.getCollection("Person");
-		FindIterable<Document> person = pers.find(Filters.eq("name", author)).projection(Projections.include("_id"));
-		String authorId = person.first().toJson().replaceAll("\\{", "").replaceAll("\\}", "").replaceAll("_id", "").replaceAll(":", "").replaceAll("\"", "").trim();
-		// System.out.println("author id :" + authorId);
-		int idLength = authorId.length();
-		MongoCollection<Document> inProcs = database.getCollection("InProceedings");
-		AggregateIterable<Document> conferences = inProcs.aggregate(Arrays.asList(Aggregates.match(Filters.elemMatch("authors", Filters.eq(authorId))), Aggregates.project(Projections.include("authors")), Aggregates.project(Projections.excludeId())));
+		String queryPub = "for $x in /root/inproceedings/author where contains($x, \"" + escape(author) + "\") return <item title=\"{$x/../title}\" authors=\"{$x/../author/text()}\"/>";
+		List<String> resPub = myQuery(queryPub);
+		System.out.println(resPub.size());
+		for(int i = 0; i < resPub.size(); i++){
+			//examples
+			//<item title="Polymorphic Arrays: An Architecture for a Programmable Systolic Machine." authors="Amos Fiat Adi Shamir Ehud Y. Shapiro"/>
+			//<item title="Shear Sort: A True Two-Dimensional Sorting Techniques for VLSI Networks." authors="Sandeep Sen Isaac D. Scherson Adi Shamir"/>
+			//TODO parse, check if last author is equal to param author
+			System.out.println(resPub.get(i));
+			Boolean last = false;
+			if(last){
+				count++;
+			}
+		}
+		
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			Iterator<Document> itr = conferences.iterator();
-			while (itr.hasNext()) {
-				String res = itr.next().toJson().replaceAll("\"", "").replaceAll("\\{", "").replaceAll("\\}", "").replaceAll("_id", "").replaceAll("authors", "").replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(":", "").replaceAll(",", "").trim();
-				// System.out.println(res);
-				if (res.substring(res.length() - idLength, res.length()).equals(authorId)) {
-					// System.out.println(res.substring(res.length()-idLength, res.length()));
-					count++;
-				}
-			}
 			writer.println("The number of publications where the author named " + author + " is mentioned last is " + count + ".");
 			writer.close();
 		} catch (IOException e) {

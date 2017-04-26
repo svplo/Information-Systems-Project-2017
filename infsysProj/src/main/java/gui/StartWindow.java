@@ -199,13 +199,14 @@ public class StartWindow extends JFrame {
 				//DatabaseHelper.query3("expert system", 0, 3);
 				
 				//equal to zoodb output
-				//DatabaseHelper.query4("William D. Young");
+				//DatabaseHelper.query4("Thomas H. Hinke");
 				
 				//equal to zoodb output
 				//DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
-				//William D. Young --> William R. Bevier --> J. Thomas Haigh = 2
-				//DatabaseHelper.query5( "Guy Dupenloup","Hiroshi Fukuda");
-
+				//William D. Young --> J. Thomas Haigh = 1
+				//DatabaseHelper.query5( "Guy Dupenloup","Hiroshi Fukuda"); //no path here?
+				DatabaseHelper.query5( "William D. Young","J. Thomas Haigh");
+				
 				//zoodbAverage authors 1.8636056420805172
 				//mongodb Average authors 1.8821040258595356.
 				//xml 1.8686696306941513.
@@ -232,7 +233,7 @@ public class StartWindow extends JFrame {
 				//equal to zoodb output
 				//DatabaseHelper.query13("Adi Shamir");
 				
-				DatabaseHelper.query14(1980, 1990);
+				//DatabaseHelper.query14(1980, 1990);
 
 			}
 		});
