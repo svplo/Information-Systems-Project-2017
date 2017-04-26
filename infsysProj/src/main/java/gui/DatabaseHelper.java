@@ -51,14 +51,13 @@ public class DatabaseHelper {
 				result.add(obj);
 
 			}
-		}
-		catch(QueryException e){
+		} catch (QueryException e) {
 			e.printStackTrace();
 		}
 
 		return result;
 	}
-	
+
 	static List<String> myQuery(final String query) {
 
 		List<String> result = new ArrayList<String>();
@@ -68,15 +67,14 @@ public class DatabaseHelper {
 			Iter iter = proc.iter();
 			// Iterate through all items and serialize
 			for (Item item; (item = iter.next()) != null;) {
-				
+
 				result.add(item.serialize().toString());
 
 			}
-		}
-		catch(QueryException | QueryIOException e){
+		} catch (QueryException | QueryIOException e) {
 			e.printStackTrace();
 		}
-	    return result;
+		return result;
 	}
 
 	public static void connectToDB() {
@@ -120,10 +118,10 @@ public class DatabaseHelper {
 
 	}
 
-	public static String escape(String s){
-		return(s.replaceAll("\"", "&#34;"));
+	public static String escape(String s) {
+		return (s.replaceAll("\"", "&#34;"));
 	}
-	
+
 	public static List<Publication> getAllPublications() {
 		List<Publication> result = getAllInProceedings();
 		result.addAll(getAllProceedings());
@@ -134,7 +132,7 @@ public class DatabaseHelper {
 		connectToDB();
 
 		String query = "/root/inproceedings";
-		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, InProceedings.class);
+		List<Publication> result = (List<Publication>) (List<?>) myQuery(query, InProceedings.class);
 
 		closeConnectionDB();
 		return result;
@@ -144,33 +142,33 @@ public class DatabaseHelper {
 		connectToDB();
 
 		String query = "/root/proceedings";
-		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, Proceedings.class);
-		
+		List<Publication> result = (List<Publication>) (List<?>) myQuery(query, Proceedings.class);
+
 		closeConnectionDB();
 		return result;
 	}
 
 	public static List<Person> getAllPeople() {
 		connectToDB();
-		
-		String query = "for $x in distinct-values((root/proceedings/editor|root/inproceedings/author)) return <name>{$x}</name>";
-		List<Person> result =(List<Person>)(List<?>) myQuery(query, Person.class);
 
-		for(Person p : result){
-			query = "count(for $x in distinct-values((root/proceedings[editor = \"" +p.getName()+"\"]/title)) return $x)";
+		String query = "for $x in distinct-values((root/proceedings/editor|root/inproceedings/author)) return <name>{$x}</name>";
+		List<Person> result = (List<Person>) (List<?>) myQuery(query, Person.class);
+
+		for (Person p : result) {
+			query = "count(for $x in distinct-values((root/proceedings[editor = \"" + p.getName() + "\"]/title)) return $x)";
 			int size = Integer.valueOf(myQuery(query).get(0));
-			for(int i = 0; i<size;i++){
+			for (int i = 0; i < size; i++) {
 				p.addEditedPublication(new Proceedings());
-			}			
-			
-			query = "count(for $x in distinct-values((root/inproceedings[author = \"" +p.getName()+"\"]/title)) return $x)";
+			}
+
+			query = "count(for $x in distinct-values((root/inproceedings[author = \"" + p.getName() + "\"]/title)) return $x)";
 			size = Integer.valueOf(myQuery(query).get(0));
-			for(int i = 0; i<size;i++){
+			for (int i = 0; i < size; i++) {
 				p.addAuthoredPublication(new InProceedings());
-			}			
+			}
 
 		}
-		
+
 		closeConnectionDB();
 		return result;
 	}
@@ -178,17 +176,16 @@ public class DatabaseHelper {
 	public static List<Conference> getAllConference() {
 		connectToDB();
 
-		
 		String query = "for $x in distinct-values(root/proceedings/booktitle) return <name>{$x}</name>";
-		List<Conference> result =(List<Conference>)(List<?>) myQuery(query, Conference.class);
-		for(Conference conf : result){
+		List<Conference> result = (List<Conference>) (List<?>) myQuery(query, Conference.class);
+		for (Conference conf : result) {
 			query = "count(/root/proceedings[booktitle = \"" + conf.getName().replaceAll("\"", "'") + "\"])";
 			int size = Integer.valueOf(myQuery(query).get(0));
-			for(int i = 0; i<size;i++){
+			for (int i = 0; i < size; i++) {
 				conf.addEdition(new ConferenceEdition());
 			}
 		}
-		
+
 		closeConnectionDB();
 		return result;
 	}
@@ -197,16 +194,16 @@ public class DatabaseHelper {
 		connectToDB();
 
 		String query = "for $x in distinct-values(root/proceedings/series)    order by $x    return <name>{$x}</name>";
-		List<Series> result =(List<Series>)(List<?>) myQuery(query, Series.class);
+		List<Series> result = (List<Series>) (List<?>) myQuery(query, Series.class);
 
-		for(Series s : result){
-			query = "count(for $x in (root/proceedings[series = \""+s.getName()+"\"]/series)  return <series>{$x}</series>)";
+		for (Series s : result) {
+			query = "count(for $x in (root/proceedings[series = \"" + s.getName() + "\"]/series)  return <series>{$x}</series>)";
 			int size = Integer.valueOf(myQuery(query).get(0));
-			for(int i = 0; i<size; i++){
+			for (int i = 0; i < size; i++) {
 				s.addPublication(new Proceedings());
 			}
 		}
-		
+
 		closeConnectionDB();
 		return result;
 	}
@@ -215,9 +212,8 @@ public class DatabaseHelper {
 		connectToDB();
 
 		String query = "for $x in distinct-values(root/proceedings/publisher)    order by $x    return <publisher>{$x}</publisher>";
-		List<Publisher> result =(List<Publisher>)(List<?>) myQuery(query,Publisher.class);
+		List<Publisher> result = (List<Publisher>) (List<?>) myQuery(query, Publisher.class);
 
-		
 		closeConnectionDB();
 		return result;
 	}
@@ -225,10 +221,10 @@ public class DatabaseHelper {
 	public static List<ConferenceEdition> getAllConferenceEdition() {
 		List<Publication> proceedings = getAllProceedings();
 		List<ConferenceEdition> result = new ArrayList<ConferenceEdition>();
-		for(Publication p : proceedings){
+		for (Publication p : proceedings) {
 			ConferenceEdition e = new ConferenceEdition();
 			e.setYear(p.getYear());
-			e.setProceedings((Proceedings)p);
+			e.setProceedings((Proceedings) p);
 			Conference conf = new Conference();
 			conf.setName(getConferenceEditionName(e));
 			e.setConference(conf);
@@ -236,16 +232,15 @@ public class DatabaseHelper {
 		}
 		return result;
 	}
-	
-	public static String getNumberOfPublicationsForPublisher(String name){
+
+	public static String getNumberOfPublicationsForPublisher(String name) {
 		connectToDB();
-		String query = "count(root/proceedings[publisher = \""+name+"\"])";
+		String query = "count(root/proceedings[publisher = \"" + name + "\"])";
 		String result = myQuery(query).get(0);
 
 		closeConnectionDB();
 		return result;
 
-		
 	}
 
 	public static String getPublisherName(String proceedingName) {
@@ -273,14 +268,13 @@ public class DatabaseHelper {
 
 	public static String getConferenceEditionName(ConferenceEdition edition) {
 		DatabaseHelper.connectToDB();
-		String query = "for $x in distinct-values(root/proceedings[title = \""+escape(edition.getProceedings().getTitle())+"\"]/booktitle) return <name>{$x}</name>";
-		List<Conference> result =(List<Conference>)(List<?>) myQuery(query, Conference.class);
+		String query = "for $x in distinct-values(root/proceedings[title = \"" + escape(edition.getProceedings().getTitle()) + "\"]/booktitle) return <name>{$x}</name>";
+		List<Conference> result = (List<Conference>) (List<?>) myQuery(query, Conference.class);
 
 		DatabaseHelper.closeConnectionDB();
-		if(result.size() != 0){
+		if (result.size() != 0) {
 			return result.get(0).getName();
-		}
-		else{
+		} else {
 			return "";
 		}
 	}
@@ -295,7 +289,6 @@ public class DatabaseHelper {
 		String query = "/root/proceedings[title = \"" + escape(proceedingName) + "\"]/year";
 		String result = myQuery(query).get(0);
 
-		
 		DatabaseHelper.closeConnectionDB();
 		return result;
 	}
@@ -303,11 +296,10 @@ public class DatabaseHelper {
 	public static List<String> getInProceedingsOfProceedings(String proceedingId) {
 
 		connectToDB();
-		
-		String query = "for $x in (/root/inproceedings) where $x/crossref = \""+ proceedingId.replace("key=\"", "").replaceAll("\"", "")+"\" return $x/title/text()";
+
+		String query = "for $x in (/root/inproceedings) where $x/crossref = \"" + proceedingId.replace("key=\"", "").replaceAll("\"", "") + "\" return $x/title/text()";
 		List<String> result = myQuery(query);
 
-		
 		closeConnectionDB();
 		return result;
 
@@ -315,7 +307,7 @@ public class DatabaseHelper {
 
 	public static List<String> getAuthoredPublicationsForPerson(String personName) {
 		DatabaseHelper.connectToDB();
-		String query = "for $x in distinct-values((root/inproceedings[author = \"" +personName+"\"]/title)) return $x";
+		String query = "for $x in distinct-values((root/inproceedings[author = \"" + personName + "\"]/title)) return $x";
 		List<String> result = myQuery(query);
 		DatabaseHelper.closeConnectionDB();
 		return result;
@@ -323,7 +315,7 @@ public class DatabaseHelper {
 
 	public static List<String> getEditedPublicationsForPerson(String personName) {
 		DatabaseHelper.connectToDB();
-		String query = "for $x in distinct-values((root/proceedings[editor = \"" +personName+"\"]/title)) return $x";
+		String query = "for $x in distinct-values((root/proceedings[editor = \"" + personName + "\"]/title)) return $x";
 		List<String> result = myQuery(query);
 		DatabaseHelper.closeConnectionDB();
 		return result;
@@ -331,24 +323,23 @@ public class DatabaseHelper {
 
 	public static Proceedings getProceedingOfInproceeding(String proceedingsID) {
 		connectToDB();
-		
+
 		String query = "/root/proceedings[@key = \"" + proceedingsID + "\"]";
-		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, Proceedings.class);
+		List<Publication> result = (List<Publication>) (List<?>) myQuery(query, Proceedings.class);
 
 		System.out.println(result.get(0).getTitle());
 		closeConnectionDB();
-		if(result.get(0) == null){
+		if (result.get(0) == null) {
 			return new Proceedings();
-		}
-		else{
+		} else {
 			return (Proceedings) result.get(0);
 		}
 	}
 
 	public static List<String> getAuthorsOfInProceeding(InProceedings inProceeding) {
-		
+
 		List<String> result = new ArrayList<String>();
-		for(Person p: inProceeding.getAuthors()){
+		for (Person p : inProceeding.getAuthors()) {
 			result.add(p.getName());
 		}
 		return result;
@@ -364,20 +355,20 @@ public class DatabaseHelper {
 	public static List<Person> searchForPeople(String search) {
 		connectToDB();
 		String query = "for $x in distinct-values((root/proceedings/editor|root/inproceedings/author)) where contains($x,\"" + escape(search) + "\" ) return <name>{$x}</name>";
-		List<Person> result =(List<Person>)(List<?>) myQuery(query, Person.class);
+		List<Person> result = (List<Person>) (List<?>) myQuery(query, Person.class);
 
-		for(Person p : result){
-			query = "count(for $x in distinct-values((root/proceedings[editor = \"" +p.getName()+"\"]/title)) return $x)";
+		for (Person p : result) {
+			query = "count(for $x in distinct-values((root/proceedings[editor = \"" + p.getName() + "\"]/title)) return $x)";
 			int size = Integer.valueOf(myQuery(query).get(0));
-			for(int i = 0; i<size;i++){
+			for (int i = 0; i < size; i++) {
 				p.addEditedPublication(new Proceedings());
-			}			
-			
-			query = "count(for $x in distinct-values((root/inproceedings[author = \"" +p.getName()+"\"]/title)) return $x)";
+			}
+
+			query = "count(for $x in distinct-values((root/inproceedings[author = \"" + p.getName() + "\"]/title)) return $x)";
 			size = Integer.valueOf(myQuery(query).get(0));
-			for(int i = 0; i<size;i++){
+			for (int i = 0; i < size; i++) {
 				p.addAuthoredPublication(new InProceedings());
-			}			
+			}
 
 		}
 
@@ -390,11 +381,11 @@ public class DatabaseHelper {
 	public static List<Conference> searchForConference(String search) {
 		connectToDB();
 		String query = "for $x in distinct-values(root/proceedings/booktitle) where contains($x,\"" + escape(search) + "\" ) return <publisher>{$x}</publisher>";
-		List<Conference> result =(List<Conference>)(List<?>) myQuery(query, Conference.class);
-		for(Conference conf : result){
+		List<Conference> result = (List<Conference>) (List<?>) myQuery(query, Conference.class);
+		for (Conference conf : result) {
 			query = "count(/root/proceedings[booktitle = \"" + conf.getName().replaceAll("\"", "'") + "\"])";
 			int size = Integer.valueOf(myQuery(query).get(0));
-			for(int i = 0; i<size;i++){
+			for (int i = 0; i < size; i++) {
 				conf.addEdition(new ConferenceEdition());
 			}
 		}
@@ -407,7 +398,7 @@ public class DatabaseHelper {
 	public static List<Series> searchForSeries(String search) {
 		connectToDB();
 		String query = "for $x in distinct-values(root/proceedings/series) where contains($x,\"" + escape(search) + "\" ) return <name>{$x}</name>";
-		List<Series> result =(List<Series>)(List<?>) myQuery(query, Series.class);
+		List<Series> result = (List<Series>) (List<?>) myQuery(query, Series.class);
 
 		closeConnectionDB();
 
@@ -415,17 +406,17 @@ public class DatabaseHelper {
 	}
 
 	public static List<ConferenceEdition> searchForConferenceEdition(String search) {
-		
+
 		connectToDB();
-		String query = "for $x in /root/proceedings where contains($x/year,\""+escape(search)+"\") return $x";
-		List<Publication> proceedings =(List<Publication>)(List<?>) myQuery(query, Proceedings.class);
+		String query = "for $x in /root/proceedings where contains($x/year,\"" + escape(search) + "\") return $x";
+		List<Publication> proceedings = (List<Publication>) (List<?>) myQuery(query, Proceedings.class);
 		closeConnectionDB();
 
 		List<ConferenceEdition> result = new ArrayList<ConferenceEdition>();
-		for(Publication p : proceedings){
+		for (Publication p : proceedings) {
 			ConferenceEdition e = new ConferenceEdition();
 			e.setYear(p.getYear());
-			e.setProceedings((Proceedings)p);
+			e.setProceedings((Proceedings) p);
 			Conference conf = new Conference();
 			conf.setName(getConferenceEditionName(e));
 			e.setConference(conf);
@@ -439,7 +430,7 @@ public class DatabaseHelper {
 		connectToDB();
 
 		String query = "for $x in distinct-values(root/proceedings/publisher) where contains($x,\"" + escape(search) + "\" ) return <publisher>{$x}</publisher>";
-		List<Publisher> result =(List<Publisher>)(List<?>) myQuery(query, Publisher.class);
+		List<Publisher> result = (List<Publisher>) (List<?>) myQuery(query, Publisher.class);
 
 		closeConnectionDB();
 
@@ -448,8 +439,8 @@ public class DatabaseHelper {
 
 	public static List<Publication> searchForProceedings(String search) {
 		connectToDB();
-		String query = "for $x in /root/proceedings where contains($x/title,\""+escape(search)+"\") return $x";
-		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, Proceedings.class);
+		String query = "for $x in /root/proceedings where contains($x/title,\"" + escape(search) + "\") return $x";
+		List<Publication> result = (List<Publication>) (List<?>) myQuery(query, Proceedings.class);
 		closeConnectionDB();
 
 		return result;
@@ -458,8 +449,8 @@ public class DatabaseHelper {
 
 	public static List<Publication> searchForInProceedings(String search) {
 		connectToDB();
-		String query = "for $x in /root/inproceedings where contains($x/title,\""+escape(search)+"\") return $x";
-		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, InProceedings.class);
+		String query = "for $x in /root/inproceedings where contains($x/title,\"" + escape(search) + "\") return $x";
+		List<Publication> result = (List<Publication>) (List<?>) myQuery(query, InProceedings.class);
 		closeConnectionDB();
 
 		return result;
@@ -530,9 +521,9 @@ public class DatabaseHelper {
 
 	public static void deletePerson(String name) {
 		connectToDB();
-		
-		String query = "(/root/proceedings/editor[text() = \"" + escape(name)+ "\"]|/root/inproceedings/author[text() = \"" + escape(name)+ "\"])";
-		//myQuery(query);
+
+		String query = "(/root/proceedings/editor[text() = \"" + escape(name) + "\"]|/root/inproceedings/author[text() = \"" + escape(name) + "\"])";
+		// myQuery(query);
 		try {
 			String d = new Delete(query).execute(context);
 			String d1 = new Flush().execute(context);
@@ -541,7 +532,7 @@ public class DatabaseHelper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		closeConnectionDB();
 	}
 
@@ -553,7 +544,7 @@ public class DatabaseHelper {
 
 	public static void deleteProceeding(String title) {
 		connectToDB();
-		String query = "delete node /root/proceedings[title = \"" + escape(title)+ "\"]";
+		String query = "delete node /root/proceedings[title = \"" + escape(title) + "\"]";
 		myQuery(query);
 		closeConnectionDB();
 	}
@@ -600,10 +591,9 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 
-
 	public static void deleteInProceeding(String id) {
 		connectToDB();
-		String query = "delete node /root/inproceedings[@key = \"" + id.replaceAll("key=", "").replaceAll("\"", "")+ "\"]";
+		String query = "delete node /root/inproceedings[@key = \"" + id.replaceAll("key=", "").replaceAll("\"", "") + "\"]";
 		myQuery(query);
 		closeConnectionDB();
 	}
@@ -771,12 +761,6 @@ public class DatabaseHelper {
 
 	}
 
-	
-	
-	
-	
-	
-	
 	/**
 	 * 
 	 * Queries
@@ -787,17 +771,17 @@ public class DatabaseHelper {
 	public static void query1(String id) {
 		String thisQuery = "Query 1";
 		connectToDB();
-		String queryProc = "for $x in /root/proceedings where contains($x/@key,\""+escape(id)+"\") return $x/title/text()";
-		List <String> resProc = myQuery(queryProc);
-		String queryInProc = "for $x in /root/inproceedings where contains($x/@key,\""+escape(id)+"\") return $x/title/text()";
-		List <String> resInProc = myQuery(queryInProc);
-		String result ="";
-		if(!resProc.isEmpty()){
+		String queryProc = "for $x in /root/proceedings where contains($x/@key,\"" + escape(id) + "\") return $x/title/text()";
+		List<String> resProc = myQuery(queryProc);
+		String queryInProc = "for $x in /root/inproceedings where contains($x/@key,\"" + escape(id) + "\") return $x/title/text()";
+		List<String> resInProc = myQuery(queryInProc);
+		String result = "";
+		if (!resProc.isEmpty()) {
 			result = resProc.get(0);
-		} else if(!resInProc.isEmpty()) {
+		} else if (!resInProc.isEmpty()) {
 			result = resInProc.get(0);
 		} else {
-			result = "No proceeding found with id "+id;
+			result = "No proceeding found with id " + id;
 		}
 
 		try {
@@ -815,11 +799,11 @@ public class DatabaseHelper {
 	public static void query2(String title, int startOffset, int endOffset) {
 		String thisQuery = "Query 2";
 		connectToDB();
-		String queryProc = "for $x in /root/proceedings where contains($x/title,\""+escape(title)+"\") return $x/title/text()";
-		List <String> resProc = myQuery(queryProc);
-		String queryInProc = "for $x in /root/inproceedings where contains($x/title,\""+escape(title)+"\") return $x/title/text()";
-		List <String> resInProc = myQuery(queryInProc);
-		String result ="";
+		String queryProc = "for $x in /root/proceedings where contains($x/title,\"" + escape(title) + "\") return $x/title/text()";
+		List<String> resProc = myQuery(queryProc);
+		String queryInProc = "for $x in /root/inproceedings where contains($x/title,\"" + escape(title) + "\") return $x/title/text()";
+		List<String> resInProc = myQuery(queryInProc);
+		String result = "";
 		int i = 0;
 		Iterator<String> itrProc = resProc.iterator();
 		Iterator<String> itrInProc = resInProc.iterator();
@@ -860,11 +844,11 @@ public class DatabaseHelper {
 	public static void query3(String title, int startOffset, int endOffset) {
 		String thisQuery = "Query 3";
 		connectToDB();
-		String queryProc = "for $x in /root/proceedings where contains($x/title,\""+escape(title)+"\") return $x/title/text()";
-		List <String> resProc = myQuery(queryProc);
-		String queryInProc = "for $x in /root/inproceedings where contains($x/title,\""+escape(title)+"\") return $x/title/text()";
-		List <String> resInProc = myQuery(queryInProc);
-		String result ="";
+		String queryProc = "for $x in /root/proceedings where contains($x/title,\"" + escape(title) + "\") return $x/title/text()";
+		List<String> resProc = myQuery(queryProc);
+		String queryInProc = "for $x in /root/inproceedings where contains($x/title,\"" + escape(title) + "\") return $x/title/text()";
+		List<String> resInProc = myQuery(queryInProc);
+		String result = "";
 		Iterator<String> itrProc = resProc.iterator();
 		Iterator<String> itrInProc = resInProc.iterator();
 		ArrayList<String> all = new ArrayList<String>();
@@ -904,24 +888,24 @@ public class DatabaseHelper {
 	public static void query4(String author) {
 		String thisQuery = "Query 4";
 		connectToDB();
-		String queryAuth = "for $x in /root/proceedings/editor where contains($x,\""+escape(author)+"\") return $x/../title/text()";
-		List <String> resAuth = myQuery(queryAuth);
+		String queryAuth = "for $x in /root/proceedings/editor where contains($x,\"" + escape(author) + "\") return $x/../title/text()";
+		List<String> resAuth = myQuery(queryAuth);
 		Iterator<String> itr1 = resAuth.iterator();
-		String queryEdit = "for $x in /root/inproceedings/author where contains($x,\""+escape(author)+"\") return $x/../title/text()";
-		List <String> resEdit = myQuery(queryEdit);
+		String queryEdit = "for $x in /root/inproceedings/author where contains($x,\"" + escape(author) + "\") return $x/../title/text()";
+		List<String> resEdit = myQuery(queryEdit);
 		Iterator<String> itr2 = resEdit.iterator();
-		if (!itr1.hasNext() && ! itr2.hasNext()) {
-			System.out.println("No publications found with author "+author +".");
+		if (!itr1.hasNext() && !itr2.hasNext()) {
+			System.out.println("No publications found with author " + author + ".");
 			return;
 		}
-		HashSet <String> res = new HashSet<String>();
+		HashSet<String> res = new HashSet<String>();
 		while (itr1.hasNext()) {
-			String queryProc = "for $x in /root/proceedings where contains($x/title,\""+escape(itr1.next())+"\") return $x/author/text()";
+			String queryProc = "for $x in /root/proceedings where contains($x/title,\"" + escape(itr1.next()) + "\") return $x/author/text()";
 			res.addAll(myQuery(queryProc));
 		}
 
 		while (itr2.hasNext()) {
-			String queryProc = "for $x in /root/inproceedings where contains($x/title,\""+escape(itr2.next())+"\") return $x/author/text()";
+			String queryProc = "for $x in /root/inproceedings where contains($x/title,\"" + escape(itr2.next()) + "\") return $x/author/text()";
 			res.addAll(myQuery(queryProc));
 		}
 		// remove author's own name
@@ -1080,12 +1064,12 @@ public class DatabaseHelper {
 			int year;
 			int all;
 			Document temp;
-			for (int y = year1; y <= year2 ; y++) {
-				String queryAuth = "count(for $x in (root/inproceedings/[year="+y+"]) return $x)";
-				List <String> resAuth = myQuery(queryAuth);
+			for (int y = year1; y <= year2; y++) {
+				String queryAuth = "count(for $x in (root/inproceedings/[year=" + y + "]) return $x)";
+				List<String> resAuth = myQuery(queryAuth);
 				writer.printf("%-20s%-12s%-17s%n", "InProceedings ", y, resAuth.get(0));
-				String queryProc = "count(for $x in (root/proceedings/[year="+y+"]) return $x)";
-				List <String> resProc = myQuery(queryProc);
+				String queryProc = "count(for $x in (root/proceedings/[year=" + y + "]) return $x)";
+				List<String> resProc = myQuery(queryProc);
 				writer.printf("%-20s%-12s%-17s%n", "Proceedings ", y, resProc.get(0));
 				all = Integer.valueOf(resProc.get(0)) + Integer.valueOf(resAuth.get(0));
 				writer.printf("%-20s%-12s%-17s%n%n", "All Publications", y, all);
@@ -1100,11 +1084,11 @@ public class DatabaseHelper {
 	// No of all publications of a conference, for every edition except proceedings
 	public static void query8(String conferenceName) {
 		connectToDB();
-		//TODO: why does below not work?
-		//"count(for $x in /root/inproceedings where contains($x/crossref, \""+escape(conferenceName)+"\") return $x)";
-		//this works
-		String queryAuth = "count(for $x in /root/inproceedings where contains($x/@key, \""+escape(conferenceName)+"\") return $x)";
-		List <String> resAuth = myQuery(queryAuth);
+		// TODO: why does below not work? Is this the right approach?
+		// "count(for $x in /root/inproceedings where contains($x/crossref, \""+escape(conferenceName)+"\") return $x)";
+		// this works
+		String queryAuth = "count(for $x in /root/inproceedings where contains($x/@key, \"" + escape(conferenceName) + "\") return $x)";
+		List<String> resAuth = myQuery(queryAuth);
 		String thisQuery = "Query 8";
 
 		try {
@@ -1120,145 +1104,73 @@ public class DatabaseHelper {
 
 	public static void query9(String confName) {
 		connectToDB();
-		createDB();
-
 		String thisQuery = "Query 9";
 
-		List<String> resultList = new ArrayList<String>();
-		Iterator<Document> cursor = myQuery("Conference", "name", confName);
-		if (!cursor.hasNext()) {
-			System.out.println("Did not find a Conference with name:" + confName);
-			return;
-		}
-		Conference conference = Adaptor.toConference(cursor.next());
-		for (ConferenceEdition e : conference.getEditions()) {
-			cursor = myQuery("ConferenceEdition", "_id", e.getId());
-			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
-
-			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
-			Proceedings proc = Adaptor.toProceeding(cursor.next());
-			for (Person p : proc.getAuthors()) {
-				if (!resultList.contains(p.getId())) {
-					resultList.add(p.getId());
-				}
-			}
-
-			for (InProceedings i : proc.getInProceedings()) {
-				cursor = myQuery("InProceedings", "_id", i.getId());
-				InProceedings inProc = Adaptor.toInProceedings(cursor.next());
-				for (Person p : inProc.getAuthors()) {
-					if (!resultList.contains(p.getId())) {
-						resultList.add(p.getId());
-					}
-				}
-			}
-		}
-
-		closeConnectionDB();
-
-		p(resultList.size());
-		try {
-			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
-			writer.println(thisQuery);
-			writer.println("Number of authors and editors:" + resultList.size());
-			writer.close();
-		} catch (IOException e) {
-			System.out.println("Could not print to file.");
-		}
-
-	}
-
-	public static void query11(String confName) {
-		connectToDB();
-		createDB();
-
-		String thisQuery = "Query 11";
-
-		List<String> resultList = new ArrayList<String>();
-		Iterator<Document> cursor = myQuery("Conference", "name", confName);
-		if (!cursor.hasNext()) {
-			System.out.println("Did not find a Conference with name:" + confName);
-			return;
-		}
-		Conference conference = Adaptor.toConference(cursor.next());
-		for (ConferenceEdition e : conference.getEditions()) {
-			cursor = myQuery("ConferenceEdition", "_id", e.getId());
-			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
-
-			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
-			Proceedings proc = Adaptor.toProceeding(cursor.next());
-
-			for (InProceedings i : proc.getInProceedings()) {
-				if (!resultList.contains(i.getId())) {
-					resultList.add(i.getId());
-				}
-			}
-		}
+		String queryAuth = "count (for $x in /root/inproceedings where contains($x/@key, \"" + escape(confName) + "\") return $x/author)";
+		List<String> resAuth = myQuery(queryAuth);
+		String queryEdit = "count(for $x in /root/proceedings where contains($x/@key, \"" + escape(confName) + "\") return $x/editor)";
+		List<String> resEdit = myQuery(queryEdit);
+		int result = Integer.valueOf(resEdit.get(0)) + Integer.valueOf(resAuth.get(0));
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("List of all " + resultList.size() + " InProceedings of Conference " + confName);
-			for (String id : resultList) {
-				cursor = myQuery("InProceedings", "_id", id);
-				InProceedings inProc = Adaptor.toInProceedings(cursor.next());
-
-				writer.println(inProc.getTitle());
-			}
+			writer.println("Number of authors and editors:" + result);
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-
 		closeConnectionDB();
 	}
 
 	public static void query10(String confName) {
 		connectToDB();
-		createDB();
-
 		String thisQuery = "Query 10";
 
-		List<String> resultList = new ArrayList<String>();
-		Iterator<Document> cursor = myQuery("Conference", "name", confName);
-		if (!cursor.hasNext()) {
-			System.out.println("Did not find a Conference with name:" + confName);
+		String queryAuth = "for $x in /root/inproceedings where contains($x/@key, \"" + escape(confName) + "\") return $x/author/text()";
+		List<String> resAuth = myQuery(queryAuth);
+
+		String queryEdit = "for $x in /root/proceedings where contains($x/@key, \"" + escape(confName) + "\") return $x/editor/text()";
+		List<String> resEdit = myQuery(queryEdit);
+		resAuth.addAll(resEdit);
+		Iterator<String> itr = resAuth.iterator();
+		if (!itr.hasNext()) {
+			System.out.println("Did not find a Conference with any authors with name:" + confName);
 			return;
 		}
-		Conference conference = Adaptor.toConference(cursor.next());
-		for (ConferenceEdition e : conference.getEditions()) {
-			cursor = myQuery("ConferenceEdition", "_id", e.getId());
-			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
-
-			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
-			Proceedings proc = Adaptor.toProceeding(cursor.next());
-			for (Person p : proc.getAuthors()) {
-				if (!resultList.contains(p.getId())) {
-
-					resultList.add(p.getId());
+		HashSet<String> resultList = new HashSet<String>();
+		int oldSize = 0;
+		try {
+			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
+			writer.println(thisQuery);
+			while (itr.hasNext()) {
+				String next = itr.next();
+				resultList.add(next);
+				if (oldSize < resultList.size()) {
+					oldSize = resultList.size();
+					writer.println(next);
 				}
 			}
-
-			for (InProceedings i : proc.getInProceedings()) {
-				cursor = myQuery("InProceedings", "_id", i.getId());
-				InProceedings inProc = Adaptor.toInProceedings(cursor.next());
-				for (Person p : inProc.getAuthors()) {
-					if (!resultList.contains(p.getId())) {
-						resultList.add(p.getId());
-					}
-				}
-			}
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Could not print to file.");
 		}
+		closeConnectionDB();
+	}
+
+	public static void query11(String confName) {
+		connectToDB();
+		String thisQuery = "Query 11";
+
+		String queryPub = "for $x in /root/inproceedings where contains($x/@key, \"" + escape(confName) + "\") return $x/title/text()";
+		List<String> resPub = myQuery(queryPub);
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("List of all " + resultList.size() + " authors and editors");
-			for (String id : resultList) {
-				cursor = myQuery("Person", "_id", id);
-				Person person = Adaptor.toPerson(cursor.next());
-
-				writer.println(person.getName());
+			writer.println("List of all " + resPub.size() + " InProceedings of Conference " + confName);
+			for (String title : resPub) {
+				writer.println(title);
 			}
 			writer.close();
 		} catch (IOException e) {
@@ -1266,17 +1178,14 @@ public class DatabaseHelper {
 		}
 
 		closeConnectionDB();
-
 	}
 
 	public static void query12() {
-
 		String thisQuery = "Query 12";
 		List<String> resultList = new ArrayList<String>();
 		List<Publication> allProceedings = getAllProceedings();
 
 		connectToDB();
-		createDB();
 
 		for (Publication p : allProceedings) {
 			List<String> authorsOfProc = new ArrayList<String>();
@@ -1320,7 +1229,6 @@ public class DatabaseHelper {
 		int count = 0;
 		String thisQuery = "Query 13";
 		connectToDB();
-		createDB();
 
 		MongoCollection<Document> pers = database.getCollection("Person");
 		FindIterable<Document> person = pers.find(Filters.eq("name", author)).projection(Projections.include("_id"));
@@ -1350,54 +1258,33 @@ public class DatabaseHelper {
 	}
 
 	public static void query14(int year1, int year2) {
-
 		String thisQuery = "Query 14";
-		List<String> resultList = new ArrayList<String>();
-		List<Publication> allProceedings = getAllProceedings();
-		List<Publication> allInProceedings = getAllInProceedings();
+		HashSet<String> resultList = new HashSet<String>();
+
 		connectToDB();
-		createDB();
-
-		for (Publication p : allProceedings) {
-			List<String> authorsOfProc = new ArrayList<String>();
-			for (Person pers : p.getAuthors()) {
-				authorsOfProc.add(pers.getId());
-			}
-			boolean found = false;
-			for (Publication i : allInProceedings) {
-				for (Person pers : i.getAuthors()) {
-					if (authorsOfProc.contains(pers.getId()) && i.getYear() >= year1 && i.getYear() <= year2) {
-						String pubID = ((Proceedings) p).getPublisher().getId();
-						if (!resultList.contains(pubID)) {
-							resultList.add(pubID);
-						}
-						found = true;
-						break;
-					}
-				}
-				if (found) {
-					break;
-				}
-			}
-
+		List<String> resPub = new LinkedList<String>();
+		for (int i = year1; i <= year2; i++) {
+			String queryPub = "for $x in root/inproceedings where $x/year=" + i + " return $x/publisher/text()";
+			resPub = myQuery(queryPub);
+			resultList.addAll(resPub);
 		}
-
+		for (int i = year1; i <= year2; i++) {
+			String queryPub = "for $x in root/proceedings where $x/year=" + i + " return $x/publisher/text()";
+			resPub = myQuery(queryPub);
+			resultList.addAll(resPub);
+		}
+		Iterator<String> itr = resultList.iterator();
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
 			writer.println("List of all " + resultList.size() + " Publishers.....:");
-			for (String id : resultList) {
-				Iterator<Document> cursor = myQuery("Publisher", "_id", id);
-				Publisher publisher = Adaptor.toPublisher(cursor.next());
-
-				writer.println(publisher.getName());
+			while (itr.hasNext()) {
+				writer.println(itr.next());
 			}
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-
 		closeConnectionDB();
-
 	}
 }
