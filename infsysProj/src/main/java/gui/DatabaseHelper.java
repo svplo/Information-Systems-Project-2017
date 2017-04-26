@@ -464,84 +464,17 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static void updatePerson(String id, String name, List<String> authoredPublications, List<String> editedPublications) {
-		connectToDB();
-		createDB();
-
-		// remove Person from authorList of authored Publications
-		Iterator<Document> cursor0 = myQuery("Person", "_id", id);
-		Person oldPerson = Adaptor.toPerson(cursor0.next());
-		for (Publication inProc : oldPerson.getAuthoredPublications()) {
-			Iterator<Document> cursor1 = myQuery("InProceedings", "_id", inProc.getId());
-			InProceedings inProceeding = Adaptor.toInProceedings(cursor1.next());
-			List<Person> newAuthors = new ArrayList<Person>();
-			for (Person aut : inProceeding.getAuthors()) {
-				if (!aut.getId().equals(id)) {
-					newAuthors.add(aut);
-				}
-			}
-			inProceeding.setAuthors(newAuthors);
-			myReplacement("InProceedings", "_id", inProc.getId(), Adaptor.toDBDocument(inProceeding));
-		}
-
-		// remove Person from authorList of edited Publications
-		for (Publication proc : oldPerson.getEditedPublications()) {
-			Iterator<Document> cursor1 = myQuery("Proceedings", "_id", proc.getId());
-			Proceedings proceeding = Adaptor.toProceeding(cursor1.next());
-			List<Person> newAuthors = new ArrayList<Person>();
-			for (Person aut : proceeding.getAuthors()) {
-				if (!aut.getId().equals(id)) {
-					newAuthors.add(aut);
-				}
-			}
-			proceeding.setAuthors(newAuthors);
-			myReplacement("Proceedings", "_id", proc.getId(), Adaptor.toDBDocument(proceeding));
-		}
-
-		Iterator<String> aPubIter = authoredPublications.iterator();
-		Iterator<String> ePubIter = editedPublications.iterator();
-		Set<Publication> aPublications = new HashSet<Publication>();
-		Set<Publication> ePublications = new HashSet<Publication>();
-		while (aPubIter.hasNext()) {
-
-			Iterator<Document> cursor = myQuery("InProceedings", "title", aPubIter.next());
-			while (cursor.hasNext()) {
-				InProceedings inProceeding = Adaptor.toInProceedings(cursor.next());
-				inProceeding.addAuthor(oldPerson);
-				myReplacement("InProceedings", "_id", inProceeding.getId(), Adaptor.toDBDocument(inProceeding));
-				aPublications.add(inProceeding);
-
-			}
-		}
-		while (ePubIter.hasNext()) {
-			Iterator<Document> cursor = myQuery("Proceedings", "title", ePubIter.next());
-			while (cursor.hasNext()) {
-				Proceedings proceeding = Adaptor.toProceeding(cursor.next());
-				proceeding.addAuthor(oldPerson);
-				myReplacement("Proceedings", "_id", proceeding.getId(), Adaptor.toDBDocument(proceeding));
-				ePublications.add(proceeding);
-			}
-		}
-		Person p = new Person(id, name, aPublications, ePublications);
-		myReplacement("Person", "_id", id, Adaptor.toDBDocument(p));
-		closeConnectionDB();
+	public static void updatePerson(String oldName, String name, List<String> authoredPublications, List<String> editedPublications) {
+		deletePerson(oldName);
+		addPerson(name, authoredPublications, editedPublications);
 	}
 
 	public static void deletePerson(String name) {
 		connectToDB();
 
-		String query = "(/root/proceedings/editor[text() = \"" + escape(name) + "\"]|/root/inproceedings/author[text() = \"" + escape(name) + "\"])";
-		// myQuery(query);
-		try {
-			String d = new Delete(query).execute(context);
-			String d1 = new Flush().execute(context);
-			System.out.println(d);
-			
-		} catch (BaseXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		String query = "delete node (/root/proceedings/editor[text() = \"" + escape(name) + "\"]|/root/inproceedings/author[text() = \"" + escape(name) + "\"])";
+		myQuery(query);
+		
 		optimize();
 		closeConnectionDB();
 	}
@@ -562,43 +495,18 @@ public class DatabaseHelper {
 
 	public static void addPerson(String newName, List<String> authoredPublications, List<String> editedPublications) {
 		connectToDB();
-		createDB();
-		String id = (new ObjectId()).toString();
-		Person p = new Person();
-		p.setId(id);
-		p.setName(newName);
-		Iterator<String> aPubIter = authoredPublications.iterator();
-		Iterator<String> ePubIter = editedPublications.iterator();
-		Set<Publication> aPublications = new HashSet<Publication>();
-		Set<Publication> ePublications = new HashSet<Publication>();
-		while (aPubIter.hasNext()) {
-
-			Iterator<Document> cursor = myQuery("InProceedings", "title", aPubIter.next());
-			while (cursor.hasNext()) {
-				InProceedings inProceeding = Adaptor.toInProceedings(cursor.next());
-				inProceeding.addAuthor(p);
-				myReplacement("InProceedings", "_id", inProceeding.getId(), Adaptor.toDBDocument(inProceeding));
-				aPublications.add(inProceeding);
-
-			}
+		
+		for(String title : authoredPublications){
+			String query = "insert node ("+ toxml("author", newName)+") into /root/inproceedings[title = \"" + escape(title) + "\"]";
+			myQuery(query);
 		}
-		while (ePubIter.hasNext()) {
-			Iterator<Document> cursor = myQuery("Proceedings", "title", ePubIter.next());
-			while (cursor.hasNext()) {
-				Proceedings inProceeding = Adaptor.toProceeding(cursor.next());
-				inProceeding.addAuthor(p);
-				myReplacement("Proceedings", "_id", inProceeding.getId(), Adaptor.toDBDocument(inProceeding));
-				aPublications.add(inProceeding);
-			}
+		
+		for(String title : editedPublications){
+			String query = "insert node ("+ toxml("editor", newName)+") into /root/proceedings[title = \"" + escape(title) + "\"]";
+			myQuery(query);
 		}
-
-		p.setAuthoredPublications(aPublications);
-		p.setEditedPublications(ePublications);
-
-		// instead of updating only specific fields, replace them all
-		MongoCollection<Document> collection = database.getCollection("Person");
-		collection.insertOne(Adaptor.toDBDocument(p));
-
+		
+		optimize();
 		closeConnectionDB();
 	}
 
