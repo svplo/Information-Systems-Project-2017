@@ -77,6 +77,14 @@ public class DatabaseHelper {
 		return result;
 	}
 
+	public static void optimize(){
+		try {
+			new Optimize().execute(context);
+		} catch (BaseXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public static void connectToDB() {
 		context = new Context();
 		try {
@@ -168,7 +176,6 @@ public class DatabaseHelper {
 			}
 
 		}
-
 		closeConnectionDB();
 		return result;
 	}
@@ -243,25 +250,18 @@ public class DatabaseHelper {
 
 	}
 
-	public static String getPublisherName(String proceedingName) {
-		DatabaseHelper.connectToDB();
-
-		DatabaseHelper.closeConnectionDB();
-		return "";
-	}
-
-	public static String getSeriesName(String proceedingName) {
-		DatabaseHelper.connectToDB();
-
-		DatabaseHelper.closeConnectionDB();
-		return "";
-	}
-
 	public static String getConferenceName(String proceedingName) {
 		DatabaseHelper.connectToDB();
 
-		String query = "/root/proceedings[title = \"" + escape(proceedingName) + "\"]/booktitle";
-		String result = myQuery(query).get(0);
+		String result;
+		String query = "/root/proceedings[title = \"" + escape(proceedingName) + "\"]/booktitle/text()";
+		List<String> confName = myQuery(query);
+		if(confName.size() == 0){
+			result = "";
+		}
+		else{
+			result = confName.get(0);
+		}
 		DatabaseHelper.closeConnectionDB();
 		return result;
 	}
@@ -285,8 +285,7 @@ public class DatabaseHelper {
 
 	public static String getConferenceYear(String proceedingName) {
 		DatabaseHelper.connectToDB();
-
-		String query = "/root/proceedings[title = \"" + escape(proceedingName) + "\"]/year";
+		String query = "/root/proceedings[title = \"" + escape(proceedingName) + "\"]/year/text()";
 		String result = myQuery(query).get(0);
 
 		DatabaseHelper.closeConnectionDB();
@@ -324,8 +323,9 @@ public class DatabaseHelper {
 	public static Proceedings getProceedingOfInproceeding(String proceedingsID) {
 		connectToDB();
 
-		String query = "/root/proceedings[@key = \"" + proceedingsID + "\"]";
-		List<Publication> result = (List<Publication>) (List<?>) myQuery(query, Proceedings.class);
+		p(proceedingsID);
+		String query = "/root/proceedings[@key = \"" + escape(proceedingsID) + "\"]";
+		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, Proceedings.class);
 
 		System.out.println(result.get(0).getTitle());
 		closeConnectionDB();
@@ -528,11 +528,13 @@ public class DatabaseHelper {
 			String d = new Delete(query).execute(context);
 			String d1 = new Flush().execute(context);
 			System.out.println(d);
+			
 		} catch (BaseXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+		optimize();
 		closeConnectionDB();
 	}
 
@@ -546,6 +548,7 @@ public class DatabaseHelper {
 		connectToDB();
 		String query = "delete node /root/proceedings[title = \"" + escape(title) + "\"]";
 		myQuery(query);
+		optimize();
 		closeConnectionDB();
 	}
 
@@ -595,168 +598,123 @@ public class DatabaseHelper {
 		connectToDB();
 		String query = "delete node /root/inproceedings[@key = \"" + id.replaceAll("key=", "").replaceAll("\"", "") + "\"]";
 		myQuery(query);
+		optimize();
 		closeConnectionDB();
 	}
 
 	public static void updateInProceeding(String id, InProceedings newInProceeding, String procTitle, List<String> authors) {
-		connectToDB();
-		createDB();
-
 		deleteInProceeding(id);
 		addInProceeding(newInProceeding, procTitle, authors);
-
-		closeConnectionDB();
+		return;
 	}
 
 	public static void p(Object o) {
 		System.out.println(o);
 	}
+	
+	public static String toxml(String tag, String value){
+			
+		if(value.equals("")){
+			return "";
+		}
+		if(value == null){
+			return "";
+		}
+		return "<" + tag + ">" + value + "</" + tag + ">";
+	}
 
 	public static void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors) {
 		connectToDB();
-		createDB();
 
 		// create new ID for new InProceedings
-		String id = (new ObjectId()).toString();
+		String id = java.util.UUID.randomUUID().toString();
 		newInProceeding.setId(id);
-
-		// update all authors
-		Iterator<String> authorIter = authors.iterator();
-		List<Person> authorsList = new ArrayList<Person>();
-		while (authorIter.hasNext()) {
-
-			Iterator<Document> cursor = myQuery("Person", "name", authorIter.next());
-			while (cursor.hasNext()) {
-				Person p = Adaptor.toPerson(cursor.next());
-				p.addAuthoredPublication(newInProceeding);
-				myReplacement("Person", "_id", p.getId(), Adaptor.toDBDocument(p));
-				authorsList.add(p);
-			}
+		
+		String authorXml = "";
+		for(String s : authors){
+			authorXml = authorXml + toxml("author", s);
 		}
-		newInProceeding.setAuthors(authorsList);
-
-		if (!procTitle.equals("")) {
-			// update Proceeding
-			Iterator<Document> cursor = myQuery("Proceedings", "title", procTitle);
-			Proceedings proceedings = Adaptor.toProceeding(cursor.next());
-			proceedings.addInProceedings(newInProceeding);
-			myReplacement("Proceedings", "_id", proceedings.getId(), Adaptor.toDBDocument(proceedings));
-			newInProceeding.setProceedings(proceedings);
+			
+		String crossrefXml = "";
+		String queryProc = "/root/proceedings[title = \"" + procTitle + "\"]/@key";
+		List<String> procKey = myQuery(queryProc);
+		if(procKey.size() != 0){
+			crossrefXml = toxml("crossref", procKey.get(0).replaceAll("key=", "").replaceAll("\"", ""));
 		}
 
-		MongoCollection<Document> collection = database.getCollection("InProceedings");
-		collection.insertOne(Adaptor.toDBDocument(newInProceeding));
+		String query1 = "insert node (<inproceedings><tag>nodeToEdit</tag>"
+						+authorXml
+						+toxml("pages",newInProceeding.getPages())
+						+toxml("title",newInProceeding.getTitle())
+						+toxml("year",String.valueOf(newInProceeding.getYear()))
+						+toxml("note",newInProceeding.getNote())
+						+toxml("ee",newInProceeding.getElectronicEdition()) 
+						+crossrefXml
 
+						+ "</inproceedings>) into /root";
+		myQuery(query1);
+		
+		//add key attribute
+		String query2 = "insert node (attribute {'mdate'} {'newDate'}, attribute {'key'} {'"+ id +"'}) into /root/inproceedings[tag = \"nodeToEdit\"]";
+		myQuery(query2);
+		
+		//remove tag
+		String query3 = "delete node /root/inproceedings/tag";
+		myQuery(query3);
+		
+		optimize();
 		closeConnectionDB();
 
 	}
 
 	public static void addProceeding(Proceedings newProceeding, List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear) {
 		connectToDB();
-		createDB();
-
+		
+		//TODO: escape characters like < >
 		// create new ID for new InProceedings
-		String id = (new ObjectId()).toString();
+		String id = java.util.UUID.randomUUID().toString();
 		newProceeding.setId(id);
-
-		p(authors);
-		// update all authors
-		Iterator<String> authorIter = authors.iterator();
-		List<Person> authorsList = new ArrayList<Person>();
-		while (authorIter.hasNext()) {
-
-			Iterator<Document> cursor = myQuery("Person", "name", authorIter.next());
-			while (cursor.hasNext()) {
-				Person p = Adaptor.toPerson(cursor.next());
-				p.addEditedPublication(newProceeding);
-				myReplacement("Person", "_id", p.getId(), Adaptor.toDBDocument(p));
-				authorsList.add(p);
-			}
+		
+		String authorXml = "";
+		for(String s : authors){
+			authorXml = authorXml + toxml("editor", s);
 		}
-		newProceeding.setAuthors(authorsList);
+			
+		String query1 = "insert node (<proceedings><tag>nodeToEdit</tag>"
+						+authorXml
+						+toxml("isbn",newProceeding.getIsbn())
+						+toxml("title",newProceeding.getTitle())
+						+toxml("year",String.valueOf(newProceeding.getYear()))
+						+toxml("note",newProceeding.getNote())
+						+toxml("ee",newProceeding.getElectronicEdition()) 
+						+toxml("volume",newProceeding.getVolume()) 
+						+toxml("number",String.valueOf(newProceeding.getNumber())) 
+						+toxml("publisher",pubName) 
+						+toxml("series",seriesName) 
+						+toxml("booktitle",confName) 
 
-		// update all authors
-		Iterator<String> inProcIter = inProceedings.iterator();
-		Set<InProceedings> inProcList = new HashSet<InProceedings>();
-		while (inProcIter.hasNext()) {
+						+ "</proceedings>) into /root";
+		myQuery(query1);
+		
+		//add key attribute
+		String query2 = "insert node (attribute {'mdate'} {'newDate'}, attribute {'key'} {'"+ id +"'}) into /root/proceedings[tag = \"nodeToEdit\"]";
+		myQuery(query2);
+		
+		//remove tag
+		String query3 = "delete node /root/proceedings/tag";
+		myQuery(query3);
+		
+		optimize();
 
-			Iterator<Document> cursor = myQuery("InProceedings", "title", inProcIter.next());
-			while (cursor.hasNext()) {
-				InProceedings p = Adaptor.toInProceedings(cursor.next());
-				p.setProceedings(newProceeding);
-				myReplacement("InProceedings", "_id", p.getId(), Adaptor.toDBDocument(p));
-				inProcList.add(p);
-			}
+		for(String s : inProceedings){
+			String query4 = "delete node /root/inproceedings[title = \"" + s + "\"]/crossref";
+			myQuery(query4);
+			String query5 = "insert node (" + toxml("crossref", id) + ") into /root/inproceedings[title = \"" + s + "\"]";
+			myQuery(query5);
 		}
-		newProceeding.setInProceedings(inProcList);
-
-		// handle Publisher
-		Iterator<Document> cursor = myQuery("Publisher", "name", pubName);
-		Publisher pub = new Publisher();
-		if (!cursor.hasNext()) {
-			pub.setName(pubName);
-			Set<Publication> set = new HashSet<Publication>();
-			set.add(newProceeding);
-			pub.setPublications(set);
-			pub.setId((new ObjectId()).toString());
-			myInsert("Publisher", Adaptor.toDBDocument(pub));
-		} else {
-			pub = Adaptor.toPublisher(cursor.next());
-			pub.addPublication(newProceeding);
-			myReplacement("Publisher", "_id", pub.getId(), Adaptor.toDBDocument(pub));
-		}
-
-		newProceeding.setPublisher(pub);
-
-		// handle Series
-		cursor = myQuery("Series", "name", seriesName);
-		Series series = new Series();
-		if (!cursor.hasNext()) {
-			series.setName(seriesName);
-			Set<Publication> set = new HashSet<Publication>();
-			set.add(newProceeding);
-			series.setPublications(set);
-			series.setId((new ObjectId()).toString());
-			myInsert("Series", Adaptor.toDBDocument(series));
-		} else {
-			series = Adaptor.toSeries(cursor.next());
-			series.addPublication(newProceeding);
-			myReplacement("Series", "_id", series.getId(), Adaptor.toDBDocument(series));
-		}
-
-		newProceeding.setSeries(series);
-
-		// handle Conference/ConferenceEdition
-		cursor = myQuery("Conference", "name", confName);
-		Conference conference = new Conference();
-
-		ConferenceEdition confE = new ConferenceEdition();
-		confE.setYear(confYear);
-		confE.setId((new ObjectId()).toString());
-		confE.setProceedings(newProceeding);
-
-		if (!cursor.hasNext()) {
-			conference.setName(confName);
-			Set<Publication> set = new HashSet<Publication>();
-			set.add(newProceeding);
-			Set<ConferenceEdition> confEList = new HashSet<ConferenceEdition>();
-			confEList.add(confE);
-			conference.setEditions(confEList);
-			conference.setId((new ObjectId()).toString());
-			confE.setConference(conference);
-			myInsert("Conference", Adaptor.toDBDocument(conference));
-		} else {
-			conference = Adaptor.toConference(cursor.next());
-			conference.addEdition(confE);
-			confE.setConference(conference);
-			myReplacement("Conference", "_id", conference.getId(), Adaptor.toDBDocument(conference));
-		}
-
-		newProceeding.setConferenceEdition(confE);
-		myInsert("ConferenceEdition", Adaptor.toDBDocument(confE));
-
-		myInsert("Proceedings", Adaptor.toDBDocument(newProceeding));
-
+			
+		
+		optimize();
 		closeConnectionDB();
 
 	}
