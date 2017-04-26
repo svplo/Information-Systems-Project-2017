@@ -188,6 +188,7 @@ public class StartWindow extends JFrame {
 		JButton btnQueriesTableFrame = new JButton("Run Queries");
 		btnQueriesTableFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				//TODO: check if answers are correct
 				//Run the queries required for task 1.3
 				//DatabaseHelper.query1("conf/acm/ColeMM87");
 				
@@ -208,13 +209,13 @@ public class StartWindow extends JFrame {
 				//zoodbAverage authors 1.8636056420805172
 				//mongodb Average authors 1.8821040258595356.
 				//xml 1.8686696306941513.
-				DatabaseHelper.query6();
+				//DatabaseHelper.query6();
 				
 				//equal to zoodb output, only counting separately
 				//DatabaseHelper.query7(1980,1990);
 				
 				//equal to zoodb output
-				//DatabaseHelper.query8("Microcomputing");
+				DatabaseHelper.query8("conf/microcomputing");
 				
 				//equal to zoodb output
 				//DatabaseHelper.query9("Microcomputing");

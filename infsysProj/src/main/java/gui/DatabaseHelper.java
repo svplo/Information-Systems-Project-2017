@@ -1071,36 +1071,24 @@ public class DatabaseHelper {
 	public static void query7(int year1, int year2) {
 		String thisQuery = "Query 7";
 		connectToDB();
-		createDB();
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
 			writer.printf("%-20s%-12s%-17s%n%n", "Publication Type", "Year", "No. Publications");
-			MongoCollection<Document> pubs = database.getCollection("Proceedings");
-			AggregateIterable<Document> procs = pubs.aggregate(Arrays.asList(Aggregates.match(Filters.lte("year", year2)), Aggregates.match(Filters.gte("year", year1)), Aggregates.group("$year", Accumulators.sum("year", 1)), Aggregates.sort(Sorts.ascending("year"))));
-			Iterator<Document> itrProc = procs.iterator();
-
-			MongoCollection<Document> inProc = database.getCollection("InProceedings");
-			AggregateIterable<Document> inProcs = inProc.aggregate(Arrays.asList(Aggregates.match(Filters.lte("year", year2)), Aggregates.match(Filters.gte("year", year1)), Aggregates.group("$year", Accumulators.sum("year", 1)), Aggregates.sort(Sorts.ascending("year"))));
-			Iterator<Document> itrInProc = inProcs.iterator();
 			int no;
 			int year;
 			int all;
 			Document temp;
-			while (itrInProc.hasNext() || itrProc.hasNext()) {
-				temp = itrInProc.next();
-				no = temp.getInteger("_id");
-				year = temp.getInteger("year");
-				all = year;
-				writer.printf("%-20s%-12s%-17s%n", "InProceedings ", no, year);
-				temp = itrProc.next();
-				no = temp.getInteger("_id");
-				year = temp.getInteger("year");
-				writer.printf("%-20s%-12s%-17s%n", "Proceedings ", no, year);
-				all = all + year;
-				writer.printf("%-20s%-12s%-17s%n%n", "All Publications", no, all);
-
+			for (int y = year1; y <= year2 ; y++) {
+				String queryAuth = "count(for $x in (root/inproceedings/[year="+y+"]) return $x)";
+				List <String> resAuth = myQuery(queryAuth);
+				writer.printf("%-20s%-12s%-17s%n", "InProceedings ", y, resAuth.get(0));
+				String queryProc = "count(for $x in (root/proceedings/[year="+y+"]) return $x)";
+				List <String> resProc = myQuery(queryProc);
+				writer.printf("%-20s%-12s%-17s%n", "Proceedings ", y, resProc.get(0));
+				all = Integer.valueOf(resProc.get(0)) + Integer.valueOf(resAuth.get(0));
+				writer.printf("%-20s%-12s%-17s%n%n", "All Publications", y, all);
 			}
 			writer.close();
 		} catch (IOException e) {
@@ -1109,38 +1097,20 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 
-	// No of all publications of a conference, except proceedings
+	// No of all publications of a conference, for every edition except proceedings
 	public static void query8(String conferenceName) {
 		connectToDB();
-		createDB();
-
+		//TODO: why does below not work?
+		//"count(for $x in /root/inproceedings where contains($x/crossref, \""+escape(conferenceName)+"\") return $x)";
+		//this works
+		String queryAuth = "count(for $x in /root/inproceedings where contains($x/@key, \""+escape(conferenceName)+"\") return $x)";
+		List <String> resAuth = myQuery(queryAuth);
 		String thisQuery = "Query 8";
-
-		List<String> resultList = new ArrayList<String>();
-		Iterator<Document> cursor = myQuery("Conference", "name", conferenceName);
-		if (!cursor.hasNext()) {
-			System.out.println("Did not find a Conference with name: " + conferenceName);
-			return;
-		}
-		Conference conference = Adaptor.toConference(cursor.next());
-		for (ConferenceEdition e : conference.getEditions()) {
-			cursor = myQuery("ConferenceEdition", "_id", e.getId());
-			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
-
-			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
-			Proceedings proc = Adaptor.toProceeding(cursor.next());
-
-			for (InProceedings i : proc.getInProceedings()) {
-				if (!resultList.contains(i.getId())) {
-					resultList.add(i.getId());
-				}
-			}
-		}
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("The number of all InProceedings of Conference " + conferenceName + "is  " + resultList.size() + ".");
+			writer.println("The number of all InProceedings of Conference " + conferenceName + "is  " + resAuth.get(0) + ".");
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
