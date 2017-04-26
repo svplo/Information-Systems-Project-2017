@@ -1,22 +1,14 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Label;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.awt.event.*;
-import javax.swing.*;
-import java.awt.*;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -30,19 +22,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicArrowButton;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
-import gui.PersonWindow.ItemsPerPage;
-import infsysProj.infsysProj.InProceedings;
-import infsysProj.infsysProj.Person;
-import infsysProj.infsysProj.Proceedings;
-import infsysProj.infsysProj.Publication;
-import infsysProj.infsysProj.Conference;
 import infsysProj.infsysProj.Series;
 
 public class SeriesWindow extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JTable table;
 	private JPanel contentPane;
 	private ItemsPerPage itemsPerPageIndex = ItemsPerPage.TWENTY;
