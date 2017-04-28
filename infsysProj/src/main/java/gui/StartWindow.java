@@ -31,7 +31,6 @@ public class StartWindow extends JFrame {
 				try {
 					StartWindow frame = new StartWindow();
 					frame.setVisible(true);
-
 					// Run the queries required for task 1.3
 					// DatabaseHelper.query1("conf/acm/ColeMM87");
 
@@ -41,26 +40,29 @@ public class StartWindow extends JFrame {
 
 					// DatabaseHelper.query4("William D. Young");
 
-					// DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
+					//DatabaseHelper.query5( "William D. Young","J. Thomas Haigh");
 					// William D. Young --> William R. Bevier --> J. Thomas Haigh = 2
+					//DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
+					//William D. Young --> J. Thomas Haigh = 1
+					//DatabaseHelper.query5( "Guy Dupenloup","Hiroshi Fukuda"); //no path here?
 
 					// DatabaseHelper.query6();
 
 					// DatabaseHelper.query7(1980,1990);
 
-					// DatabaseHelper.query8("Microcomputing");
+					// DatabaseHelper.query8("ECHT");
 
-					// DatabaseHelper.query9("Microcomputing");
+					// DatabaseHelper.query9("ECHT");
 
-					// DatabaseHelper.query10("Microcomputing");
+					// DatabaseHelper.query10("ECHT");
 
-					// DatabaseHelper.query11("Microcomputing");
+					// DatabaseHelper.query11("ECHT");
 
 					// DatabaseHelper.query12();
 
-					// DatabaseHelper.query13("Robert Noel");
+					// DatabaseHelper.query13("Adi Shamir");
 
-					// DatabaseHelper.query14(1989, 1990);
+					//DatabaseHelper.query14(1980, 1990);
 
 				} catch (Exception e) {
 					e.printStackTrace();
