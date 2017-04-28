@@ -199,7 +199,7 @@ public class StartWindow extends JFrame {
 				//DatabaseHelper.query3("expert system", 0, 3);
 				
 				//equal to zoodb output
-				//DatabaseHelper.query4("Thomas H. Hinke");
+				//DatabaseHelper.query4("William D. Young");
 				
 				//equal to zoodb output
 				//DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
