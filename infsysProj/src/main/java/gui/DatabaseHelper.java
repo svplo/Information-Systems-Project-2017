@@ -20,7 +20,11 @@ import org.basex.core.cmd.*;
 import org.basex.query.*;
 import org.basex.query.iter.*;
 import org.basex.query.value.item.*;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -1024,39 +1028,61 @@ public class DatabaseHelper {
 
 	public static void query12() throws ParserConfigurationException, SAXException, IOException {
 		String thisQuery = "Query 12";
-		List<String> resultList = new ArrayList<String>();
+		HashSet<String> resultList = new HashSet<String>();
 		connectToDB();
 		
 		//crossref is the foreign key in InProceedings to Proceedings (key)
-		String queryPub = "for $x in /root/inproceedings,"
+/*		String queryPub = "for $x in /root/inproceedings,"
 				+ "$y in /root/proceedings[@key = $x/crossref]"
 				+ "return <item procAuthor=\"{$y/editor}\" inAuthor=\"{$x/author}\"/>";
 		List<String> resPub = myQuery(queryPub);
+*/
 //example output: F. Ron Bailey
-				//inAuthor="Ramesh C. Agarwal Fred G. Gustavson"
-		//TODO parse output, i.e. check if there are matching authors
-		Iterator<String> itr = resPub.iterator();
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-
-		while (itr.hasNext()){
-			org.w3c.dom.Document document = builder.parse(new InputSource(new StringReader(itr.next())));
+//inAuthor="Ramesh C. Agarwal Fred G. Gustavson"
+		
+		String queryInProc = "for $x in /root/proceedings return <item key=\"{$x/@key}\" editor=\"{$x/editor/text()}\"/>";
+		List<String> resInProc = myQuery(queryInProc);
+		Iterator<String> inProcItr = resInProc.iterator();
+		while(inProcItr.hasNext()){
+			//String inProc = inProcItr.next();
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			org.w3c.dom.Document document = builder.parse(new InputSource(new StringReader(inProcItr.next())));
 			Element rootElement = document.getDocumentElement();
-			System.out.println(rootElement.getAttribute("procAuthor"));
-			System.out.println(rootElement.getAttributeNode("inAuthor"));
+			String crossref = rootElement.getAttribute("key");
+			if(crossref.equals("") || crossref == null){
+				//System.out.println("continue");
+				continue;
+			}
+			// Expecting separator after number.
+			String queryProc = "for $x in /root/inproceedings where $x/crossref=\""+ escape(crossref) +"\" return $x/author/text()";
+			List<String> resProc = myQuery(queryProc);
+			Iterator<String> procItr = resProc.iterator();
+			while(procItr.hasNext()){
+				String author = procItr.next();
+				//System.out.println(author);
+				//System.out.println(rootElement.getAttributeNode("editor"));
+				//example output 
+					//G. Spettel
+					//editor="Ursula Klenk Peter Scherber Manfred Thaller" 
+				if((rootElement.getAttributeNode("editor")).toString().contains(author.replaceAll("editor=", "").replaceAll("\"", ""))){
+					resultList.add(author);
+				}
+			}
 		}
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			//writer.println("List of all " + resultList.size() + " authors that occur as editor in Proceeding as well as in InProceeding as and author:");
+			writer.println("List of all " + resultList.size() + " authors that occur as editor in Proceeding as well as in InProceeding as and author:");
+			for(String s : resultList){
+				writer.println(s);
+			}
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-
-		closeConnectionDB();
-
+		closeConnectionDB();		
 	}
 
 	// all publications, where given author is mentioned last
