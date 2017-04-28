@@ -947,16 +947,25 @@ public class DatabaseHelper {
 		connectToDB();
 		String thisQuery = "Query 9";
 
-		String queryAuth = "count (for $x in /root/inproceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/author)";
+		String queryAuth = "for $x in /root/inproceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/author/text()";
 		List<String> resAuth = myQuery(queryAuth);
-		String queryEdit = "count(for $x in /root/proceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/editor)";
+		HashSet<String> result =new HashSet<String>();
+		for (String s : resAuth){
+			System.out.println(s);
+			result.add(s);
+		}
+		String queryEdit = "for $x in /root/proceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/editor/text()";
 		List<String> resEdit = myQuery(queryEdit);
-		int result = Integer.valueOf(resEdit.get(0)) + Integer.valueOf(resAuth.get(0));
+		for (String s : resEdit){
+			System.out.println(s);
+			result.add(s);
+		}
+		int res = result.size();
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("Number of authors and editors: " + result);
+			writer.println("Number of authors and editors: " + res);
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
