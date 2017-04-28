@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -1517,6 +1518,7 @@ public class DatabaseHelper {
         connectToDB();
         createDB();
 
+        //sort(Sorts.ascending) does not sort correctly?
         try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
             writer.println(thisQuery);
@@ -1536,23 +1538,24 @@ public class DatabaseHelper {
                     Aggregates.group("$year", Accumulators.sum("year", 1)),
                     Aggregates.sort(Sorts.ascending("year"))));
             Iterator<Document> itrInProc = inProcs.iterator();
-            int no;
-            int year;
-            int all;
             Document temp;
-            while (itrInProc.hasNext() || itrProc.hasNext()) {
-                temp = itrInProc.next();
-                no = temp.getInteger("_id");
-                year = temp.getInteger("year");
-                all=year;
-                writer.printf("%-20s%-12s%-17s%n","InProceedings ", no, year);
-                temp = itrProc.next();
-                no = temp.getInteger("_id");
-                year = temp.getInteger("year");
-                writer.printf("%-20s%-12s%-17s%n","Proceedings ", no, year);
-                all=all+year;
-                writer.printf("%-20s%-12s%-17s%n%n", "All Publications", no, all);
-                
+            HashMap<Integer, Integer> result = new HashMap<Integer, Integer>();
+            //<key, value> = <_id, year> = <year, no publications>
+            while (itrInProc.hasNext()){
+            	temp = itrInProc.next();
+            	result.put(temp.getInteger("_id"), temp.getInteger("year"));
+            } 
+            while(itrProc.hasNext()) {
+            	temp = itrProc.next();
+            	if(result.containsKey(temp.getInteger("_id"))) {
+            		int has = result.get(temp.getInteger("_id"));
+            		result.put(temp.getInteger("_id"), (temp.getInteger("year") + has));
+            	} else {
+            		result.put(temp.getInteger("_id"), temp.getInteger("year"));
+            	}
+            }
+            for (int y = year1; y <=year2; y++){
+                writer.printf("%-20s%-12s%-17s%n", "All Publications", y, result.get(y));
             }
         writer.close();
         } catch (IOException e) {
