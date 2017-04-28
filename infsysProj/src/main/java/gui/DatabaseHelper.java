@@ -81,7 +81,6 @@ public class DatabaseHelper {
 		try {
 			new Optimize().execute(context);
 		} catch (BaseXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -229,13 +228,12 @@ public class DatabaseHelper {
 		List<Publication> proceedings = getAllProceedings();
 		List<ConferenceEdition> result = new ArrayList<ConferenceEdition>();
 		for (Publication p : proceedings) {
-			ConferenceEdition e = new ConferenceEdition();
-			e.setYear(p.getYear());
-			e.setProceedings((Proceedings) p);
-			Conference conf = new Conference();
-			conf.setName(getConferenceEditionName(e));
-			e.setConference(conf);
-			result.add(e);
+			ConferenceEdition e = ((Proceedings) p).getConferenceEdition();
+			if(!(e == null)){
+				e.setYear(p.getYear());
+				e.setProceedings((Proceedings) p);
+				result.add(e);
+			}
 		}
 		return result;
 	}

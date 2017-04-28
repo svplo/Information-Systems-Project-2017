@@ -11,6 +11,7 @@ import org.basex.query.value.node.DBNode;
 import org.basex.query.value.node.FElem;
 
 import infsysProj.infsysProj.Conference;
+import infsysProj.infsysProj.ConferenceEdition;
 import infsysProj.infsysProj.DomainObject;
 import infsysProj.infsysProj.Person;
 import infsysProj.infsysProj.Proceedings;
@@ -111,7 +112,9 @@ public class Adaptor {
 				value = n.children().next().serialize().toString();
 				Conference conf = new Conference();
 				conf.setName(value);
-				o.getClass().getMethod("setConference", Conference.class).invoke(o, conf);
+				ConferenceEdition e = new ConferenceEdition();
+				e.setConference(conf);
+				o.getClass().getMethod("setConferenceEdition", ConferenceEdition.class).invoke(o, e);
 				break;
 			case "publisher":
 				value = n.children().next().serialize().toString();
