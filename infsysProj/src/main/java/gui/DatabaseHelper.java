@@ -951,13 +951,11 @@ public class DatabaseHelper {
 		List<String> resAuth = myQuery(queryAuth);
 		HashSet<String> result =new HashSet<String>();
 		for (String s : resAuth){
-			System.out.println(s);
 			result.add(s);
 		}
 		String queryEdit = "for $x in /root/proceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/editor/text()";
 		List<String> resEdit = myQuery(queryEdit);
 		for (String s : resEdit){
-			System.out.println(s);
 			result.add(s);
 		}
 		int res = result.size();
@@ -1091,14 +1089,16 @@ public class DatabaseHelper {
 	}
 
 	// all publications, where given author is mentioned last
-	public static void query13(String author) {
+	public static void query13(String author) throws Exception {
 		int count = 0;
 		String thisQuery = "Query 13";
 		connectToDB();
 
+		HashSet<String> result = new HashSet<String>();
 		String queryPub = "for $x in /root/inproceedings/author where contains($x, \"" + escape(author) + "\") return <item title=\"{$x/../title}\" authors=\"{$x/../author/text()}\"/>";
 		List<String> resPub = myQuery(queryPub);
-		System.out.println(resPub.size());
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
 		for(int i = 0; i < resPub.size(); i++){
 			//examples outputs for Adi Shadmir
 			//<item title="Polymorphic Arrays: An Architecture for a Programmable Systolic Machine." authors="Amos Fiat Adi Shamir Ehud Y. Shapiro"/>
@@ -1108,6 +1108,9 @@ public class DatabaseHelper {
 			String subStr = curr.substring(curr.length()-author.length()-3);
 			if(subStr.contains(author)){
 				count++;
+				org.w3c.dom.Document document = builder.parse(new InputSource(new StringReader(resPub.get(i))));
+				Element rootElement = document.getDocumentElement();
+				result.add(rootElement.getAttribute("title"));
 			}
 		}
 		
@@ -1115,6 +1118,9 @@ public class DatabaseHelper {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
 			writer.println("The number of publications where the author named " + author + " is mentioned last is " + count + ".");
+			for(String s : result){
+				writer.println(s);
+			}
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
