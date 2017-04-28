@@ -242,8 +242,13 @@ public class StartWindow extends JFrame {
 				}
 */
 				//equal to zoodb output
-				//DatabaseHelper.query13("Adi Shamir");
-				
+/*				try {
+					DatabaseHelper.query13("Adi Shamir");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+*/				
 				//DatabaseHelper.query14(1980, 1990);
 
 			}
