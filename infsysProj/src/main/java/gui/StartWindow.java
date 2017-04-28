@@ -57,22 +57,22 @@ public class StartWindow extends JFrame {
 					//DatabaseHelper.query7(1980,1990);
 					
 					//equal to zoodb output
-					//DatabaseHelper.query8("Microcomputing");
+					//DatabaseHelper.query8("ECHT");
 					
 					//equal to zoodb output
-					//DatabaseHelper.query9("Microcomputing");
+					//DatabaseHelper.query9("ECHT");
 
 					//equal to zoodb output
-					//DatabaseHelper.query10("Microcomputing");
+					//DatabaseHelper.query10("ECHT");
 					
 					//equal to zoodb output
-					//DatabaseHelper.query11("Microcomputing");
+					//DatabaseHelper.query11("ECHT");
 
 					//equal to zoodb output
 					//DatabaseHelper.query12();
 
 					//equal to zoodb output
-					//DatabaseHelper.query13("Robert Noel");
+					//DatabaseHelper.query13("Adi Shamir");
 					
 					//DatabaseHelper.query14(1980, 1990);
 
