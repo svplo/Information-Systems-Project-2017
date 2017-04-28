@@ -20,11 +20,7 @@ import org.basex.core.cmd.*;
 import org.basex.query.*;
 import org.basex.query.iter.*;
 import org.basex.query.value.item.*;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
