@@ -3,19 +3,19 @@ List of 532 authors that are also editor in the corresponding proceeding.
 Charles R. Weisbin
 E. P. Miles Jr.
 Robert M. Keller
-Pierre Deransart
 Jan Maluszynski
+Pierre Deransart
 Bernard Lorho
 John H. Williams
-Gerald J. Popek
-Jim Gray
-Klaus Lagally
-Brian Randell
 Anita K. Jones
-Michael J. Flynn
-Jerome H. Saltzer
-Hans-Rüdiger Wiehle
+Brian Randell
 Holger Opderbeck
+Jim Gray
+Gerald J. Popek
+Jerome H. Saltzer
+Klaus Lagally
+Michael J. Flynn
+Hans-Rüdiger Wiehle
 Sushil Jajodia
 Peter A. Ng
 C. V. Ramamoorthy
@@ -42,38 +42,38 @@ Robert Balzer
 Robert M. Akscyn
 Peter Schnupp
 Sigram Schindler
-Dirk Heger
 Werner Zorn
+Dirk Heger
 Nina Gerner
-Joachim Majus
 Otto Spaniol
+Joachim Majus
 Dieter Wall
 Walter Ameling
 Jörgen P. Foith
 Horst Bunke
-Geoff P. Mullery
-Jean-Pierre Ansart
 Mack W. Alford
-Leslie Lamport
-Günter Hommel
+Jean-Pierre Ansart
+Geoff P. Mullery
 Barbara Liskov
+Günter Hommel
+Leslie Lamport
 Fred B. Schneider
 Hans-Wilm Wippermann
-Otto Lange
 Wolfgang Händler
+Otto Lange
 Paul J. Kühn
-Johannes Retti
 Karl Leidlmair
+Johannes Retti
 Harald Trost
 Antonio Zampolli
 Nicoletta Calzolari
 C. J. van Rijsbergen
-Josef Herget
 Rainer Kuhlen
-Roland Traunmüller
-Herbert Fiedler
+Josef Herget
 Heinrich Reinermann
 Klaus Grimmer
+Herbert Fiedler
+Roland Traunmüller
 Klaus Lenk
 Irene Greif
 Herb Krasner
@@ -92,8 +92,8 @@ Kesav V. Nori
 C. E. Veni Madhavan
 Cornelis H. A. Koster
 J. E. L. Peck
-Edward K. Blum
 Manfred Paul
+Edward K. Blum
 Uta Schwatlo
 Gerhard Dirlich
 Christian Freksa
@@ -111,16 +111,16 @@ Theodore S. Papatheodorou
 Constantine D. Polychronopoulos
 Dieter Müller-Wichards
 Hans-Martin Wacker
-Gio Wiederhold
 Peter M. G. Apers
+Gio Wiederhold
 Paolo Atzeni
 Alfons A. M. Kuijk
 Wolfgang Straßer
 Richard J. Lipton
-Patrick C. Fischer
 Arnold L. Rosenberg
-Serge Abiteboul
+Patrick C. Fischer
 Hans-Jörg Schek
+Serge Abiteboul
 N. S. Sridharan
 Haran Boral
 David R. Ditzel
@@ -132,8 +132,8 @@ John L. McCarthy
 H. V. Jagadish
 Hermann Kopetz
 Jacques Calmet
-Donald E. Knuth
 Andrei P. Ershov
+Donald E. Knuth
 Martin Jourdan
 Susan L. Graham
 Charles E. Radke
@@ -146,27 +146,27 @@ Peter Buneman
 Ronald Morrison
 David W. Stemple
 Richard Hull
-Magdalena Zoeppritz
 Albrecht Blaser
+Magdalena Zoeppritz
 Joachim W. Schmidt
 Stefano Ceri
-Francesca Cesarini
 Silvio Salza
+Francesca Cesarini
 Jan A. Bergstra
-Klaus P. Jantke
 Wolfgang Bibel
+Klaus P. Jantke
 Jos C. M. Baeten
-Bernard Domanski
 Jason G. Shane
+Bernard Domanski
 John P. Pilch
 Sue Felix
-H. Pat Artis
 Sidney Finehirsh
+H. Pat Artis
 Alan M. Sherkow
+Carolyn Hanna
+Ellen M. Friedman
 J. William Mullen
 Jerry L. Rosenberg
-Ellen M. Friedman
-Carolyn Hanna
 John J. Grefenstette
 J. David Schaffer
 Norman K. Sondheimer
@@ -176,8 +176,8 @@ Corrado Böhm
 Peter Kornerup
 David W. Matula
 Alfred Z. Spector
-Stephen N. Zilles
 Michael L. Brodie
+Stephen N. Zilles
 Frans C. A. Groen
 Louis O. Hertzberger
 Olivier D. Faugeras
@@ -185,8 +185,8 @@ Keith D. Baker
 John P. Frisby
 Christopher J. Taylor
 Akinori Yonezawa
-Reiji Nakajima
 Taiichi Yuasa
+Reiji Nakajima
 Eiichi Goto
 Ehud Y. Shapiro
 Bruce W. Char
@@ -214,12 +214,12 @@ Giuseppe Iazeolla
 Jochen A. G. Jess
 Ronald Fagin
 Daniel J. Rosenkrantz
-Joachim Biskup
 Jan Paredaens
 Bernhard Thalheim
+Joachim Biskup
 János Demetrovics
-Umeshwar Dayal
 Klaus R. Dittrich
+Umeshwar Dayal
 Alan Dearle
 Gail M. Shaw
 Stanley B. Zdonik
@@ -242,13 +242,13 @@ G. Jack Lipovski
 Norbert A. Streitz
 Peter A. Gloor
 Andreas Reuter
-Mícheál Mac an Airchinnigh
 Cliff B. Jones
+Mícheál Mac an Airchinnigh
 Dines Bjørner
 Erich J. Neuhold
 Elöd Knuth
-Christian Benoît
 Gérard Bailly
+Christian Benoît
 Walter G. Kropatsch
 Karl Heinz Höhne
 Georg Hartmann
@@ -264,18 +264,18 @@ Alan T. Sherman
 Carl A. Sunshine
 Robert P. Blanc
 Günter Müller
+Yechiam Yemini
 Robert E. Strom
 Shaula Yemini
-Yechiam Yemini
-John Hughes
 Kei Davis
-Amir Pnueli
+John Hughes
 Behnam Banieqbal
 Howard Barringer
+Amir Pnueli
 Michael G. Main
 Glynn Winskel
-A. W. Roscoe
 Stephen D. Brookes
+A. W. Roscoe
 Lothar Budach
 R. K. Shyamasundar
 Hartmut Ehrig
@@ -291,9 +291,9 @@ Heinz Beilner
 Dietmar P. F. Möller
 Felix Breitenecker
 Manuel Goller
-Bernard Robinet
 Guy Cousineau
 Pierre-Louis Curien
+Bernard Robinet
 Irène Guessarian
 Kurt Mehlhorn
 Neil D. Jones
@@ -314,13 +314,13 @@ Elmar Holler
 Alwine Schmitt
 Bernhard Gollan
 Wolfgang J. Paul
-Heinz Schecher
 Werner Remmele
+Heinz Schecher
 Thomas Beth
 Laveen N. Kanal
 John F. Lemmer
-Ross D. Shachter
 Tod S. Levitt
+Ross D. Shachter
 Max Henrion
 Dan Diaper
 Dylan M. Jones
@@ -344,8 +344,8 @@ Werner Sammer
 Manfred Sommer
 Peter Stahlknecht
 Albert R. Meyer
-Ronald R. Yager
 Bernadette Bouchon-Meunier
+Ronald R. Yager
 Christoph Schlier
 Werner Geiger
 Bernd Page
@@ -353,10 +353,10 @@ Jean-Eric Pin
 Jörg H. Siekmann
 Colin Potts
 Colin Tully
-Takao Nishizeki
-Tetsuo Asano
-Toshihide Ibaraki
 Hiroshi Imai
+Takao Nishizeki
+Toshihide Ibaraki
+Tetsuo Asano
 Nobuji Saito
 Alain Poli
 Jean-Jacques Quisquater
@@ -373,9 +373,9 @@ Wolfgang Schröder-Preikschat
 Daniel E. Atkins
 James J. Pottmyer
 Elias M. Awad
-Per Svensson
 John C. Klensin
 Maurizio Rafanelli
+Per Svensson
 Gultekin Özsoyoglu
 Zbigniew Michalewicz
 Norman K. Meyrowitz
@@ -390,16 +390,16 @@ Andrzej Skowron
 Katharina Morik
 Philippe Jorrand
 Stéphane Kaplan
-Horst Herrlich
 Hans-Jörg Kreowski
+Horst Herrlich
 Gerhard Preuß
 Austin Melton
 Jeffrey M. Mohr
-George W. Dodson
 Connie U. Smith
+George W. Dodson
+K. S. R. Anjaneyulu
 S. Ramani
 Raman Chandrasekar
-K. S. R. Anjaneyulu
 Andrzej Tarlecki
 Per Martin-Löf
 Grigori Mints
@@ -409,26 +409,26 @@ Mamoru Maekawa
 Laszlo A. Belady
 Hristo Djidjev
 Bernd Radig
-Roland Glowinski
 Jacques-Louis Lions
+Roland Glowinski
 Willard L. Miranker
-Ulrich W. Kulisch
 Christian P. Ullrich
+Ulrich W. Kulisch
 J. A. van Hulzen
 Manfred Broy
 Horst Nowacki
 Jürgen Schönhut
-Fevzi Belli
 Manfred H. Seifert
 Silvia Pfleger
+Fevzi Belli
 Richard Cooper
 Raymund Carrick
 John Rosenberg
 V. A. Nepomniaschy
 J. Michael Galey
-Josef Krems
 Gerhard Heyer
 Günther Görz
+Josef Krems
 Henry Lieberman
 Jürgen Krause
 Burkhard Schaeder
@@ -439,8 +439,8 @@ Ernst E. Triendl
 Karl Nickel
 Gérard Roucairol
 Ursula Linder-Kostka
-Helmut Balzert
 Rainer Lutze
+Helmut Balzert
 D. Swiderski
 Rüdiger Dillmann
 Ulrich Rembold
@@ -448,24 +448,24 @@ Hans-Jörg Bullinger
 Gavriel Salvendy
 Steven L. Sauter
 Joseph J. Hurrell Jr.
-John B. Smith
 Frank G. Halasz
+John B. Smith
 Fred Long
 Reiner Creutzburg
 Mario Lucertini
 Georg Gottlob
 Wolfgang Nejdl
-Johan de Kleer
 Erik Sandewall
 Matthew L. Ginsberg
+Johan de Kleer
 Rohit Parikh
 Mark Green
-Jean-Paul Laumond
 Jean-Daniel Boissonnat
+Jean-Paul Laumond
 Vincent Hayward
 Oussama Khatib
-Gérard D. Cohen
 Jacques Wolfmann
+Gérard D. Cohen
 Philippe Godlewski
 Dietrich Meyer-Ebrecht
 Hans-Otto Leilich
@@ -479,10 +479,10 @@ Mireille Ducassé
 Ross A. Gagliano
 Stephen M. Pizer
 Paul Messina
-Melvin R. Scott
-Eugene D. Denman
 Bart Childs
+Melvin R. Scott
 James W. Daniel
+Eugene D. Denman
 Paul Nelson
 Arie Hordijk
 David Maier
@@ -497,13 +497,13 @@ Roberto Moreno-Díaz
 Chris Langton
 Josef Pieprzyk
 Jennifer Seberry
-Olga Stepánková
 Vladimír Marík
 Zdenek Zdráhal
+Olga Stepánková
 Georg Dorffner
-Thomas R. G. Green
-Michael J. Tauber
 Gerrit C. van der Veer
+Michael J. Tauber
+Thomas R. G. Green
 Peter Gorny
 David Hutchison
 Maurice Gross

@@ -1,43 +1,33 @@
 Query 11
-List of all Publications at the conference Microcomputing:
-Gleitkomma-Arithmetik-Einheit für ein Mikroprozessor-System.
-MPS - Eine variable Mikroprogrammiersprache.
-Modulkonzept und separate Compilation in der Programmiersprache MODULA-2.
-Entwicklung von µ-Prozessor Software und µ-Prozessor orientierter Hardware mit Hilfe des CAP-CAD-Systems.
-Implementierung eines Microcomputer-Mehrrechnersystems.
-Hard- und Software-Struktur eines Mikrorechnernetzes zur Betriebsdatenerfassung.
-Entwurf von Selbsttestprogrammen für Mikrocomputer.
-Mechanisierte Herstellung von Cross-Assemblern mit Assemblergenerator.
-Entwurf eines Parallelrechners mit sehr vielen Mikroprozessoren.
-A Personal Computer Designed for Use with a High-Level Language.
-Cost Effectiveness Aspects of a Distributed Multi-Microcomputer System.
-Halbautomatische Berichterstellung und Datenerfassung am Beispiel von Berichten über chirurgische Eingriffe im Klinkum rechts der Isar mit Hilfe eines Mikrorechnersystem.
-Design of 8086-Based Building Blocks of a Multi-Microprocessor Special Purpose System Kit.
-Ein intelligentes HDLC-Interface.
-RSL - Ein Multimikroprozessorrechner.
-Bitslice-Mikroprozessoren und Monoprozessorstrukturen.
-Digital Systems Design with Nets: An Example.
-Ein vollständiger Selbsttest eines Mikrorechner-Testkerns.
-Communication and Testing in a Loosely Coupled Multi Microcomputer System.
-Eine Architektur zur Interpretation abstrakter Maschinenbefehle auf der Basis von 4-Bit-Slice Mikroprozessoren.
-Entwicklungsumgebungen für die Rechnerentwicklung - Übersicht und eigene Arbeiten.
-Entwurf und Prüfung sicherer Rechnersysteme.
-A New Homogeneous Microprogrammable Computer Architecture.
-A Front End Development Tool for the PC.
-Erfahrungen bei der Entwicklung eines portablen Betriebssystems für ein Multimikroprozessorsystem.
-Ein leistungsfähiger Netzwerkcontroller für Datenübertragungsraten bis 1 MBIT/S.
-Schlüsseltechnologie Mikroelektronik - Schlüssel wozu.
-Mikroelektronik-Applikationen.
-Notification in Multiprocessors: A Case Study Towards Balanced Hardware/Software Design.
-H o M u K Ein hochgradig spezialisierbarer Homogener Multiprozessor-Kern mit einer neuen Dimension des Datenaustausches.
-VLSI-kompatible Architektur eines Multiprozessorsystems für die Prozeßrechentechnik.
-Mikroprozessorgesteuerte Speicherkarte im Scheckkarten-Format.
-Programmlauf-Überwachung durch Echtzeit-Betriebssystem.
-Softwarekonzepte des fehlertoleranten Arbeitsplatzrechners ATTEMPTO.
-Entwicklung einer schnellen Fehlerkorrekturschaltung mittels mikroprogrammierbarem Bitsclice-Prozessor unter Verwendung von binären BCH-Codes.
-Welche Anwendungsmerkmale implizieren welchen Mikroprozessor-Eigenschaften?
-Lokale Netze: Alternativen, Kopplung, Marktchancen, Akzeptanz.
-Realisierung schneller numerischer Steuerungen unter Verwendung von Bitsclice-Prozessoren.
-MICROPOWER/PASCAL Neue Software-Technologie für Mikrorechner.
-Ein Mikrocomputer-System zum Schalten der Leitdrähte von induktiv geführten, automatischen Hochregalstaplern.
-Die IEC-Bus-Version des Mikrorechnernetzwerks LABORINTH: Architektur und Protokolle.
+List of all Publications at the conference ECHT:
+Scenario-Based Hypermedia: A Model and a System.
+PHIDIAS: Integrating CAD Graphics into Dynamic Hypertext.
+Inside Macintosh as Hypertext.
+Assessing the Quality of Hypertext Documents.
+What's Specific about User-Interfaces for Hypertext Systems? (Panel).
+An Integrated Approach of Knowledge Acquisition by the Hypertext System CONCORDE.
+SaTellite: Hypermedia Navigation by Affinity.
+A Logical Query Language for Hypertext Systems.
+Hypertext from the Data Point of View: Paths and Links in the Perseus Project.
+Hyperindices: A Novel Aid for Searching in Hypermedia.
+Hypertext and Information Retrieval: What are the Fundamental Concepts? (Panel).
+The Toolkit Approach to Hypermedia.
+Interactive Text Processing by Inexperienced (Hyper-) Readers.
+Strategic Issues in European Hypertext Research and Development (Panel).
+Hierarchy, Composition, Scripting Languages, and Translators for Structured Hypertext.
+Links and Structures in Hypertext Databases for Law.
+HyperBase: A Hypermedia Engine Based on a Relational Database Management System.
+MICROCOSM: An Open Model for Hypermedia with Dynamic Linking.
+Towards an Aesthetics of Hypertext Systems. A Semiotic Approach.
+How Should Hypermedia Authoring Systems for Computer Aided Instruction Look Like? (Panel).
+Author's Argumentation Assistant (AAA): A Hypertext-Based Authoring Tool for Argumentative Texts.
+The Advantages of Hypertext for Large Information Spaces; Where Are the Big Systems? (Panel).
+Hypertext and Electronic Publishing (Panel).
+Non-Intrusive Hypertext Anchors and Individual Colour Markings.
+An Apprentice That Discovers Hypertext Links.
+Browsing in Hyperdocuments with the Assistance of a Neural Network.
+A Model for Hypertext-Based Information Retrieval.
+Building Hypertext on a Multimedia Toolkit: An Overview of Andrew Toolkit Hypermedia Facilities.
+A Hypertext Model Supporting Query Mechanisms.
+Linking Considered Harmful.
+Intelligent Hypertext for Normative Knowledge in Engineering.

@@ -1,3 +1,38 @@
 Query 13
-List of 1 in proceeding(s) where Robert Noel was listed as last author.
-Computer-based courses(Panel Discussion).
+List of 36 in proceeding(s) where Adi Shamir was listed as last author.
+A T S^2 = O(2^n) Time/Space Tradeoff for Certain NP-Complete Problems
+An Optimal Sorting Algorithm for Mesh Connected Computers
+An Efficient Identification Scheme Based on Permuted Kernels (Extended Abstract).
+Zero Knowledge Proofs of Knowledge in Two Rounds.
+On Dice and Coins: Models of Computation for Random Generation.
+Efficient Signature Schemes Based on Polynomial Equations.
+An Efficient Signature Scheme Based on Quadratic Equations
+On the Cryptographic Security of Single RSA Bits
+Identity-Based Cryptosystems and Signature Schemes.
+Shear Sort: A True Two-Dimensional Sorting Techniques for VLSI Networks.
+A Polynomial Time Algorithm for Breaking the Basic Merkle-Hellman Cryptosystem
+On the Power of Commutativity in Cryptography.
+IP=PSPACE
+Publicly Verifiable Non-Interactive Zero-Knowledge Proofs.
+Multiple Non-Interactive Zero Knowledge Proofs Based on a Single Random String (Extended Abstract)
+Efficient Factoring Based on Partial Information.
+An Improvement of the Fiat-Shamir Identification and Signature Scheme.
+On the Generation of Cryptographically Strong Pseudo-Random Sequences.
+A Video Scrambling Technique Based On Space Filling Curves.
+On the Complexity of Timetable and Multi-Commodity Flow Problems
+The Cryptographic Security of Compact Knapsacks (Preliminary Report).
+The Generation of Cryptographically Strong Pseudo-Random Sequences.
+The Optimal Fixedpoint of Recursive Programs
+How to Reuse a "Write-Once" Memory (Preliminary Version).
+On the Security of Ping-Pong Protocols when Implemented using the RSA.
+The Discrete Log is Very Discreet
+Multi-Oracle Interactive Protocols with Space Bounded Verifiers.
+Zero Knowledge Proofs of Identity
+Witness Indistinguishable and Witness Hiding Protocols
+Differential Cryptanalysis of DES-like Cryptosystems.
+On the Cryptocomplexity of Knapsack Systems
+A Polynomial Time Algorithm for Breaking the Basic Merkle-Hellman Cryptosystem.
+Polymorphic Arrays: A Novel VLSI Layout for Systolic Computers
+How to Prove Yourself: Practical Solutions to Identification and Signature Problems.
+On the Security of DES.
+The Cryptographic Security of Truncated Linearly Related Variables

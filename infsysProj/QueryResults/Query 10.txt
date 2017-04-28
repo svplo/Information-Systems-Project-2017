@@ -1,76 +1,86 @@
 Query 10
-List of all authors and editors at the conference Microcomputing:
-
-Authors:
-P. Levi
-Mario Dal Cin
-Otto Spaniol
-R. Brause
-Yeung-Cho Ip
-Andreas Reber
-Hans Wojtkowiak
-Erik Maehle
-Werner Remmele
-Alexander Gerybadze
-Heinrich Krebs
-Andreas Merkel
-Peter G. Cazacu
-Wilhelm F. Bürger
-Elmar Dilger
-Wolfgang Wenderoth
-H.-W. Büdenbender
-V. Sigmund
-Heinrich Dietsch
-Monika Gonauser
-Sven-Axel Nilsson
-Peter Meinen
-E. Ammann
-H. J. Schuh
-Hans-Georg Mitscherlich
-M. Göbel
-Ernst Piller
-Ewald von Puttkamer
-J. Lutz
-T. Norgall
-Thomas Risse
-Werner Konrad
-Josef Schöffel
-Bernhard Quatember
-Arndt Bode
-Erika Mühlmann
-Rolf Strothmann
-A. Sauer
-Rudolf Thurmayr
-H. Reiß
-A. Schuler
-R. Nägele
-Franz Dernoschek
-Helmar Burkhart
-Hans-Jürgen Appelrath
-D. Krömker
-Alberto Giordano
-Victor Cherniavsky
-Heinz Schecher
-P. Groß
-Peter Albrich
-Raul Camposano
-Franz J. Rammig
-H. Anlauff
-R. Lindner
-Zeljko Stojadinovic
-Leo Geissmann
-Peter Fischer
-Anton Sauer
-H. Bittner
-M. Smoliner
-H. Schreiber
-Manfred Czerwinski
-H. Broer
-Rudolf Kober
-Niklaus Wirth
-E. Reiß
-Olaf Kaestner
-
-Editors:
-Heinz Schecher
-Werner Remmele
+List of all authors and editors at the conference ECHT:
+Brian L. Bechtel
+Yoram Kornatzky
+Frédérique Biennier
+Laurence A. Welsch
+Wolfgang J. Irler
+Wolfgang Schuler
+Nathan F. Wallace
+Horst Langendörfer
+Frank M. Shipman III
+Hugh C. Davis
+Jacqueline Covo
+Peter S. D'Oronzio
+Werther G. Krause
+J. André
+Wendy Hall
+Antoine Rizk
+Gerald C. Nelson
+G. Degli Antoni
+Max Mühlhäuser
+Heather Brown
+Patricia Wright
+Michael R. Kibby
+Dennis Tsichritzis
+Daniel M. Russell
+Renee Deter
+John B. Smith
+Uwe Schreiweis
+Ray McAleese
+Michael McInerny
+Ian Heath
+Laura De Young
+W. Bruce Croft
+Elli Mylonas
+Peter Bøgh Andersen
+Flavio Argentesi
+Mark Sherman
+Mark Bernstein
+Marie-France Bruandet
+Patrick R. Bennett
+Peter A. Gloor
+Wilfred J. Hansen
+Michel Guivarch
+Randall H. Trigg
+Richard Furuta
+Eve Wilson
+Thomas P. Neuendorffer
+Roberto Minio
+R. Hansen
+Norbert A. Streitz
+Rainer Kuhlen
+Helge Schütt
+Jean-Marie Pinon
+Vincent Quint
+Ben Shneiderman
+Hiroaki Harada
+Sebastian Heath
+N. M. Guimaraes
+Dario Lucarella
+Janet H. Walker
+A. Cicu
+Raymond McCall
+Ryuichi Ogawa
+Ian Williams
+Peter Bruza
+Bruno Feijó
+Xavier Pintado
+John A. Waterworth
+Asao Kaneko
+P. David Stotts
+Catriel Beeri
+Nicholas J. Belkin
+Steven R. Newcomb
+Jonathan L. Ostwald
+Daniel Schwabe
+Martin Hofmann 0002
+Peter J. Brown
+Andrew M. Fountain
+Foto N. Afrati
+Patricia Baird
+Gilberto Barbieri
+J. J. Puttress
+Constantinos D. Koutras
+Roy Rada
+Jean-François Rouet

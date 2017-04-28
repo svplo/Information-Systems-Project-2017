@@ -1,72 +1,84 @@
 Query 14
-List of publishers of proceedings whose authors appear in any in proceedings which were published between 1989 and 1990.
-Technische Universität Clausthal
-Association for Information Systems
-AFIPS / Spartan Books / ACM
-ER Institute
-Elsevier
-AFIPS Press/ACM
-Prentice-Hall
-Plenum Press, New York
-The Association for Computer Linguistics
-AFIPS / ACM / Spartan Books, Washington D.C.
-ACM
-Lawrence Erlbaum Associates
-BMVA Press
-AFIPS / ACM
-ARPA
-U. C. Santa Barbara, Dept. of Elec. and Computer Eng., ECE Report No 82-04
-Université de Lille 1
-ACM/MIT
-Knowledge Systems Institute
-Institut für angewandte Kommunikations- und Sprachforschung e.V. (IKS), Poppelsdorfer Allee 47, Bonn, Germany
-Uppsala University
-University of Glasgow and St. Andrew's
-Springer
-AFIPS Press
-ISCA
-IEEE Computer Society
-Pitman and Morgan Kaufman Publishers
-ACM/IEEE
-Trauner, Linz
-Georg Olms Verlag
-North-Holland/Elsevier Science Publishers
-SIAM
-IEEE Computer Society and North-Holland
-Benjamin/Cummings
-AAAI Press/MIT Press
-AFIPS
+List of publishers of proceedings whose authors appear in any in proceedings which were published between 1980 and 1990.
 Teubner
-ACM Press
-AFIPS / ACM / Thomson Book Company, Washington D.C.
-IEEE Computer Society Press
-Hanser, Munich
-Kansas State University
-USENIX Association
-Alvey Vision Club
-Plemum Press
 AAAI
-Hochschulverband für Informationswissenschaft
-Mathematical Institute of the Slovak Academy of Sciences
-AFCET
 MIT Press
-ACM Press / Addison-Wesley
-Thomson Book Company, Washington D.C.
+The Association for Computer Linguistics
+ACM Press
+SIAM
+Plenum Press, New York
+AFCET
 IEEE
+Georg Olms Verlag
+ER Institute
+VDE Verlag
+ACM/MIT
+Prentice-Hall
+BMVA Press
+Uppsala University
+ACM Press / Addison-Wesley
+Lawrence Berkeley Laboratory
+CID
+Association for Information Systems
+ACM/IEEE
+Pitman and Morgan Kaufman Publishers
+ISCA
+AFIPS Press/ACM
+Alvey Vision Club
+Springer
+Cambridge University Press
+North-Holland
 John von Neumann Society for Computing Sciences, Budapest
  IFIP
-
-William Kaufmann
-INRIA
+IEEE Computer Society Press
+Lawrence Erlbaum Associates
+John Wiley
+IEEE Computer Society / North-Holland
+AFIPS / ACM / Spartan Books, Washington D.C.
+IOS Press
 Computer Measurement Group
-ACADEMIA, Publishing House of the Czechoslovak Academy of Sciences
-Morgan Kaufmann
-Cambridge University Press, on behalf of the British Computer Society (copyright by British Informatics Society Ltd, a subsidiary of the British Computer Society)
-Pennsylvania State University Press
+Plemum Press
+Knowledge Systems Institute
+ACM
+AFIPS / Spartan Books / ACM
+Clarendon Press
+Thomson Book Company, Washington D.C.
+Kansas State University
 IEEE-CS
-ACL
-North-Holland
+Addison-Wesley
+AFIPS / ACM
+U. C. Santa Barbara, Dept. of Elec. and Computer Eng., ECE Report No 82-04
+Mathematical Institute of the Slovak Academy of Sciences
+ARPA
+ADDP-GIA
+Verlag für Ausbildung und Studium, VAS in der Elefanten Press
 USENIX
-VDE Verlag
-MITRE Corporation Press
+IEEE Computer Society
+University of Glasgow and St. Andrew's
+Hochschulverband für Informationswissenschaft
+AFIPS Press
+Benjamin/Cummings
+Cambridge University Press, on behalf of the British Computer Society (copyright by British Informatics Society Ltd, a subsidiary of the British Computer Society)
+
+IEEE Computer Society and North-Holland
+USENIX Association
+North-Holland/Elsevier Science Publishers
+AFIPS / ACM / Thomson Book Company, Washington D.C.
+Elsevier
+INRIA
+Université de Lille 1
+Trauner, Linz
+ACL
+Pennsylvania State University Press
 AAAI Press
+AFIPS
+Hanser, Munich
+Technische Universität Clausthal
+MITRE Corporation Press
+William Kaufmann
+North-Holland / Elsevier
+AAAI Press/MIT Press
+Institut für angewandte Kommunikations- und Sprachforschung e.V. (IKS), Poppelsdorfer Allee 47, Bonn, Germany
+Morgan Kaufmann
+ACADEMIA, Publishing House of the Czechoslovak Academy of Sciences
+AAAI Press / The MIT Press

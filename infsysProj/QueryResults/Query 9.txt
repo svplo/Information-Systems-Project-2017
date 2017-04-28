@@ -1,2 +1,2 @@
 Query 9
-Number of authors and editors at the conference Microcomputing was 70.
+Number of authors and editors at the conference ECHT was 84.
