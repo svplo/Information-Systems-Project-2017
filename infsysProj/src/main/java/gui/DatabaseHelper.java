@@ -946,16 +946,23 @@ public class DatabaseHelper {
 		connectToDB();
 		String thisQuery = "Query 9";
 
-		String queryAuth = "count (for $x in /root/inproceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/author)";
+		String queryAuth = "for $x in /root/inproceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/author/text()";
 		List<String> resAuth = myQuery(queryAuth);
-		String queryEdit = "count(for $x in /root/proceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/editor)";
+		HashSet<String> result =new HashSet<String>();
+		for (String s : resAuth){
+			result.add(s);
+		}
+		String queryEdit = "for $x in /root/proceedings where contains($x/booktitle, \"" + escape(confName) + "\") return $x/editor/text()";
 		List<String> resEdit = myQuery(queryEdit);
-		int result = Integer.valueOf(resEdit.get(0)) + Integer.valueOf(resAuth.get(0));
+		for (String s : resEdit){
+			result.add(s);
+		}
+		int res = result.size();
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			writer.println("Number of authors and editors: " + result);
+			writer.println("Number of authors and editors: " + res);
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
@@ -1023,50 +1030,74 @@ public class DatabaseHelper {
 
 	public static void query12() throws ParserConfigurationException, SAXException, IOException {
 		String thisQuery = "Query 12";
-		List<String> resultList = new ArrayList<String>();
+		HashSet<String> resultList = new HashSet<String>();
 		connectToDB();
 		
 		//crossref is the foreign key in InProceedings to Proceedings (key)
-		String queryPub = "for $x in /root/inproceedings,"
+/*		String queryPub = "for $x in /root/inproceedings,"
 				+ "$y in /root/proceedings[@key = $x/crossref]"
 				+ "return <item procAuthor=\"{$y/editor}\" inAuthor=\"{$x/author}\"/>";
 		List<String> resPub = myQuery(queryPub);
+*/
 //example output: F. Ron Bailey
-				//inAuthor="Ramesh C. Agarwal Fred G. Gustavson"
-		//TODO parse output, i.e. check if there are matching authors
-		Iterator<String> itr = resPub.iterator();
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-
-		while (itr.hasNext()){
-			org.w3c.dom.Document document = builder.parse(new InputSource(new StringReader(itr.next())));
+//inAuthor="Ramesh C. Agarwal Fred G. Gustavson"
+		
+		String queryInProc = "for $x in /root/proceedings return <item key=\"{$x/@key}\" editor=\"{$x/editor/text()}\"/>";
+		List<String> resInProc = myQuery(queryInProc);
+		Iterator<String> inProcItr = resInProc.iterator();
+		while(inProcItr.hasNext()){
+			//String inProc = inProcItr.next();
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			org.w3c.dom.Document document = builder.parse(new InputSource(new StringReader(inProcItr.next())));
 			Element rootElement = document.getDocumentElement();
-			System.out.println(rootElement.getAttribute("procAuthor"));
-			System.out.println(rootElement.getAttributeNode("inAuthor"));
+			String crossref = rootElement.getAttribute("key");
+			if(crossref.equals("") || crossref == null){
+				//System.out.println("continue");
+				continue;
+			}
+			// Expecting separator after number.
+			String queryProc = "for $x in /root/inproceedings where $x/crossref=\""+ escape(crossref) +"\" return $x/author/text()";
+			List<String> resProc = myQuery(queryProc);
+			Iterator<String> procItr = resProc.iterator();
+			while(procItr.hasNext()){
+				String author = procItr.next();
+				//System.out.println(author);
+				//System.out.println(rootElement.getAttributeNode("editor"));
+				//example output 
+					//G. Spettel
+					//editor="Ursula Klenk Peter Scherber Manfred Thaller" 
+				if((rootElement.getAttributeNode("editor")).toString().contains(author.replaceAll("editor=", "").replaceAll("\"", ""))){
+					resultList.add(author);
+				}
+			}
 		}
 
 		try {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
-			//writer.println("List of all " + resultList.size() + " authors that occur as editor in Proceeding as well as in InProceeding as and author:");
+			writer.println("List of all " + resultList.size() + " authors that occur as editor in Proceeding as well as in InProceeding as and author:");
+			for(String s : resultList){
+				writer.println(s);
+			}
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");
 		}
-
-		closeConnectionDB();
-
+		closeConnectionDB();		
 	}
 
 	// all publications, where given author is mentioned last
-	public static void query13(String author) {
+	public static void query13(String author) throws Exception {
 		int count = 0;
 		String thisQuery = "Query 13";
 		connectToDB();
 
+		HashSet<String> result = new HashSet<String>();
 		String queryPub = "for $x in /root/inproceedings/author where contains($x, \"" + escape(author) + "\") return <item title=\"{$x/../title}\" authors=\"{$x/../author/text()}\"/>";
 		List<String> resPub = myQuery(queryPub);
-		System.out.println(resPub.size());
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
 		for(int i = 0; i < resPub.size(); i++){
 			//examples outputs for Adi Shadmir
 			//<item title="Polymorphic Arrays: An Architecture for a Programmable Systolic Machine." authors="Amos Fiat Adi Shamir Ehud Y. Shapiro"/>
@@ -1076,6 +1107,9 @@ public class DatabaseHelper {
 			String subStr = curr.substring(curr.length()-author.length()-3);
 			if(subStr.contains(author)){
 				count++;
+				org.w3c.dom.Document document = builder.parse(new InputSource(new StringReader(resPub.get(i))));
+				Element rootElement = document.getDocumentElement();
+				result.add(rootElement.getAttribute("title"));
 			}
 		}
 		
@@ -1083,6 +1117,9 @@ public class DatabaseHelper {
 			PrintWriter writer = new PrintWriter("QueryResults/" + thisQuery + ".txt", "UTF-8");
 			writer.println(thisQuery);
 			writer.println("The number of publications where the author named " + author + " is mentioned last is " + count + ".");
+			for(String s : result){
+				writer.println(s);
+			}
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Could not print to file.");

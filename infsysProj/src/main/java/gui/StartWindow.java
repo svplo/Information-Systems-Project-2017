@@ -5,12 +5,16 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 //resource: https://www.eduonix.com/blog/java-programming-2/learn-to-create-multiple-frames-java/
 public class StartWindow extends JFrame {
@@ -195,7 +199,7 @@ public class StartWindow extends JFrame {
 				//DatabaseHelper.query3("expert system", 0, 3);
 				
 				//equal to zoodb output
-				//DatabaseHelper.query4("Thomas H. Hinke");
+				//DatabaseHelper.query4("William D. Young");
 				
 				//equal to zoodb output
 				//DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
@@ -238,8 +242,13 @@ public class StartWindow extends JFrame {
 				}
 */
 				//equal to zoodb output
-				//DatabaseHelper.query13("Adi Shamir");
-				
+/*				try {
+					DatabaseHelper.query13("Adi Shamir");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+*/				
 				//DatabaseHelper.query14(1980, 1990);
 
 			}
