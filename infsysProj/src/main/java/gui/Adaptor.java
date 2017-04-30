@@ -108,6 +108,10 @@ public class Adaptor {
 				value = n.children().next().serialize().toString();
 				o.getClass().getMethod("setPages", String.class).invoke(o, value);
 				break;
+			case "publisherName":
+				value = n.children().next().serialize().toString();
+				o.getClass().getMethod("setName", String.class).invoke(o, value);
+				break;
 			case "booktitle":
 				value = n.children().next().serialize().toString();
 				Conference conf = new Conference();

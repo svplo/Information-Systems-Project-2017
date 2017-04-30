@@ -217,7 +217,7 @@ public class DatabaseHelper {
 	public static List<Publisher> getAllPublisher() {
 		connectToDB();
 
-		String query = "for $x in distinct-values(root/proceedings/publisher)    order by $x    return <publisher>{$x}</publisher>";
+		String query = "for $x in distinct-values(root/proceedings/publisher)    order by $x    return <publisherName>{$x}</publisherName>";
 		List<Publisher> result = (List<Publisher>) (List<?>) myQuery(query, Publisher.class);
 
 		closeConnectionDB();
@@ -378,7 +378,7 @@ public class DatabaseHelper {
 
 	public static List<Conference> searchForConference(String search) {
 		connectToDB();
-		String query = "for $x in distinct-values(root/proceedings/booktitle) where contains($x,\"" + escape(search) + "\" ) return <publisher>{$x}</publisher>";
+		String query = "for $x in distinct-values(root/proceedings/booktitle) where contains($x,\"" + escape(search) + "\" ) return <name>{$x}</name>";
 		List<Conference> result = (List<Conference>) (List<?>) myQuery(query, Conference.class);
 		for (Conference conf : result) {
 			query = "count(/root/proceedings[booktitle = \"" + conf.getName().replaceAll("\"", "'") + "\"])";
@@ -412,13 +412,12 @@ public class DatabaseHelper {
 
 		List<ConferenceEdition> result = new ArrayList<ConferenceEdition>();
 		for (Publication p : proceedings) {
-			ConferenceEdition e = new ConferenceEdition();
-			e.setYear(p.getYear());
-			e.setProceedings((Proceedings) p);
-			Conference conf = new Conference();
-			conf.setName(getConferenceEditionName(e));
-			e.setConference(conf);
-			result.add(e);
+			ConferenceEdition e = ((Proceedings) p).getConferenceEdition();
+			if(!(e == null)){
+				e.setYear(p.getYear());
+				e.setProceedings((Proceedings) p);
+				result.add(e);
+			}
 		}
 		return result;
 
@@ -427,7 +426,7 @@ public class DatabaseHelper {
 	public static List<Publisher> searchForPublisher(String search) {
 		connectToDB();
 
-		String query = "for $x in distinct-values(root/proceedings/publisher) where contains($x,\"" + escape(search) + "\" ) return <publisher>{$x}</publisher>";
+		String query = "for $x in distinct-values(root/proceedings/publisher) where contains($x,\"" + escape(search) + "\" ) return <publisherName>{$x}</publisherName>";
 		List<Publisher> result = (List<Publisher>) (List<?>) myQuery(query, Publisher.class);
 
 		closeConnectionDB();
