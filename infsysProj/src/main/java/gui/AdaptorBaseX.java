@@ -18,7 +18,7 @@ import infsysProj.infsysProj.Proceedings;
 import infsysProj.infsysProj.Publisher;
 import infsysProj.infsysProj.Series;
 
-public class Adaptor {
+public class AdaptorBaseX {
 
 	public static DomainObject toJava(Item n, Class<? extends DomainObject> c) {
 

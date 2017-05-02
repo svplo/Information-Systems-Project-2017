@@ -47,7 +47,7 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 			Iter iter = proc.iter();
 			// Iterate through all items and serialize
 			for (Item item; (item = iter.next()) != null;) {
-				DomainObject obj = Adaptor.toJava(item, c);
+				DomainObject obj = AdaptorBaseX.toJava(item, c);
 				result.add(obj);
 
 			}

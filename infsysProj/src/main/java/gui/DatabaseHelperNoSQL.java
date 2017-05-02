@@ -74,8 +74,16 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	public void closeConnectionDB() {
 		mongoClient.close();
 	}
+	
+	public void createDB(){
+		connectToDB();
+		mongoClient.dropDatabase(dbStandardName);
+		closeConnectionDB();
+		XMLParserNoSQL xmlparser = new XMLParserNoSQL();
+		xmlparser.parse();
+	}
 
-	public void createDB() {
+	public void createDBintern() {
 		// database will be created automatically if it does not exist
 		database = mongoClient.getDatabase(dbStandardName);
 	}
@@ -88,7 +96,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<Publication> getAllProceedings() {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Proceedings");
 		List<Publication> result = new ArrayList<Publication>();
@@ -97,7 +105,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		iterable.forEach(new Block<Document>() {
 			@Override
 			public void apply(final Document document) {
-				result.add(Adaptor.toProceeding(document));
+				result.add(AdaptorNoSQL.toProceeding(document));
 			}
 		});
 
@@ -107,7 +115,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<Person> getAllPeople() {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Person");
 		List<Person> result = new ArrayList<Person>();
@@ -116,7 +124,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		iterable.forEach(new Block<Document>() {
 			@Override
 			public void apply(final Document document) {
-				result.add(Adaptor.toPerson(document));
+				result.add(AdaptorNoSQL.toPerson(document));
 			}
 		});
 
@@ -126,7 +134,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<Conference> getAllConference() {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Conference");
 		List<Conference> result = new ArrayList<Conference>();
@@ -135,7 +143,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		iterable.forEach(new Block<Document>() {
 			@Override
 			public void apply(final Document document) {
-				result.add(Adaptor.toConference(document));
+				result.add(AdaptorNoSQL.toConference(document));
 			}
 		});
 
@@ -145,7 +153,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<Series> getAllSeries() {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Series");
 		List<Series> result = new ArrayList<Series>();
@@ -154,7 +162,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		iterable.forEach(new Block<Document>() {
 			@Override
 			public void apply(final Document document) {
-				result.add(Adaptor.toSeries(document));
+				result.add(AdaptorNoSQL.toSeries(document));
 			}
 		});
 
@@ -164,7 +172,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<Publisher> getAllPublisher() {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Publisher");
 		List<Publisher> result = new ArrayList<Publisher>();
@@ -173,7 +181,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		iterable.forEach(new Block<Document>() {
 			@Override
 			public void apply(final Document document) {
-				result.add(Adaptor.toPublisher(document));
+				result.add(AdaptorNoSQL.toPublisher(document));
 			}
 		});
 
@@ -183,7 +191,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<ConferenceEdition> getAllConferenceEdition() {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("ConferenceEdition");
 		List<ConferenceEdition> result = new ArrayList<ConferenceEdition>();
@@ -192,7 +200,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		iterable.forEach(new Block<Document>() {
 			@Override
 			public void apply(final Document document) {
-				result.add(Adaptor.toConferenceEdition(document));
+				result.add(AdaptorNoSQL.toConferenceEdition(document));
 			}
 		});
 
@@ -201,92 +209,92 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	}
 
 	public String getPublisherName(String proceedingName) {
-		DatabaseHelper.connectToDB();
+		connectToDB();
 
-		DatabaseHelper.closeConnectionDB();
+		closeConnectionDB();
 		return "";
 	}
 
 	public String getSeriesName(String proceedingName) {
-		DatabaseHelper.connectToDB();
+		connectToDB();
 
-		DatabaseHelper.closeConnectionDB();
+		closeConnectionDB();
 		return "";
 	}
 
 	public String getConferenceName(String proceedingName) {
-		DatabaseHelper.connectToDB();
-		DatabaseHelper.createDB();
+		connectToDB();
+		createDBintern();
 		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
-		Proceedings proc = Adaptor.toProceeding(cursor.next());
+		Proceedings proc = AdaptorNoSQL.toProceeding(cursor.next());
 		
 		cursor = myQuery("ConferenceEdition", "_id", proc.getConferenceEdition().getId());
-		ConferenceEdition confE = Adaptor.toConferenceEdition(cursor.next());
+		ConferenceEdition confE = AdaptorNoSQL.toConferenceEdition(cursor.next());
 		
 		cursor = myQuery("Conference", "_id", confE.getConference().getId());
-		Conference conf = Adaptor.toConference(cursor.next());
+		Conference conf = AdaptorNoSQL.toConference(cursor.next());
 		
 
-		DatabaseHelper.closeConnectionDB();
+		closeConnectionDB();
 		return conf.getName();
 	}
 
 	public String getConferenceEditionName(ConferenceEdition edition) {
-		DatabaseHelper.connectToDB();
-		DatabaseHelper.createDB();
+		connectToDB();
+		createDBintern();
 		
 		
 		Iterator<Document> cursor = myQuery("Conference", "_id", edition.getConference().getId());
-		Conference conf = Adaptor.toConference(cursor.next());
+		Conference conf = AdaptorNoSQL.toConference(cursor.next());
 		
 		
-		DatabaseHelper.closeConnectionDB();
+		closeConnectionDB();
 		return conf.getName();
 	}
 
 	public String getConferenceEditionProceeding(ConferenceEdition edition) {
-		DatabaseHelper.connectToDB();
-		DatabaseHelper.createDB();
+		connectToDB();
+		createDBintern();
 		
 		
 		Iterator<Document> cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
-		Proceedings proc = Adaptor.toProceeding(cursor.next());
+		Proceedings proc = AdaptorNoSQL.toProceeding(cursor.next());
 		
 		
-		DatabaseHelper.closeConnectionDB();
+		closeConnectionDB();
 		return proc.getTitle();
 	}
 
 	public String getConferenceYear(String proceedingName) {
-		DatabaseHelper.connectToDB();
-		DatabaseHelper.createDB();
+		connectToDB();
+		createDBintern();
 		
 		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
-		Proceedings proc = Adaptor.toProceeding(cursor.next());
+		Proceedings proc = AdaptorNoSQL.toProceeding(cursor.next());
 		
 		cursor = myQuery("ConferenceEdition", "_id", proc.getConferenceEdition().getId());
-		ConferenceEdition confE = Adaptor.toConferenceEdition(cursor.next());
+		ConferenceEdition confE = AdaptorNoSQL.toConferenceEdition(cursor.next());
 		
 		
-		DatabaseHelper.closeConnectionDB();
+		closeConnectionDB();
 		return String.valueOf(confE.getYear());
 	}
 
 	public List<String> getAuthorsOfProceedings(String proceedingName) {
-		DatabaseHelper.connectToDB();
-		DatabaseHelper.createDB();
+		connectToDB();
+		createDBintern();
 		
 		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
-		Proceedings proc = Adaptor.toProceeding(cursor.next());
+		Proceedings proc = AdaptorNoSQL.toProceeding(cursor.next());
 
 		List<String> result = new ArrayList<String>();
 		for(Person p : proc.getAuthors()){
 			cursor = myQuery("Person", "_id", p.getId());
-			Person person = Adaptor.toPerson(cursor.next());
+			Person person = AdaptorNoSQL.toPerson(cursor.next());
 			result.add(person.getName());
 		}
 
-		DatabaseHelper.closeConnectionDB();
+		closeConnectionDB();
 		return result;
 	}
 
@@ -303,7 +311,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	public List<String> getInProceedingsOfProceedings(String proceedingId) {
 
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Proceedings");
 		BasicDBObject query = new BasicDBObject("_id", proceedingId);
@@ -314,7 +322,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		for (String inProceedingID : idList) {
 			query = new BasicDBObject("_id", inProceedingID);
 			iterable = collection.find(query);
-			result.add((Adaptor.toInProceedings(iterable.first())).getTitle());
+			result.add((AdaptorNoSQL.toInProceedings(iterable.first())).getTitle());
 		}
 
 		closeConnectionDB();
@@ -323,48 +331,48 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	}
 
 	public List<String> getAuthoredPublicationsForPerson(String personName) {
-		DatabaseHelper.connectToDB();
-		createDB();
+		connectToDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Person");
 		BasicDBObject query = new BasicDBObject("name", personName);
 		FindIterable<Document> iterable = collection.find(query);
 
 		List<String> result = new ArrayList<String>();
-		for (Publication inProc : Adaptor.toPerson(iterable.first()).getAuthoredPublications()) {
+		for (Publication inProc : AdaptorNoSQL.toPerson(iterable.first()).getAuthoredPublications()) {
 			collection = database.getCollection("InProceedings");
 			query = new BasicDBObject("_id", inProc.getId());
 			iterable = collection.find(query);
-			result.add(Adaptor.toInProceedings(iterable.first()).getTitle());
+			result.add(AdaptorNoSQL.toInProceedings(iterable.first()).getTitle());
 		}
 
-		DatabaseHelper.closeConnectionDB();
+		closeConnectionDB();
 		return result;
 	}
 
 	public List<String> getEditedPublicationsForPerson(String personName) {
-		DatabaseHelper.connectToDB();
-		createDB();
+		connectToDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Person");
 		BasicDBObject query = new BasicDBObject("name", personName);
 		FindIterable<Document> iterable = collection.find(query);
 
 		List<String> result = new ArrayList<String>();
-		for (Publication inProc : Adaptor.toPerson(iterable.first()).getEditedPublications()) {
+		for (Publication inProc : AdaptorNoSQL.toPerson(iterable.first()).getEditedPublications()) {
 			collection = database.getCollection("Proceedings");
 			query = new BasicDBObject("_id", inProc.getId());
 			iterable = collection.find(query);
-			result.add(Adaptor.toInProceedings(iterable.first()).getTitle());
+			result.add(AdaptorNoSQL.toInProceedings(iterable.first()).getTitle());
 		}
 
-		DatabaseHelper.closeConnectionDB();
+		closeConnectionDB();
 		return result;
 	}
 
 	public List<Publication> getAllInProceedings() {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("InProceedings");
 		List<Publication> result = new ArrayList<Publication>();
@@ -373,7 +381,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		iterable.forEach(new Block<Document>() {
 			@Override
 			public void apply(final Document document) {
-				result.add(Adaptor.toInProceedings(document));
+				result.add(AdaptorNoSQL.toInProceedings(document));
 			}
 		});
 
@@ -390,7 +398,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<Person> searchForPeople(String search) {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Person");
 		BasicDBObject query = new BasicDBObject();
@@ -400,7 +408,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		List<Person> result = new ArrayList<Person>();
 		Iterator it = iterable.iterator();
 		while (it.hasNext()) {
-			result.add(Adaptor.toPerson((Document) it.next()));
+			result.add(AdaptorNoSQL.toPerson((Document) it.next()));
 		}
 		closeConnectionDB();
 
@@ -410,7 +418,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<Conference> searchForConference(String search) {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Conference");
 		BasicDBObject query = new BasicDBObject();
@@ -420,7 +428,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		List<Conference> result = new ArrayList<Conference>();
 		Iterator it = iterable.iterator();
 		while (it.hasNext()) {
-			result.add(Adaptor.toConference((Document) it.next()));
+			result.add(AdaptorNoSQL.toConference((Document) it.next()));
 		}
 		closeConnectionDB();
 
@@ -429,7 +437,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<Series> searchForSeries(String search) {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Series");
 		BasicDBObject query = new BasicDBObject();
@@ -439,7 +447,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		List<Series> result = new ArrayList<Series>();
 		Iterator it = iterable.iterator();
 		while (it.hasNext()) {
-			result.add(Adaptor.toSeries((Document) it.next()));
+			result.add(AdaptorNoSQL.toSeries((Document) it.next()));
 		}
 		closeConnectionDB();
 
@@ -448,7 +456,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<ConferenceEdition> searchForConferenceEdition(String search) {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("ConferenceEdition");
 		BasicDBObject query = new BasicDBObject();
@@ -459,7 +467,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		List<ConferenceEdition> result = new ArrayList<ConferenceEdition>();
 		Iterator it = iterable.iterator();
 		while (it.hasNext()) {
-			result.add(Adaptor.toConferenceEdition((Document) it.next()));
+			result.add(AdaptorNoSQL.toConferenceEdition((Document) it.next()));
 		}
 		closeConnectionDB();
 
@@ -468,7 +476,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<Publisher> searchForPublisher(String search) {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Publisher");
 		BasicDBObject query = new BasicDBObject();
@@ -478,7 +486,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		List<Publisher> result = new ArrayList<Publisher>();
 		Iterator it = iterable.iterator();
 		while (it.hasNext()) {
-			result.add(Adaptor.toPublisher((Document) it.next()));
+			result.add(AdaptorNoSQL.toPublisher((Document) it.next()));
 		}
 		closeConnectionDB();
 
@@ -487,7 +495,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<Publication> searchForProceedings(String search) {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("Proceedings");
 		BasicDBObject query = new BasicDBObject();
@@ -497,7 +505,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		List<Publication> result = new ArrayList<Publication>();
 		Iterator it = iterable.iterator();
 		while (it.hasNext()) {
-			result.add(Adaptor.toProceeding((Document) it.next()));
+			result.add(AdaptorNoSQL.toProceeding((Document) it.next()));
 		}
 		closeConnectionDB();
 
@@ -507,7 +515,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public List<Publication> searchForInProceedings(String search) {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("InProceedings");
 		BasicDBObject query = new BasicDBObject();
@@ -517,7 +525,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		List<Publication> result = new ArrayList<Publication>();
 		Iterator it = iterable.iterator();
 		while (it.hasNext()) {
-			result.add(Adaptor.toInProceedings((Document) it.next()));
+			result.add(AdaptorNoSQL.toInProceedings((Document) it.next()));
 		}
 		closeConnectionDB();
 
@@ -529,7 +537,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		int length = list.size();
 		List<Document> documents = new ArrayList<Document>();
 		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
+			documents.add(AdaptorNoSQL.toDBDocument(list.get(i)));
 
 			if (i % 500 == 0) {
 				System.out.println(i + " / " + length + " InProceedings added to Database.");
@@ -549,7 +557,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		int length = list.size();
 		List<Document> documents = new ArrayList<Document>();
 		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
+			documents.add(AdaptorNoSQL.toDBDocument(list.get(i)));
 		}
 		if (!documents.isEmpty()) {
 			collection.insertMany(documents);
@@ -565,7 +573,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		int length = list.size();
 		List<Document> documents = new ArrayList<Document>();
 		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
+			documents.add(AdaptorNoSQL.toDBDocument(list.get(i)));
 		}
 		if (!documents.isEmpty()) {
 			collection.insertMany(documents);
@@ -581,7 +589,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		int length = list.size();
 		List<Document> documents = new ArrayList<Document>();
 		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
+			documents.add(AdaptorNoSQL.toDBDocument(list.get(i)));
 		}
 		if (!documents.isEmpty()) {
 			collection.insertMany(documents);
@@ -597,7 +605,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		int length = list.size();
 		List<Document> documents = new ArrayList<Document>();
 		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
+			documents.add(AdaptorNoSQL.toDBDocument(list.get(i)));
 		}
 		if (!documents.isEmpty()) {
 			collection.insertMany(documents);
@@ -613,7 +621,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		int length = list.size();
 		List<Document> documents = new ArrayList<Document>();
 		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
+			documents.add(AdaptorNoSQL.toDBDocument(list.get(i)));
 		}
 		if (!documents.isEmpty()) {
 			collection.insertMany(documents);
@@ -633,7 +641,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		int length = list.size();
 		List<Document> documents = new ArrayList<Document>();
 		for (int i = 0; i < length; i++) {
-			documents.add(Adaptor.toDBDocument(list.get(i)));
+			documents.add(AdaptorNoSQL.toDBDocument(list.get(i)));
 
 			if (i % 500 == 0) {
 				System.out.println(i + " / " + length + " Proceedings added to Database.");
@@ -687,14 +695,14 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public void updatePerson(String id, String name, List<String> authoredPublications, List<String> editedPublications) {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		// remove Person from authorList of authored Publications
 		Iterator<Document> cursor0 = myQuery("Person", "_id", id);
-		Person oldPerson = Adaptor.toPerson(cursor0.next());
+		Person oldPerson = AdaptorNoSQL.toPerson(cursor0.next());
 		for (Publication inProc : oldPerson.getAuthoredPublications()) {
 			Iterator<Document> cursor1 = myQuery("InProceedings", "_id", inProc.getId());
-			InProceedings inProceeding = Adaptor.toInProceedings(cursor1.next());
+			InProceedings inProceeding = AdaptorNoSQL.toInProceedings(cursor1.next());
 			List<Person> newAuthors = new ArrayList<Person>();
 			for (Person aut : inProceeding.getAuthors()) {
 				if (!aut.getId().equals(id)) {
@@ -702,13 +710,13 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 				}
 			}
 			inProceeding.setAuthors(newAuthors);
-			myReplacement("InProceedings", "_id", inProc.getId(), Adaptor.toDBDocument(inProceeding));
+			myReplacement("InProceedings", "_id", inProc.getId(), AdaptorNoSQL.toDBDocument(inProceeding));
 		}
 
 		// remove Person from authorList of edited Publications
 		for (Publication proc : oldPerson.getEditedPublications()) {
 			Iterator<Document> cursor1 = myQuery("Proceedings", "_id", proc.getId());
-			Proceedings proceeding = Adaptor.toProceeding(cursor1.next());
+			Proceedings proceeding = AdaptorNoSQL.toProceeding(cursor1.next());
 			List<Person> newAuthors = new ArrayList<Person>();
 			for (Person aut : proceeding.getAuthors()) {
 				if (!aut.getId().equals(id)) {
@@ -716,7 +724,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 				}
 			}
 			proceeding.setAuthors(newAuthors);
-			myReplacement("Proceedings", "_id", proc.getId(), Adaptor.toDBDocument(proceeding));
+			myReplacement("Proceedings", "_id", proc.getId(), AdaptorNoSQL.toDBDocument(proceeding));
 		}
 
 		Iterator<String> aPubIter = authoredPublications.iterator();
@@ -727,9 +735,9 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 			Iterator<Document> cursor = myQuery("InProceedings", "title", aPubIter.next());
 			while (cursor.hasNext()) {
-				InProceedings inProceeding = Adaptor.toInProceedings(cursor.next());
+				InProceedings inProceeding = AdaptorNoSQL.toInProceedings(cursor.next());
 				inProceeding.addAuthor(oldPerson);
-				myReplacement("InProceedings", "_id", inProceeding.getId(), Adaptor.toDBDocument(inProceeding));
+				myReplacement("InProceedings", "_id", inProceeding.getId(), AdaptorNoSQL.toDBDocument(inProceeding));
 				aPublications.add(inProceeding);
 
 			}
@@ -737,27 +745,27 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		while (ePubIter.hasNext()) {
 			Iterator<Document> cursor = myQuery("Proceedings", "title", ePubIter.next());
 			while (cursor.hasNext()) {
-				Proceedings proceeding = Adaptor.toProceeding(cursor.next());
+				Proceedings proceeding = AdaptorNoSQL.toProceeding(cursor.next());
 				proceeding.addAuthor(oldPerson);
-				myReplacement("Proceedings", "_id", proceeding.getId(), Adaptor.toDBDocument(proceeding));
+				myReplacement("Proceedings", "_id", proceeding.getId(), AdaptorNoSQL.toDBDocument(proceeding));
 				ePublications.add(proceeding);
 			}
 		}
 		Person p = new Person(id, name, aPublications, ePublications);
-		myReplacement("Person", "_id", id, Adaptor.toDBDocument(p));
+		myReplacement("Person", "_id", id, AdaptorNoSQL.toDBDocument(p));
 		closeConnectionDB();
 	}
 
 	public void deletePerson(String id) {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		// remove Person from authorList of authored Publications
 		Iterator<Document> cursor0 = myQuery("Person", "_id", id);
-		Person oldPerson = Adaptor.toPerson(cursor0.next());
+		Person oldPerson = AdaptorNoSQL.toPerson(cursor0.next());
 		for (Publication inProc : oldPerson.getAuthoredPublications()) {
 			Iterator<Document> cursor1 = myQuery("InProceedings", "_id", inProc.getId());
-			InProceedings inProceeding = Adaptor.toInProceedings(cursor1.next());
+			InProceedings inProceeding = AdaptorNoSQL.toInProceedings(cursor1.next());
 			List<Person> newAuthors = new ArrayList<Person>();
 			for (Person aut : inProceeding.getAuthors()) {
 				if (!aut.getId().equals(id)) {
@@ -765,13 +773,13 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 				}
 			}
 			inProceeding.setAuthors(newAuthors);
-			myReplacement("InProceedings", "_id", inProc.getId(), Adaptor.toDBDocument(inProceeding));
+			myReplacement("InProceedings", "_id", inProc.getId(), AdaptorNoSQL.toDBDocument(inProceeding));
 		}
 
 		// remove Person from authorList of edited Publications
 		for (Publication inProc : oldPerson.getEditedPublications()) {
 			Iterator<Document> cursor1 = myQuery("Proceedings", "_id", inProc.getId());
-			Proceedings inProceeding = Adaptor.toProceeding(cursor1.next());
+			Proceedings inProceeding = AdaptorNoSQL.toProceeding(cursor1.next());
 			List<Person> newAuthors = new ArrayList<Person>();
 			for (Person aut : inProceeding.getAuthors()) {
 				if (!aut.getId().equals(id)) {
@@ -779,7 +787,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 				}
 			}
 			inProceeding.setAuthors(newAuthors);
-			myReplacement("Proceedings", "_id", inProc.getId(), Adaptor.toDBDocument(inProceeding));
+			myReplacement("Proceedings", "_id", inProc.getId(), AdaptorNoSQL.toDBDocument(inProceeding));
 		}
 
 		myDelete("Person", "_id", id);
@@ -795,14 +803,14 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	
 	public void deleteProceeding(String title) {
 		connectToDB();
-		createDB();
+		createDBintern();
 		
 		//remove Proceeding from Author's edited Publication list
 		Iterator<Document> cursor0 = myQuery("Proceedings","title",title);
-		Proceedings oldProceeding = Adaptor.toProceeding(cursor0.next());
+		Proceedings oldProceeding = AdaptorNoSQL.toProceeding(cursor0.next());
 		for(Person aut : oldProceeding.getAuthors()){
 			Iterator<Document> cursor1 = myQuery("Person","_id",aut.getId());
-			Person author = Adaptor.toPerson(cursor1.next());
+			Person author = AdaptorNoSQL.toPerson(cursor1.next());
 			Set<Publication> newEditedPublications = new HashSet<Publication>();
 			for(Publication pub : author.getEditedPublications()){
 				if(!pub.getId().equals(oldProceeding.getID())){
@@ -810,21 +818,21 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 				}
 			}
 			author.setEditedPublications(newEditedPublications);
-			myReplacement("Person", "_id", author.getId(),Adaptor.toDBDocument(author));
+			myReplacement("Person", "_id", author.getId(),AdaptorNoSQL.toDBDocument(author));
 		}
 		
 		//remove Proceeding from InProceeding
 		for(InProceedings inProc : oldProceeding.getInProceedings()){
 			Iterator<Document> cursor1 = myQuery("InProceedings","_id",inProc.getId());
-			InProceedings inProceeding = Adaptor.toInProceedings(cursor1.next());
+			InProceedings inProceeding = AdaptorNoSQL.toInProceedings(cursor1.next());
 			inProceeding.setProceedings(null);
-			myReplacement("InProceedings", "_id", inProceeding.getId(),Adaptor.toDBDocument(inProceeding));
+			myReplacement("InProceedings", "_id", inProceeding.getId(),AdaptorNoSQL.toDBDocument(inProceeding));
 		}
 		
 		
 		//remove Proceeding from Series
 		Iterator<Document> cursor1 = myQuery("Series","_id",oldProceeding.getSeries().getId());
-		Series series = Adaptor.toSeries(cursor1.next());
+		Series series = AdaptorNoSQL.toSeries(cursor1.next());
 		Set<Publication> newPublications = new HashSet<Publication>();
 		for(Publication pub : series.getPublications()){
 			if(!pub.getId().equals(oldProceeding.getID())){
@@ -833,13 +841,13 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		}
 		series.setPublications(newPublications);
 		
-		myReplacement("Series", "_id", series.getId(),Adaptor.toDBDocument(series));
+		myReplacement("Series", "_id", series.getId(),AdaptorNoSQL.toDBDocument(series));
 
 		
 		
 		//remove Proceeding from Publisher
 		cursor1 = myQuery("Publisher","_id",oldProceeding.getPublisher().getId());
-		Publisher publisher = Adaptor.toPublisher(cursor1.next());
+		Publisher publisher = AdaptorNoSQL.toPublisher(cursor1.next());
 		newPublications = new HashSet<Publication>();
 		for(Publication pub : publisher.getPublications()){
 			if(!pub.getId().equals(oldProceeding.getID())){
@@ -848,15 +856,15 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		}
 		publisher.setPublications(newPublications);
 		
-		myReplacement("Publisher", "_id", publisher.getId(),Adaptor.toDBDocument(publisher));
+		myReplacement("Publisher", "_id", publisher.getId(),AdaptorNoSQL.toDBDocument(publisher));
 
 		
 		//delete ConferenceEdition and remove confID from Conference
 		cursor1 = myQuery("ConferenceEdition","_id",oldProceeding.getConferenceEdition().getId());
-		ConferenceEdition conferenceEdition = Adaptor.toConferenceEdition(cursor1.next());
+		ConferenceEdition conferenceEdition = AdaptorNoSQL.toConferenceEdition(cursor1.next());
 		
 		Iterator<Document> cursor2 = myQuery("Conference","_id",conferenceEdition.getConference().getId());
-		Conference conference = Adaptor.toConference(cursor2.next());
+		Conference conference = AdaptorNoSQL.toConference(cursor2.next());
 
 		Set<ConferenceEdition> newConfEds = new HashSet<ConferenceEdition>();
 		for(ConferenceEdition confEd : conference.getEditions()){
@@ -866,7 +874,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		}
 		conference.setEditions(newConfEds);
 		
-		myReplacement("Conference", "_id", conference.getId(),Adaptor.toDBDocument(conference));
+		myReplacement("Conference", "_id", conference.getId(),AdaptorNoSQL.toDBDocument(conference));
 		myDelete("ConferenceEdition", "_id", conferenceEdition.getId());
 
 		
@@ -877,7 +885,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public void addPerson(String newName, List<String> authoredPublications, List<String> editedPublications) {
 		connectToDB();
-		createDB();
+		createDBintern();
 		String id = (new ObjectId()).toString();
 		Person p = new Person();
 		p.setId(id);
@@ -890,9 +898,9 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 			Iterator<Document> cursor = myQuery("InProceedings", "title", aPubIter.next());
 			while (cursor.hasNext()) {
-				InProceedings inProceeding = Adaptor.toInProceedings(cursor.next());
+				InProceedings inProceeding = AdaptorNoSQL.toInProceedings(cursor.next());
 				inProceeding.addAuthor(p);
-				myReplacement("InProceedings", "_id", inProceeding.getId(), Adaptor.toDBDocument(inProceeding));
+				myReplacement("InProceedings", "_id", inProceeding.getId(), AdaptorNoSQL.toDBDocument(inProceeding));
 				aPublications.add(inProceeding);
 
 			}
@@ -900,9 +908,9 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		while (ePubIter.hasNext()) {
 			Iterator<Document> cursor = myQuery("Proceedings", "title", ePubIter.next());
 			while (cursor.hasNext()) {
-				Proceedings inProceeding = Adaptor.toProceeding(cursor.next());
+				Proceedings inProceeding = AdaptorNoSQL.toProceeding(cursor.next());
 				inProceeding.addAuthor(p);
-				myReplacement("Proceedings", "_id", inProceeding.getId(), Adaptor.toDBDocument(inProceeding));
+				myReplacement("Proceedings", "_id", inProceeding.getId(), AdaptorNoSQL.toDBDocument(inProceeding));
 				aPublications.add(inProceeding);
 			}
 		}
@@ -912,7 +920,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 		// instead of updating only specific fields, replace them all
 		MongoCollection<Document> collection = database.getCollection("Person");
-		collection.insertOne(Adaptor.toDBDocument(p));
+		collection.insertOne(AdaptorNoSQL.toDBDocument(p));
 
 		closeConnectionDB();
 	}
@@ -927,33 +935,33 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		return ((String) refer.get("_id"));
 	}
 
-	public Proceedings getProceedingOfInproceeding(String InProceedingId) {
+	public Proceedings getProceedingOfInproceeding(InProceedings InProceedingId) {
 		connectToDB();
-		createDB();
+		createDBintern();
 		InProceedings p;
 
 		MongoCollection<Document> collection = database.getCollection("InProceedings");
-		BasicDBObject query = new BasicDBObject("_id", InProceedingId);
+		BasicDBObject query = new BasicDBObject("_id", InProceedingId.getId());
 		FindIterable<Document> iterable = collection.find(query);
 		collection = database.getCollection("Proceedings");
-		p = Adaptor.toInProceedings(iterable.first());
+		p = AdaptorNoSQL.toInProceedings(iterable.first());
 		String proceedingID = p.getProceedings().getId();
 		Proceedings result = new Proceedings();
 		if(!proceedingID.equals("")){
 			Iterator<Document> cursor = myQuery("Proceedings", "_id", proceedingID);
-			result = Adaptor.toProceeding(cursor.next());
+			result = AdaptorNoSQL.toProceeding(cursor.next());
 		}
 		
 		closeConnectionDB();
 		return result;
 	}
 
-	public List<String> getAuthorsOfInProceeding(String inProceedingId) {
+	public List<String> getAuthorsOfInProceeding(InProceedings inProceedingId) {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> collection = database.getCollection("InProceedings");
-		BasicDBObject query = new BasicDBObject("_id", inProceedingId);
+		BasicDBObject query = new BasicDBObject("_id", inProceedingId.getId());
 		FindIterable<Document> iterable = collection.find(query);
 		List<String> idList = getIDCollection(iterable.first(), "authors");
 		List<String> result = new ArrayList<String>();
@@ -961,7 +969,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		for (String authorID : idList) {
 			query = new BasicDBObject("_id", authorID);
 			iterable = collection.find(query);
-			result.add((Adaptor.toPerson(iterable.first())).getName());
+			result.add((AdaptorNoSQL.toPerson(iterable.first())).getName());
 		}
 
 		closeConnectionDB();
@@ -970,14 +978,14 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public void deleteInProceeding(String id) {
 		connectToDB();
-		createDB();
+		createDBintern();
 		
 		//remove InProceeding from Author's authored Publication list
 		Iterator<Document> cursor0 = myQuery("InProceedings","_id",id);
-		InProceedings oldInProceeding = Adaptor.toInProceedings(cursor0.next());
+		InProceedings oldInProceeding = AdaptorNoSQL.toInProceedings(cursor0.next());
 		for(Person aut : oldInProceeding.getAuthors()){
 			Iterator<Document> cursor1 = myQuery("Person","_id",aut.getId());
-			Person author = Adaptor.toPerson(cursor1.next());
+			Person author = AdaptorNoSQL.toPerson(cursor1.next());
 			Set<Publication> newAuthoredPublications = new HashSet<Publication>();
 			for(Publication pub : author.getAuthoredPublications()){
 				if(!pub.getId().equals(oldInProceeding.getId())){
@@ -985,14 +993,14 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 				}
 			}
 			author.setAuthoredPublications(newAuthoredPublications);
-			myReplacement("Person", "_id", author.getId(),Adaptor.toDBDocument(author));
+			myReplacement("Person", "_id", author.getId(),AdaptorNoSQL.toDBDocument(author));
 		}
 		
 		
 		//remove InProceeding from Proceeding
 		if(!oldInProceeding.getProceedings().getId().equals("")){
 			Iterator<Document> cursor1 = myQuery("Proceedings","_id",oldInProceeding.getProceedings().getId());
-			Proceedings proceeding = Adaptor.toProceeding(cursor1.next());
+			Proceedings proceeding = AdaptorNoSQL.toProceeding(cursor1.next());
 			
 			Set<InProceedings> newInProceedings = new HashSet<InProceedings>();
 			for(InProceedings pub : proceeding.getInProceedings()){
@@ -1003,7 +1011,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			proceeding.setInProceedings(newInProceedings);
 			
 			
-			myReplacement("Proceedings", "_id", proceeding.getId(),Adaptor.toDBDocument(proceeding));
+			myReplacement("Proceedings", "_id", proceeding.getId(),AdaptorNoSQL.toDBDocument(proceeding));
 		}
 		
 		myDelete("InProceedings","_id", oldInProceeding.getId());
@@ -1012,7 +1020,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public void updateInProceeding(String id, InProceedings newInProceeding, String procTitle, List<String> authors) {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		deleteInProceeding(id);
 		addInProceeding(newInProceeding,procTitle,authors);
@@ -1026,7 +1034,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors) {
 		connectToDB();
-		createDB();
+		createDBintern();
 		
 		
 		//create new ID for new InProceedings
@@ -1040,9 +1048,9 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			
 			Iterator<Document> cursor = myQuery("Person", "name", authorIter.next());
 			while (cursor.hasNext()) {
-				Person p = Adaptor.toPerson(cursor.next());
+				Person p = AdaptorNoSQL.toPerson(cursor.next());
 				p.addAuthoredPublication(newInProceeding);
-				myReplacement("Person", "_id",p.getId(),Adaptor.toDBDocument(p));
+				myReplacement("Person", "_id",p.getId(),AdaptorNoSQL.toDBDocument(p));
 				authorsList.add(p);
 			}
 		}
@@ -1051,15 +1059,15 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		if(!procTitle.equals("")){
 			//update Proceeding
 			Iterator<Document> cursor = myQuery("Proceedings", "title", procTitle);
-			Proceedings proceedings = Adaptor.toProceeding(cursor.next());
+			Proceedings proceedings = AdaptorNoSQL.toProceeding(cursor.next());
 			proceedings.addInProceedings(newInProceeding);
-			myReplacement("Proceedings", "_id",proceedings.getId(),Adaptor.toDBDocument(proceedings));
+			myReplacement("Proceedings", "_id",proceedings.getId(),AdaptorNoSQL.toDBDocument(proceedings));
 			newInProceeding.setProceedings(proceedings);
 		}
 		
 		
 		MongoCollection<Document> collection = database.getCollection("InProceedings");
-		collection.insertOne(Adaptor.toDBDocument(newInProceeding));
+		collection.insertOne(AdaptorNoSQL.toDBDocument(newInProceeding));
 
 		closeConnectionDB();
 
@@ -1067,7 +1075,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public void addProceeding(Proceedings newProceeding,List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear) {
 		connectToDB();
-		createDB();
+		createDBintern();
 		
 		
 		//create new ID for new InProceedings
@@ -1082,9 +1090,9 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			
 			Iterator<Document> cursor = myQuery("Person", "name", authorIter.next());
 			while (cursor.hasNext()) {
-				Person p = Adaptor.toPerson(cursor.next());
+				Person p = AdaptorNoSQL.toPerson(cursor.next());
 				p.addEditedPublication(newProceeding);
-				myReplacement("Person", "_id",p.getId(),Adaptor.toDBDocument(p));
+				myReplacement("Person", "_id",p.getId(),AdaptorNoSQL.toDBDocument(p));
 				authorsList.add(p);
 			}
 		}
@@ -1097,9 +1105,9 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			
 			Iterator<Document> cursor = myQuery("InProceedings", "title", inProcIter.next());
 			while (cursor.hasNext()) {
-				InProceedings p = Adaptor.toInProceedings(cursor.next());
+				InProceedings p = AdaptorNoSQL.toInProceedings(cursor.next());
 				p.setProceedings(newProceeding);
-				myReplacement("InProceedings", "_id",p.getId(),Adaptor.toDBDocument(p));
+				myReplacement("InProceedings", "_id",p.getId(),AdaptorNoSQL.toDBDocument(p));
 				inProcList.add(p);
 			}
 		}
@@ -1115,12 +1123,12 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			set.add(newProceeding);
 			pub.setPublications(set);
 			pub.setId((new ObjectId()).toString());
-			myInsert("Publisher", Adaptor.toDBDocument(pub));
+			myInsert("Publisher", AdaptorNoSQL.toDBDocument(pub));
 		}
 		else{
-			pub = Adaptor.toPublisher(cursor.next());
+			pub = AdaptorNoSQL.toPublisher(cursor.next());
 			pub.addPublication(newProceeding);
-			myReplacement("Publisher", "_id",pub.getId(),Adaptor.toDBDocument(pub));
+			myReplacement("Publisher", "_id",pub.getId(),AdaptorNoSQL.toDBDocument(pub));
 		}
 
 		newProceeding.setPublisher(pub);
@@ -1135,12 +1143,12 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			set.add(newProceeding);
 			series.setPublications(set);
 			series.setId((new ObjectId()).toString());
-			myInsert("Series", Adaptor.toDBDocument(series));
+			myInsert("Series", AdaptorNoSQL.toDBDocument(series));
 		}
 		else{
-			series = Adaptor.toSeries(cursor.next());
+			series = AdaptorNoSQL.toSeries(cursor.next());
 			series.addPublication(newProceeding);
-			myReplacement("Series", "_id",series.getId(),Adaptor.toDBDocument(series));
+			myReplacement("Series", "_id",series.getId(),AdaptorNoSQL.toDBDocument(series));
 		}
 
 		newProceeding.setSeries(series);
@@ -1164,21 +1172,21 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			conference.setEditions(confEList);
 			conference.setId((new ObjectId()).toString());
 			confE.setConference(conference);
-			myInsert("Conference", Adaptor.toDBDocument(conference));
+			myInsert("Conference", AdaptorNoSQL.toDBDocument(conference));
 		}
 		else{
-			conference = Adaptor.toConference(cursor.next());
+			conference = AdaptorNoSQL.toConference(cursor.next());
 			conference.addEdition(confE);
 			confE.setConference(conference);
-			myReplacement("Conference", "_id",conference.getId(),Adaptor.toDBDocument(conference));
+			myReplacement("Conference", "_id",conference.getId(),AdaptorNoSQL.toDBDocument(conference));
 		}
 
 		newProceeding.setConferenceEdition(confE);
-		myInsert("ConferenceEdition", Adaptor.toDBDocument(confE));
+		myInsert("ConferenceEdition", AdaptorNoSQL.toDBDocument(confE));
 		
 
 		
-		myInsert("Proceedings", Adaptor.toDBDocument(newProceeding));
+		myInsert("Proceedings", AdaptorNoSQL.toDBDocument(newProceeding));
 
 		closeConnectionDB();
 
@@ -1196,7 +1204,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	public void query1(String id) {
 		String thisQuery = "Query 1";
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		Document pub;
 		MongoCollection<Document> proc = database.getCollection("Proceedings");
@@ -1219,7 +1227,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 				} else {
 					pub = itrInProc.next();
 				}
-				writer.println("The title of the publication with id " + id + " is " + Adaptor.toPublication(pub).getTitle() + ".");
+				writer.println("The title of the publication with id " + id + " is " + AdaptorNoSQL.toPublication(pub).getTitle() + ".");
 				writer.close();
 			}
 		} catch (IOException e) {
@@ -1232,7 +1240,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	public void query2(String title, int startOffset, int endOffset) {
 		String thisQuery = "Query 2";
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> proc = database.getCollection("Proceedings");
 		FindIterable<Document> resultProc = proc.find(Filters.regex("title", title));
@@ -1258,11 +1266,11 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 						i++;
 						continue;
 					} else if (itrProc.hasNext()) {
-						writer.println(Adaptor.toPublication(itrProc.next()).getTitle());
+						writer.println(AdaptorNoSQL.toPublication(itrProc.next()).getTitle());
 						i++;
 
 					} else if (itrInProc.hasNext()) {
-						writer.println(Adaptor.toPublication(itrInProc.next()).getTitle());
+						writer.println(AdaptorNoSQL.toPublication(itrInProc.next()).getTitle());
 						i++;
 					}
 				}
@@ -1279,7 +1287,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	public void query3(String title, int startOffset, int endOffset) {
 		String thisQuery = "Query 3";
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		MongoCollection<Document> proc = database.getCollection("Proceedings");
 		FindIterable<Document> resultProc = proc.find(Filters.regex("title", title));
@@ -1290,12 +1298,12 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		Iterator<Document> itrInProc = resultInProc.iterator();
 		boolean non = true;
 		while (itrProc.hasNext()) {
-			all.add(Adaptor.toPublication(itrProc.next()));
+			all.add(AdaptorNoSQL.toPublication(itrProc.next()));
 			non = false;
 		}
 		while (itrInProc.hasNext()) {
 			non = false;
-			all.add(Adaptor.toPublication(itrInProc.next()));
+			all.add(AdaptorNoSQL.toPublication(itrInProc.next()));
 		}
 
 		try {
@@ -1324,7 +1332,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	public void query4(String author) {
 		String thisQuery = "Query 4";
 		connectToDB();
-		createDB();
+		createDBintern();
 		Iterator<Document> cursor = myQuery("Person", "name", author);
 		
 		HashSet<String> result = new HashSet<String>();
@@ -1332,23 +1340,23 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			System.out.println("Author not found");
 			return;
 		}
-		Person author1 = Adaptor.toPerson(cursor.next());
+		Person author1 = AdaptorNoSQL.toPerson(cursor.next());
 		for(Publication pub : author1.getAuthoredPublications()){
 			Iterator<Document> cursor1 = myQuery("InProceedings", "_id", pub.getId());
-			InProceedings inProc = Adaptor.toInProceedings(cursor1.next());
+			InProceedings inProc = AdaptorNoSQL.toInProceedings(cursor1.next());
 			for(Person coAuthor : inProc.getAuthors()){
 				Iterator<Document> cursor2 = myQuery("Person", "_id", coAuthor.getId());
-				Person per = Adaptor.toPerson(cursor2.next());
+				Person per = AdaptorNoSQL.toPerson(cursor2.next());
 				result.add(per.getName());
 			}
 		}
 		
 		for(Publication pub : author1.getEditedPublications()){
 			Iterator<Document> cursor1 = myQuery("Proceedings", "_id", pub.getId());
-			Proceedings proc = Adaptor.toProceeding(cursor1.next());
+			Proceedings proc = AdaptorNoSQL.toProceeding(cursor1.next());
 			for(Person coAuthor : proc.getAuthors()){
 				Iterator<Document> cursor2 = myQuery("Person", "_id", coAuthor.getId());
-				Person per = Adaptor.toPerson(cursor2.next());
+				Person per = AdaptorNoSQL.toPerson(cursor2.next());
 				result.add(per.getName());
 			}
 		}
@@ -1371,7 +1379,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		
 		String thisQuery = "Query 5";
 		connectToDB();
-		createDB();
+		createDBintern();
 		
 		Person author1 = new Person();
 		Person author2 = new Person();
@@ -1383,7 +1391,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			return;
 		}
 		else{
-			author1 = Adaptor.toPerson(cursor.next());
+			author1 = AdaptorNoSQL.toPerson(cursor.next());
 		}
 		
 		cursor = myQuery("Person", "name", name2);
@@ -1393,7 +1401,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			return;
 		}
 		else{
-			author2 = Adaptor.toPerson(cursor.next());
+			author2 = AdaptorNoSQL.toPerson(cursor.next());
 		}
 
 		int maxDepth = 15;
@@ -1425,7 +1433,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			System.out.println("Could not print to file.");
 		}
 
-		DatabaseHelper.closeConnectionDB();
+		closeConnectionDB();
 	}
 	
 	
@@ -1440,11 +1448,11 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			return 100;
 		}
 		else{
-			author1 = Adaptor.toPerson(cursor.next());
+			author1 = AdaptorNoSQL.toPerson(cursor.next());
 		}
 		for(Publication pub : author1.getAuthoredPublications()){
 			cursor = myQuery("InProceedings", "_id", pub.getId());
-			InProceedings inProc = Adaptor.toInProceedings(cursor.next());
+			InProceedings inProc = AdaptorNoSQL.toInProceedings(cursor.next());
 			for(Person coAuthor : inProc.getAuthors()){
 				if(coAuthor.getId().equals(id2)){
 					return 1;
@@ -1458,7 +1466,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		
 		for(Publication pub : author1.getAuthoredPublications()){
 			cursor = myQuery("InProceedings", "_id", pub.getId());
-			InProceedings inProc = Adaptor.toInProceedings(cursor.next());
+			InProceedings inProc = AdaptorNoSQL.toInProceedings(cursor.next());
 			for(Person coAuthor : inProc.getAuthors()){
 				if(!coAuthor.getId().equals(id1)){
 					int distance = query5rec(coAuthor.getId(),id2, currDepth + 1, maxDepth);
@@ -1480,7 +1488,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	public void query6() {
 		String thisQuery = "Query 6";
 		connectToDB();
-		createDB();
+		createDBintern();
 		double authors = 0.;
 		MongoCollection<Document> inProc = database.getCollection("InProceedings");
 		MongoCollection<Document> proc = database.getCollection("Proceedings");
@@ -1519,7 +1527,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
     public void query7(int year1, int year2) {
         String thisQuery = "Query 7";
         connectToDB();
-        createDB();
+        createDBintern();
 
         //sort(Sorts.ascending) does not sort correctly?
         try {
@@ -1570,7 +1578,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	// No of all publications of a conference, except proceedings
 	public void query8(String conferenceName) {
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		String thisQuery = "Query 8";
 		
@@ -1580,13 +1588,13 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			System.out.println("Did not find a Conference with name: " + conferenceName);
 			return;
 		}
-		Conference conference = Adaptor.toConference(cursor.next());
+		Conference conference = AdaptorNoSQL.toConference(cursor.next());
 		for(ConferenceEdition e : conference.getEditions()){
 			cursor = myQuery("ConferenceEdition", "_id", e.getId());
-			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
+			ConferenceEdition edition = AdaptorNoSQL.toConferenceEdition(cursor.next());
 			
 			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
-			Proceedings proc = Adaptor.toProceeding(cursor.next());
+			Proceedings proc = AdaptorNoSQL.toProceeding(cursor.next());
 			
 			for(InProceedings i : proc.getInProceedings()){
 				if(!resultList.contains(i.getId())){
@@ -1610,7 +1618,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	
 	public void query9(String confName){
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		String thisQuery = "Query 9";
 		
@@ -1620,13 +1628,13 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			System.out.println("Did not find a Conference with name:" + confName);
 			return;
 		}
-		Conference conference = Adaptor.toConference(cursor.next());
+		Conference conference = AdaptorNoSQL.toConference(cursor.next());
 		for(ConferenceEdition e : conference.getEditions()){
 			cursor = myQuery("ConferenceEdition", "_id", e.getId());
-			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
+			ConferenceEdition edition = AdaptorNoSQL.toConferenceEdition(cursor.next());
 			
 			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
-			Proceedings proc = Adaptor.toProceeding(cursor.next());
+			Proceedings proc = AdaptorNoSQL.toProceeding(cursor.next());
 			for(Person p : proc.getAuthors()){
 				if(!resultList.contains(p.getId())){
 					resultList.add(p.getId());
@@ -1635,7 +1643,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			
 			for(InProceedings i : proc.getInProceedings()){
 				cursor = myQuery("InProceedings", "_id", i.getId());
-				InProceedings inProc = Adaptor.toInProceedings(cursor.next());
+				InProceedings inProc = AdaptorNoSQL.toInProceedings(cursor.next());
 				for(Person p : inProc.getAuthors()){
 					if(!resultList.contains(p.getId())){
 						resultList.add(p.getId());
@@ -1661,7 +1669,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	
 	public void query11(String confName){
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		String thisQuery = "Query 11";
 		
@@ -1671,13 +1679,13 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			System.out.println("Did not find a Conference with name:" + confName);
 			return;
 		}
-		Conference conference = Adaptor.toConference(cursor.next());
+		Conference conference = AdaptorNoSQL.toConference(cursor.next());
 		for(ConferenceEdition e : conference.getEditions()){
 			cursor = myQuery("ConferenceEdition", "_id", e.getId());
-			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
+			ConferenceEdition edition = AdaptorNoSQL.toConferenceEdition(cursor.next());
 			
 			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
-			Proceedings proc = Adaptor.toProceeding(cursor.next());
+			Proceedings proc = AdaptorNoSQL.toProceeding(cursor.next());
 			
 			for(InProceedings i : proc.getInProceedings()){
 				if(!resultList.contains(i.getId())){
@@ -1693,7 +1701,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			writer.println("List of all "+ resultList.size() + " InProceedings of Conference " + confName);
 			for(String id : resultList){
 				cursor = myQuery("InProceedings", "_id", id);
-				InProceedings inProc = Adaptor.toInProceedings(cursor.next());
+				InProceedings inProc = AdaptorNoSQL.toInProceedings(cursor.next());
 
 				writer.println(inProc.getTitle());
 			}
@@ -1709,7 +1717,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	public void query10(String confName){
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		String thisQuery = "Query 10";
 		
@@ -1719,13 +1727,13 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			System.out.println("Did not find a Conference with name:" + confName);
 			return;
 		}
-		Conference conference = Adaptor.toConference(cursor.next());
+		Conference conference = AdaptorNoSQL.toConference(cursor.next());
 		for(ConferenceEdition e : conference.getEditions()){
 			cursor = myQuery("ConferenceEdition", "_id", e.getId());
-			ConferenceEdition edition = Adaptor.toConferenceEdition(cursor.next());
+			ConferenceEdition edition = AdaptorNoSQL.toConferenceEdition(cursor.next());
 			
 			cursor = myQuery("Proceedings", "_id", edition.getProceedings().getId());
-			Proceedings proc = Adaptor.toProceeding(cursor.next());
+			Proceedings proc = AdaptorNoSQL.toProceeding(cursor.next());
 			for(Person p : proc.getAuthors()){
 				if(!resultList.contains(p.getId())){
 
@@ -1735,7 +1743,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			
 			for(InProceedings i : proc.getInProceedings()){
 				cursor = myQuery("InProceedings", "_id", i.getId());
-				InProceedings inProc = Adaptor.toInProceedings(cursor.next());
+				InProceedings inProc = AdaptorNoSQL.toInProceedings(cursor.next());
 				for(Person p : inProc.getAuthors()){
 					if(!resultList.contains(p.getId())){
 						resultList.add(p.getId());
@@ -1751,7 +1759,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			writer.println("List of all "+ resultList.size() + " authors and editors");
 			for(String id : resultList){
 				cursor = myQuery("Person", "_id", id);
-				Person person = Adaptor.toPerson(cursor.next());
+				Person person = AdaptorNoSQL.toPerson(cursor.next());
 
 				writer.println(person.getName());
 			}
@@ -1772,7 +1780,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		List<Publication> allProceedings = getAllProceedings();
 		
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		for(Publication p: allProceedings){
 			List<String> authorsOfProc = new ArrayList<String>();
@@ -1782,7 +1790,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			
 			for(InProceedings i : ((Proceedings)p).getInProceedings()){
 				Iterator<Document> cursor = myQuery("InProceedings", "_id", i.getId());
-				InProceedings inProceedings = Adaptor.toInProceedings(cursor.next());
+				InProceedings inProceedings = AdaptorNoSQL.toInProceedings(cursor.next());
 				for(Person pers : inProceedings.getAuthors()){
 					if(authorsOfProc.contains(pers.getId()) && !resultList.contains(pers.getId())){
 						resultList.add(pers.getId());
@@ -1799,7 +1807,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			writer.println("List of all "+ resultList.size() + " authors that occur as editor in Proceeding as well as in InProceeding as and author:");
 			for(String id : resultList){
 				Iterator<Document> cursor = myQuery("Person", "_id", id);
-				Person person = Adaptor.toPerson(cursor.next());
+				Person person = AdaptorNoSQL.toPerson(cursor.next());
 				
 				writer.println(person.getName());
 			}
@@ -1818,7 +1826,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			int count = 0;
 			String thisQuery = "Query 13";
 			connectToDB();
-			createDB();
+			createDBintern();
 
 			MongoCollection<Document> pers = database.getCollection("Person");
 			FindIterable<Document> person = pers.find(Filters.eq("name", author)).projection(Projections.include("_id"));
@@ -1858,7 +1866,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		List<Publication> allProceedings = getAllProceedings();
 		List<Publication> allInProceedings = getAllInProceedings();
 		connectToDB();
-		createDB();
+		createDBintern();
 
 		for(Publication p: allProceedings){
 			List<String> authorsOfProc = new ArrayList<String>();
@@ -1891,7 +1899,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			writer.println("List of all "+ resultList.size() + " Publishers.....:");
 			for(String id : resultList){
 				Iterator<Document> cursor = myQuery("Publisher", "_id", id);
-				Publisher publisher = Adaptor.toPublisher(cursor.next());
+				Publisher publisher = AdaptorNoSQL.toPublisher(cursor.next());
 				
 				writer.println(publisher.getName());
 			}
@@ -1907,20 +1915,8 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	@Override
 	String getNumberOfPublicationsForPublisher(Publisher name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	Proceedings getProceedingOfInproceeding(InProceedings inProceedings) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	List<String> getAuthorsOfInProceeding(InProceedings inProceeding) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return String.valueOf(name.getPublications().size());
 	}
 
 }

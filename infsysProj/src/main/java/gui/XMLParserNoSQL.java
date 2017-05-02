@@ -22,7 +22,7 @@ import infsysProj.infsysProj.Publication;
 import infsysProj.infsysProj.Publisher;
 import infsysProj.infsysProj.Series;
 
-public class XMLParser {
+public class XMLParserNoSQL {
 
 	private static String xmlFileName = "dblp_filtered.xml";
 	List<Proceedings> readProceedings = new ArrayList<Proceedings>();
@@ -42,16 +42,17 @@ public class XMLParser {
 		System.out.println("Parsing InProceedings...");
 		parseInProceedings(xmlFileName);
 		
-		DatabaseHelper.connectToDB();
-		DatabaseHelper.createDB();
-		DatabaseHelper.addProceedings(readProceedings);
-		DatabaseHelper.addPersons(readPeople);
-		DatabaseHelper.addInProceedings(readInProceedings);
-		DatabaseHelper.addConferences(readConferences);
-		DatabaseHelper.addSeries(readSeries);
-		DatabaseHelper.addPublishers(readPublishers);
-		DatabaseHelper.addConferenceEditions(readConferenceEditions);
-		DatabaseHelper.closeConnectionDB();
+		DatabaseHelperNoSQL dh = (DatabaseHelperNoSQL) DatabaseHelper.get();
+		dh.connectToDB();
+		dh.createDBintern();
+		dh.addProceedings(readProceedings);
+		dh.addPersons(readPeople);
+		dh.addInProceedings(readInProceedings);
+		dh.addConferences(readConferences);
+		dh.addSeries(readSeries);
+		dh.addPublishers(readPublishers);
+		dh.addConferenceEditions(readConferenceEditions);
+		dh.closeConnectionDB();
 		
 	}
 
