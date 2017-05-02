@@ -22,7 +22,7 @@ import infsysProj.infsysProj.Publication;
 import infsysProj.infsysProj.Publisher;
 import infsysProj.infsysProj.Series;
 
-public class XMLParser {
+public class XMLParserZooDB {
 
 	private static String xmlFileName = "dblp_filtered.xml";
 	List<Proceedings> readProceedings = new ArrayList<Proceedings>();
@@ -32,27 +32,23 @@ public class XMLParser {
 	List<ConferenceEdition> readConferenceEditions = new ArrayList<ConferenceEdition>();
 	List<Publisher> readPublishers = new ArrayList<Publisher>();
 	List<Series> readSeries = new ArrayList<Series>();
-	
 
-	
 	public void parse() {
 
 		System.out.println("Parsing Proceedings...");
 		parseProceedings(xmlFileName);
 		System.out.println("Parsing InProceedings...");
+
 		parseInProceedings(xmlFileName);
 		
-		DatabaseHelper.connectToDB();
-		DatabaseHelper.createDB();
-		DatabaseHelper.addProceedings(readProceedings);
-		DatabaseHelper.addPersons(readPeople);
-		DatabaseHelper.addInProceedings(readInProceedings);
-		DatabaseHelper.addConferences(readConferences);
-		DatabaseHelper.addSeries(readSeries);
-		DatabaseHelper.addPublishers(readPublishers);
-		DatabaseHelper.addConferenceEditions(readConferenceEditions);
-		DatabaseHelper.closeConnectionDB();
+		DatabaseHelperZooDB dh = (DatabaseHelperZooDB)DatabaseHelper.get();
 		
+		dh.createDBinternal();
+		dh.openDB();
+		dh.addProceedings(readProceedings);
+		dh.addInProceedings(readInProceedings);
+		dh.closeDB();
+
 	}
 
 	private void parseProceedings(String xmlName) {
@@ -253,8 +249,7 @@ public class XMLParser {
 						inPages = true;
 					} else if (qName.equalsIgnoreCase("year")) {
 						inYear = true;
-					}
-					else if (qName.equalsIgnoreCase("crossref")) {
+					} else if (qName.equalsIgnoreCase("crossref")) {
 						inCrossRef = true;
 					} else if (qName.equalsIgnoreCase("ee")) {
 						inEE = true;
@@ -325,13 +320,10 @@ public class XMLParser {
 		}
 
 	}
-	
-	
+
 	private void addProceeding(Proceedings in, String booktitle, String publisher, String series) {
-		
-		List<Conference> conferences = readConferences.parallelStream()
-		    .filter(a -> Objects.equals(a.getName(), booktitle))
-		    .collect(Collectors.toList());
+
+		List<Conference> conferences = readConferences.parallelStream().filter(a -> Objects.equals(a.getName(), booktitle)).collect(Collectors.toList());
 		Conference conf;
 		ConferenceEdition edition = new ConferenceEdition();
 		if (conferences.isEmpty()) {
@@ -340,12 +332,9 @@ public class XMLParser {
 			edition.setConference(conf);
 			edition.setYear(in.getYear());
 			edition.setProceedings(in);
-			edition.setId(String.valueOf(readConferenceEditions.size()));
-			readConferenceEditions.add(edition);
 			Set<ConferenceEdition> conferenceEditions = new HashSet<ConferenceEdition>();
 			conferenceEditions.add(edition);
 			conf.setEditions(conferenceEditions);
-			conf.setId(String.valueOf(readConferences.size()));
 			readConferences.add(conf);
 
 		} else {
@@ -354,19 +343,13 @@ public class XMLParser {
 			edition.setConference(conf);
 			edition.setYear(in.getYear());
 			edition.setProceedings(in);
-			edition.setId(String.valueOf(readConferenceEditions.size()));
-			readConferenceEditions.add(edition);
 			Set<ConferenceEdition> conferenceEditions = conf.getEditions();
 			conferenceEditions.add(edition);
 			conf.setEditions(conferenceEditions);
 			readConferences.add(conf);
 		}
-		
-		
-		
-		List<Publisher> publishers = readPublishers.parallelStream()
-			    .filter(a -> Objects.equals(a.getName(), publisher))
-			    .collect(Collectors.toList());
+
+		List<Publisher> publishers = readPublishers.parallelStream().filter(a -> Objects.equals(a.getName(), publisher)).collect(Collectors.toList());
 		Publisher pub;
 		if (publishers.isEmpty()) {
 			pub = new Publisher();
@@ -374,7 +357,6 @@ public class XMLParser {
 			Set<Publication> publications = new HashSet<Publication>();
 			publications.add(in);
 			pub.setPublications(publications);
-			pub.setId(String.valueOf(readPublishers.size()));
 			readPublishers.add(pub);
 
 		} else {
@@ -386,9 +368,7 @@ public class XMLParser {
 			readPublishers.add(pub);
 		}
 
-		List<Series> seriesList = readSeries.parallelStream()
-			    .filter(a -> Objects.equals(a.getName(), series))
-			    .collect(Collectors.toList());
+		List<Series> seriesList = readSeries.parallelStream().filter(a -> Objects.equals(a.getName(), series)).collect(Collectors.toList());
 		Series seriesResult;
 		if (seriesList.isEmpty()) {
 			seriesResult = new Series();
@@ -396,7 +376,6 @@ public class XMLParser {
 			Set<Publication> publications = new HashSet<Publication>();
 			publications.add(in);
 			seriesResult.setPublications(publications);
-			seriesResult.setId(String.valueOf(readSeries.size()));
 			readSeries.add(seriesResult);
 
 		} else {
@@ -408,21 +387,17 @@ public class XMLParser {
 			readSeries.add(seriesResult);
 		}
 
-		
 		// Handle authors
 		List<Person> editors = new ArrayList<Person>();
 
 		for (Person p : in.getAuthors()) {
-			List<Person> editorList = readPeople.parallelStream()
-				    .filter(a -> Objects.equals(a.getName(), p.getName()))
-				    .collect(Collectors.toList());
+			List<Person> editorList = readPeople.parallelStream().filter(a -> Objects.equals(a.getName(), p.getName())).collect(Collectors.toList());
 			Person editorResult;
 			if (editorList.isEmpty()) {
 				editorResult = p;
 				Set<Publication> publications = new HashSet<Publication>();
 				publications.add(in);
 				editorResult.setEditedPublications(publications);
-				editorResult.setId(String.valueOf(readPeople.size()));
 				readPeople.add(editorResult);
 
 			} else {
@@ -443,13 +418,11 @@ public class XMLParser {
 		in.setConferenceEdition(edition);
 		readProceedings.add(in);
 	}
-	
+
 	private void addInProceeding(InProceedings in, String crossref) {
-		
+
 		if (crossref != "") {
-			List<Proceedings> proceedings = readProceedings.parallelStream()
-				    .filter(a -> Objects.equals(a.getID(), crossref))
-				    .collect(Collectors.toList());
+			List<Proceedings> proceedings = readProceedings.parallelStream().filter(a -> Objects.equals(a.getID(), crossref)).collect(Collectors.toList());
 			Proceedings proc;
 			if (proceedings.isEmpty()) {
 				System.out.println("Error: Did not find corresponding Proceeding while attempting to add InProceeding to Database. Crossref: " + crossref);
@@ -467,16 +440,13 @@ public class XMLParser {
 
 		List<Person> authors = new ArrayList<Person>();
 		for (Person p : in.getAuthors()) {
-			List<Person> editorObjects = readPeople.parallelStream()
-				    .filter(a -> Objects.equals(a.getName(), p.getName()))
-				    .collect(Collectors.toList());
+			List<Person> editorObjects = readPeople.parallelStream().filter(a -> Objects.equals(a.getName(), p.getName())).collect(Collectors.toList());
 			Person author;
 			if (editorObjects.isEmpty()) {
 				author = p;
 				Set<Publication> publications = new HashSet<Publication>();
 				publications.add(in);
 				author.setAuthoredPublications(publications);
-				author.setId(String.valueOf(readPeople.size()));
 				readPeople.add(author);
 
 			} else {
@@ -490,10 +460,10 @@ public class XMLParser {
 			authors.add(author);
 
 		}
-		//System.out.println("Added InProceeding: " + in.getTitle());
+		// System.out.println("Added InProceeding: " + in.getTitle());
 
 		in.setAuthors(authors);
-		//in.setId(String.valueOf(readInProceedings.size()));
+
 		readInProceedings.add(in);
 	}
 

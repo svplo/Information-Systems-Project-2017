@@ -43,7 +43,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 	
 	public void createDB() {
 		
-		XMLParser xmlparser = new XMLParser();
+		XMLParserZooDB xmlparser = new XMLParserZooDB();
 		xmlparser.parse();
 		
 	}
