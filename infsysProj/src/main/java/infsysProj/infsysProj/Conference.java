@@ -11,22 +11,27 @@ public class Conference extends DomainObject {
 	Set<ConferenceEdition> editions = new HashSet<ConferenceEdition>();
 
 	public String getName() {
+		zooActivateRead();
 		return name;
 	}
 
 	public void setName(String name) {
+		zooActivateWrite();
 		this.name = name;
 	}
 
 	public Set<ConferenceEdition> getEditions() {
+		zooActivateRead();
 		return editions;
 	}
 
 	public void setEditions(Set<ConferenceEdition> editions) {
+		zooActivateWrite();
 		this.editions = editions;
 	}
 
 	public void addEdition(ConferenceEdition edition){
+		zooActivateWrite();
 		editions.add(edition);
 	}
 }

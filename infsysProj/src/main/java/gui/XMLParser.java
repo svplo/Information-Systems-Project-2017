@@ -40,12 +40,14 @@ public class XMLParser {
 		System.out.println("Parsing InProceedings...");
 
 		parseInProceedings(xmlFileName);
-
-		DatabaseHelper.get().createDB();
-		DatabaseHelper.get().openDB();
-		DatabaseHelper.get().addProceedings(readProceedings);
-		DatabaseHelper.get().addInProceedings(readInProceedings);
-		DatabaseHelper.get().closeDB();
+		
+		DatabaseHelperZooDB dh = (DatabaseHelperZooDB)DatabaseHelper.get();
+		
+		dh.createDBinternal();
+		dh.openDB();
+		dh.addProceedings(readProceedings);
+		dh.addInProceedings(readInProceedings);
+		dh.closeDB();
 
 	}
 

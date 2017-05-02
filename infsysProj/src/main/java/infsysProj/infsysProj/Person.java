@@ -37,34 +37,42 @@ public class Person extends DomainObject {
 	}
 
 	public String getName() {
+		zooActivateRead();
 		return name;
 	}
 
 	public void setName(String name) {
+		zooActivateWrite();
 		this.name = name;
 	}
 
 	public Set<Publication> getAuthoredPublications() {
+		zooActivateRead();
 		return authoredPublications;
 	}
 
 	public void setAuthoredPublications(Set<Publication> authoredPublications) {
+		zooActivateWrite();
 		this.authoredPublications = authoredPublications;
 	}
 
 	public Set<Publication> getEditedPublications() {
+		zooActivateRead();
 		return editedPublications;
 	}
 
 	public void setEditedPublications(Set<Publication> editedPublications) {
+		zooActivateWrite();
 		this.editedPublications = editedPublications;
 	}
 	
 	public void addAuthoredPublication(Publication p){
+		zooActivateWrite();
 		this.authoredPublications.add(p);
 	}
 	
 	public void addEditedPublication(Publication p){
+		zooActivateWrite();
 		this.editedPublications.add(p);
 	}
 

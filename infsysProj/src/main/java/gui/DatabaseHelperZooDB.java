@@ -50,9 +50,6 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 	public  void createDBinternal() {
 		
-		XMLParser xmlparser = new XMLParser();
-		xmlparser.parse();
-
 		// remove database if it exists
 		if (ZooHelper.dbExists(dbStandardName)) {
 

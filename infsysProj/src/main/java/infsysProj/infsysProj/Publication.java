@@ -18,38 +18,47 @@ public class Publication extends DomainObject {
 	}
 
 	public String getTitle() {
+		zooActivateRead();
 		return title;
 	}
 
 	public void setTitle(String title) {
+		zooActivateWrite();
 		this.title = title;
 	}
 
 	public List<Person> getAuthors() {
+		zooActivateRead();
 		return authors;
 	}
 
 	public void setAuthors(List<Person> authors) {
+		zooActivateWrite();
 		this.authors = authors;
 	}
 
 	public Integer getYear() {
+		zooActivateRead();
 		return year;
 	}
 
 	public void setYear(int year) {
+		zooActivateWrite();
 		this.year = year;
 	}
 
 	public String getElectronicEdition() {
+		zooActivateRead();
 		return electronicEdition;
 	}
 
 	public void setElectronicEdition(String electronicEdition) {
+		zooActivateWrite();
 		this.electronicEdition = electronicEdition;
 	}
 
 	public void addAuthor(Person p){
+		zooActivateWrite();
 		this.authors.add(p);
 	}
 
