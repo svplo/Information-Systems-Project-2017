@@ -1159,4 +1159,24 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 	}
 
 
+	@Override
+	void openDB() {
+	}
+
+
+	@Override
+	void addProceedings(List<Proceedings> readProceedings) {
+	}
+
+
+	@Override
+	void addInProceedings(List<InProceedings> readInProceedings) {
+	}
+
+
+	@Override
+	void closeDB() {
+	}
+
+
 }

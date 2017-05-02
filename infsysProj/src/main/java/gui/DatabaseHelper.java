@@ -34,11 +34,7 @@ abstract class DatabaseHelper {
 	}
 	
 	public static Database database = Database.ZOODB;
-	
-	public static void setDatabase(Database d){
-		database = d;
-	}
-	
+		
 	public static DatabaseHelper get(){
 		switch(database){
 		case ZOODB:
@@ -123,7 +119,13 @@ abstract class DatabaseHelper {
 		abstract  void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors);
 
 		abstract  void addProceeding(Proceedings newProceeding, List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear);
-				
+			
+		
+		abstract void openDB();
+		abstract void addProceedings(List<Proceedings> readProceedings);
+		abstract void addInProceedings(List<InProceedings> readInProceedings);
+		abstract void closeDB();
+
 		/**
 		 * 
 		 * Queries

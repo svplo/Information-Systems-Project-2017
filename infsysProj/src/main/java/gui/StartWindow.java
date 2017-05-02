@@ -204,8 +204,6 @@ public class StartWindow extends JFrame {
 		final JButton reloadXMLButton = new JButton("Reload XML");
 		reloadXMLButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//XMLParser xmlparser = new XMLParser();
-				//xmlparser.parse();
 				DatabaseHelper.get().createDB();
 			}
 		});
