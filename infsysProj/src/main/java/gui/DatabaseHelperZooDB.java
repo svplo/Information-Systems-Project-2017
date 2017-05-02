@@ -29,19 +29,19 @@ import infsysProj.infsysProj.Publication;
 import infsysProj.infsysProj.Publisher;
 import infsysProj.infsysProj.Series;
 
-public class DatabaseHelperZooDB {
-	private static PersistenceManager pm;
-	private static String dbStandardName = "TheDatabase";
+public class DatabaseHelperZooDB extends DatabaseHelper {
+	private  PersistenceManager pm;
+	private  String dbStandardName = "TheDatabase";
 
-	public static void openDB() {
+	public  void openDB() {
 		pm = ZooJdoHelper.openDB(dbStandardName);
 	}
 
-	public static void closeDB() {
+	public  void closeDB() {
 		closeDB(pm);
 	}
 
-	public static void createDB() {
+	public  void createDB() {
 		// remove database if it exists
 		if (ZooHelper.dbExists(dbStandardName)) {
 
@@ -53,7 +53,7 @@ public class DatabaseHelperZooDB {
 		ZooHelper.createDb(dbStandardName);
 	}
 
-	private static void closeDB(PersistenceManager pm) {
+	private  void closeDB(PersistenceManager pm) {
 		if (pm.currentTransaction().isActive()) {
 			pm.currentTransaction().rollback();
 		}
@@ -63,7 +63,7 @@ public class DatabaseHelperZooDB {
 
 	// TODO
 
-	public static void DeleteProceeding(String proceedingName) {
+	public void deleteProceeding(String proceedingName) {
 		openDB();
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -104,7 +104,7 @@ public class DatabaseHelperZooDB {
 		closeDB();
 	}
 
-	public static Collection<Publication> getAllPublications() {
+	public List<Publication> getAllPublications() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -119,12 +119,12 @@ public class DatabaseHelperZooDB {
 		return allPublications;
 	}
 
-	public static Collection<Proceedings> getAllProceedings() {
+	public  List<Publication> getAllProceedings() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
 		Extent<Proceedings> ext = pm.getExtent(Proceedings.class);
-		List<Proceedings> allPublications = new ArrayList<Proceedings>();
+		List<Publication> allPublications = new ArrayList<Publication>();
 		for (Proceedings p : ext) {
 			allPublications.add(p);
 		}
@@ -134,7 +134,7 @@ public class DatabaseHelperZooDB {
 		return allPublications;
 	}
 
-	public static String getPublisherName(String proceedingName) {
+	public  String getPublisherName(String proceedingName) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -155,7 +155,7 @@ public class DatabaseHelperZooDB {
 		return result;
 	}
 
-	public static String getSeriesName(String proceedingName) {
+	public  String getSeriesName(String proceedingName) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -176,7 +176,7 @@ public class DatabaseHelperZooDB {
 		return result;
 	}
 
-	public static String getConferenceName(String proceedingName) {
+	public  String getConferenceName(String proceedingName) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -197,7 +197,7 @@ public class DatabaseHelperZooDB {
 		return result;
 	}
 
-	public static String getConferenceEditionName(ConferenceEdition proceedingName) {
+	public  String getConferenceEditionName(ConferenceEdition proceedingName) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -210,7 +210,7 @@ public class DatabaseHelperZooDB {
 		return result;
 	}
 
-	public static String getConferenceEditionProceeding(ConferenceEdition proceedingName) {
+	public  String getConferenceEditionProceeding(ConferenceEdition proceedingName) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -222,7 +222,7 @@ public class DatabaseHelperZooDB {
 		return result;
 	}
 
-	public static String getConferenceYear(String proceedingName) {
+	public  String getConferenceYear(String proceedingName) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -244,7 +244,7 @@ public class DatabaseHelperZooDB {
 		return result;
 	}
 
-	public static List<String> getAuthorsOfProceedings(String proceedingsName) {
+	public  List<String> getAuthorsOfProceedings(String proceedingsName) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -266,7 +266,7 @@ public class DatabaseHelperZooDB {
 		return result;
 	}
 
-	public static List<String> getInProceedingsOfProceedings(String proceedingName) {
+	public  List<String> getInProceedingsOfProceedings(String proceedingName) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -289,7 +289,7 @@ public class DatabaseHelperZooDB {
 		return result;
 	}
 
-	public static List<String> getAuthoredPublicationsForPerson(String personName) {
+	public  List<String> getAuthoredPublicationsForPerson(String personName) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -309,7 +309,7 @@ public class DatabaseHelperZooDB {
 		return result;
 	}
 
-	public static List<String> getEditedPublicationsForPerson(String personName) {
+	public  List<String> getEditedPublicationsForPerson(String personName) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -329,12 +329,12 @@ public class DatabaseHelperZooDB {
 		return result;
 	}
 
-	public static Collection<InProceedings> getAllInProceedings() {
+	public  List<Publication> getAllInProceedings() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
 		Extent<InProceedings> ext = pm.getExtent(InProceedings.class);
-		List<InProceedings> allPublications = new ArrayList<InProceedings>();
+		List<Publication> allPublications = new ArrayList<Publication>();
 		for (InProceedings p : ext) {
 			allPublications.add(p);
 		}
@@ -344,7 +344,7 @@ public class DatabaseHelperZooDB {
 		return allPublications;
 	}
 
-	public static List<Publication> searchForPublication(String search) {
+	public  List<Publication> searchForPublication(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -364,7 +364,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static List<Person> searchForPeople(String search) {
+	public  List<Person> searchForPeople(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -383,7 +383,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static List<Conference> searchForConference(String search) {
+	public  List<Conference> searchForConference(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -402,7 +402,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static List<Series> searchForSeries(String search) {
+	public  List<Series> searchForSeries(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -421,7 +421,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static List<ConferenceEdition> searchForConferenceEdition(String search) {
+	public  List<ConferenceEdition> searchForConferenceEdition(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -440,7 +440,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static List<Publisher> searchForPublisher(String search) {
+	public  List<Publisher> searchForPublisher(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -459,7 +459,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static List<Publication> searchForProceedings(String search) {
+	public  List<Publication> searchForProceedings(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -479,7 +479,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static List<Publication> searchForInProceedings(String search) {
+	public  List<Publication> searchForInProceedings(String search) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -499,7 +499,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static void deletePerson(String personName) {
+	public  void deletePerson(String personName) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -546,7 +546,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static void updatePerson(String personName, String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications) {
+	public  void updatePerson(String personName, String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -644,7 +644,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static void addPerson(String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications) {
+	public  void addPerson(String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications) {
 
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -709,7 +709,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static String getProceedingsName(String inProceedingTitle) {
+	public  String getProceedingsName(String inProceedingTitle) {
 
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -735,7 +735,7 @@ public class DatabaseHelperZooDB {
 		return result;
 	}
 
-	public static List<String> getAuthorsOfInProceeding(String inProceedingTitle) {
+	public  List<String> getAuthorsOfInProceeding(String inProceedingTitle) {
 
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -760,7 +760,7 @@ public class DatabaseHelperZooDB {
 		return result;
 	}
 
-	public static void deleteInProceeding(String title) {
+	public  void deleteInProceeding(String title) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -810,7 +810,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static void addInProceedings(List<InProceedings> list) {
+	public  void addInProceedings(List<InProceedings> list) {
 
 		pm.setMultithreaded(true);
 
@@ -830,7 +830,7 @@ public class DatabaseHelperZooDB {
 		System.out.println("All InProceedings added to Database");
 	}
 
-	public static void updateInProceeding(String name, InProceedings newInProc, String proceedingsName, List<String> authors) {
+	public  void updateInProceeding(String name, InProceedings newInProc, String proceedingsName, List<String> authors) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -925,7 +925,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static void updateProceeding(String name, Proceedings newProc, List<String> authors, List<String> inProceedings, String publisherName, String seriesName, String conf, int confEdition) {
+	public  void updateProceeding(String name, Proceedings newProc, List<String> authors, List<String> inProceedings, String publisherName, String seriesName, String conf, int confEdition) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -1140,7 +1140,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static void addProceeding(Proceedings newProc, List<String> authors, List<String> inProceedings, String publisherName, String seriesName, String conf, int confEdition) {
+	public  void addProceeding(Proceedings newProc, List<String> authors, List<String> inProceedings, String publisherName, String seriesName, String conf, int confEdition) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -1274,7 +1274,7 @@ public class DatabaseHelperZooDB {
 
 	}
 
-	public static void addInProceeding(InProceedings newInProc, String proceedingsName, List<String> authors) {
+	public  void addInProceeding(InProceedings newInProc, String proceedingsName, List<String> authors) {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -1336,7 +1336,7 @@ public class DatabaseHelperZooDB {
 		closeDB(pm);
 	}
 
-	public static void addProceedings(List<Proceedings> list) {
+	public  void addProceedings(List<Proceedings> list) {
 
 		pm.setMultithreaded(true);
 
@@ -1355,7 +1355,7 @@ public class DatabaseHelperZooDB {
 		System.out.println("All Proceedings added to Database");
 	}
 
-	public static Collection<Person> getAllPeople() {
+	public  List<Person> getAllPeople() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -1370,7 +1370,7 @@ public class DatabaseHelperZooDB {
 		return allPeople;
 	}
 
-	public static Collection<Conference> getAllConference() {
+	public  List<Conference> getAllConference() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -1385,7 +1385,7 @@ public class DatabaseHelperZooDB {
 		return allConference;
 	}
 
-	public static Collection<Publisher> getAllPublisher() {
+	public  List<Publisher> getAllPublisher() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -1400,7 +1400,7 @@ public class DatabaseHelperZooDB {
 		return allPublisher;
 	}
 
-	public static Collection<Series> getAllSeries() {
+	public  List<Series> getAllSeries() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -1415,7 +1415,7 @@ public class DatabaseHelperZooDB {
 		return allSeries;
 	}
 
-	public static Collection<ConferenceEdition> getAllConferenceEdition() {
+	public  List<ConferenceEdition> getAllConferenceEdition() {
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 
@@ -1431,7 +1431,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// find publication by key (according to xml file)
-	public static void query1(String id) {
+	public  void query1(String id) {
 		String thisQuery = "Query 1";
 		openDB();
 		pm.currentTransaction().begin();
@@ -1458,7 +1458,7 @@ public class DatabaseHelperZooDB {
 
 	// find publication by object id (database)
 	// try 4197 (note: solution changes every time you reload database)
-	public static void query1Alter(Integer oid) {
+	public  void query1Alter(Integer oid) {
 		String thisQuery = "Query 1 (alternative)";
 		openDB();
 		pm.currentTransaction().begin();
@@ -1481,7 +1481,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// Find publications by title, returning only a subset of all found publications
-	public static void query2(String title, int startOffset, int endOffset) {
+	public  void query2(String title, int startOffset, int endOffset) {
 		String thisQuery = "Query 2";
 
 		openDB();
@@ -1511,7 +1511,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// Find publications by title, returning only a subset of all found publications ORDERED by title
-	public static void query3(String title, int startOffset, int endOffset) {
+	public  void query3(String title, int startOffset, int endOffset) {
 		String thisQuery = "Query 3";
 
 		openDB();
@@ -1551,7 +1551,7 @@ public class DatabaseHelperZooDB {
 	 */
 
 	// returns name of the co-authors of a given author
-	public static void query4(String author) {
+	public  void query4(String author) {
 		String thisQuery = "Query 4";
 
 		openDB();
@@ -1604,7 +1604,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// distance between 2 authors
-	public static void query5(String author1, String author2) {
+	public  void query5(String author1, String author2) {
 		String thisQuery = "Query 5";
 		openDB();
 		pm.currentTransaction().begin();
@@ -1706,7 +1706,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// global average of authors / publication (InProceedings + Proceedings)
-	public static void query6() {
+	public  void query6() {
 		String thisQuery = "Query 6";
 		openDB();
 		pm.currentTransaction().begin();
@@ -1735,7 +1735,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// Returns the number of publications per year between the interval year1 and year 2
-	public static void query7(int year1, int year2) {
+	public  void query7(int year1, int year2) {
 		String thisQuery = "Query 7";
 		openDB();
 		pm.currentTransaction().begin();
@@ -1782,7 +1782,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// No of all publications of a conference, except proceedings
-	public static void query8(String conferenceName) {
+	public  void query8(String conferenceName) {
 		String thisQuery = "Query 8";
 		String resultStr = "";
 		openDB();
@@ -1824,7 +1824,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// count all people involved in a given conference
-	public static void query9(String conferenceName) {
+	public  void query9(String conferenceName) {
 		String thisQuery = "Query 9";
 		String resultStr = "";
 		openDB();
@@ -1874,7 +1874,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// all authors of conferenceName
-	public static void query10(String conferenceName) {
+	public  void query10(String conferenceName) {
 		String thisQuery = "Query 10";
 		openDB();
 		pm.currentTransaction().begin();
@@ -1926,7 +1926,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// all publications of conferenceName
-	public static void query11(String conferenceName) {
+	public  void query11(String conferenceName) {
 		String thisQuery = "Query 11";
 		openDB();
 		pm.currentTransaction().begin();
@@ -1966,7 +1966,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// list of persons which were authors of an in proceeding and editor of the corresponding proceeding.
-	public static void query12() {
+	public  void query12() {
 		String thisQuery = "Query 12";
 		openDB();
 		pm.currentTransaction().begin();
@@ -2000,7 +2000,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// list of in proceedings where the given author appears as the last author
-	public static void query13(String authorName) {
+	public  void query13(String authorName) {
 		String thisQuery = "Query 13";
 		openDB();
 		pm.currentTransaction().begin();
@@ -2043,7 +2043,7 @@ public class DatabaseHelperZooDB {
 	}
 
 	// list of publishers (Proceedings) whose authors appear in any in proceedings between year1 and year2
-	public static void query14(int year1, int year2) {
+	public  void query14(int year1, int year2) {
 		String thisQuery = "Query 14";
 		openDB();
 		pm.currentTransaction().begin();
@@ -2085,6 +2085,23 @@ public class DatabaseHelperZooDB {
 			System.out.println("Could not print to file.");
 		}
 		closeDB();
+	}
+
+	@Override
+	String getNumberOfPublicationsForPublisher(Publisher name) {
+		return String.valueOf(name.getPublications().size());
+	}
+
+	@Override
+	Proceedings getProceedingOfInproceeding(InProceedings inProceedings) {
+		Proceedings result = new Proceedings();
+		result.setTitle(getProceedingsName(inProceedings.getTitle()));
+		return result;
+	}
+
+	@Override
+	List<String> getAuthorsOfInProceeding(InProceedings inProceeding) {
+		return getAuthorsOfInProceeding(inProceeding.getTitle());
 	}
 
 }

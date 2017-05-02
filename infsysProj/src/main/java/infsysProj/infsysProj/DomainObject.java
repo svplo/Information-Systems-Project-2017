@@ -1,11 +1,12 @@
 package infsysProj.infsysProj;
 
+import org.zoodb.api.impl.ZooPC;
 
 /**
  * The base class for all domain objects.
  */
 
-public class DomainObject  {
+public class DomainObject extends ZooPC  {
 
 	String id;
 

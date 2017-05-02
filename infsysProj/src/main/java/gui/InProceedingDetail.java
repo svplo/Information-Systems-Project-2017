@@ -284,7 +284,7 @@ public class InProceedingDetail extends MyJFrame {
 		txtProceeding = new JTextField();
 		txtProceeding.setEditable(false);
 		if(this.inProceeding.getProceedings() != null){
-			proceedingsName = DatabaseHelper.get().getProceedingOfInproceeding(this.inProceeding.getProceedings().getID()).getTitle();
+			proceedingsName = DatabaseHelper.get().getProceedingOfInproceeding(this.inProceeding).getTitle();
 		}
 		else{
 			proceedingsName = "";

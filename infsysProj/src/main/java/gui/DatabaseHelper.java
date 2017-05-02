@@ -33,7 +33,7 @@ abstract class DatabaseHelper {
 
 	}
 	
-	public static Database database = Database.BASEX;
+	public static Database database = Database.ZOODB;
 	
 	public static void setDatabase(Database d){
 		database = d;
@@ -42,7 +42,7 @@ abstract class DatabaseHelper {
 	public static DatabaseHelper get(){
 		switch(database){
 		case ZOODB:
-			return new DatabaseHelperBaseX();
+			return new DatabaseHelperZooDB();
 		case BASEX:
 			return new DatabaseHelperBaseX();
 		case NOSQL:
@@ -70,7 +70,7 @@ abstract class DatabaseHelper {
 
 		abstract  List<ConferenceEdition> getAllConferenceEdition();
 
-		abstract  String getNumberOfPublicationsForPublisher(String name);
+		abstract  String getNumberOfPublicationsForPublisher(Publisher name);
 
 		abstract  String getConferenceName(String proceedingName);
 
@@ -86,7 +86,7 @@ abstract class DatabaseHelper {
 		
 		abstract  List<String> getEditedPublicationsForPerson(String personName);
 		
-		abstract  Proceedings getProceedingOfInproceeding(String proceedingsID);
+		abstract  Proceedings getProceedingOfInproceeding(InProceedings inProceedings);
 
 		abstract  List<String> getAuthorsOfInProceeding(InProceedings inProceeding);
 

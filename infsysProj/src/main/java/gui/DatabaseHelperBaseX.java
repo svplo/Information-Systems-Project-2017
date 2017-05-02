@@ -239,9 +239,9 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 		return result;
 	}
 
-	public  String getNumberOfPublicationsForPublisher(String name) {
+	public  String getNumberOfPublicationsForPublisher(Publisher name) {
 		connectToDB();
-		String query = "count(root/proceedings[publisher = \"" + name + "\"])";
+		String query = "count(root/proceedings[publisher = \"" + name.getName() + "\"])";
 		String result = myQuery(query).get(0);
 
 		closeConnectionDB();
@@ -319,11 +319,10 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 		return result;
 	}
 
-	public  Proceedings getProceedingOfInproceeding(String proceedingsID) {
+	public  Proceedings getProceedingOfInproceeding(InProceedings inProceedings) {
 		connectToDB();
 
-		p(proceedingsID);
-		String query = "/root/proceedings[@key = \"" + escape(proceedingsID) + "\"]";
+		String query = "/root/proceedings[@key = \"" + escape(inProceedings.getProceedings().getId()) + "\"]";
 		List<Publication> result =(List<Publication>)(List<?>) myQuery(query, Proceedings.class);
 
 		System.out.println(result.get(0).getTitle());
@@ -1158,4 +1157,6 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 		}
 		closeConnectionDB();
 	}
+
+
 }
