@@ -142,7 +142,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		return allPublications;
 	}
 
-	public  String getPublisherName(String proceedingName) {
+	public String getPublisherName(Proceedings proceeding) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -150,10 +150,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		query.setFilter("title == a");
 		query.declareParameters("String a");
 
-		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceedingName);
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceeding.getTitle());
 		String result = null;
 		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + proceedingName);
+			System.out.println("Error: Did not find a publication with ID: " + proceeding.getTitle());
 
 		} else {
 			result = proceedings.iterator().next().getPublisher().getName();
@@ -163,7 +163,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		return result;
 	}
 
-	public  String getSeriesName(String proceedingName) {
+	public  String getSeriesName(Proceedings proceeding) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -171,10 +171,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		query.setFilter("title == a");
 		query.declareParameters("String a");
 
-		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceedingName);
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceeding);
 		String result = null;
 		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with name: " + proceedingName);
+			System.out.println("Error: Did not find a publication with name: " + proceeding);
 
 		} else {
 			result = proceedings.iterator().next().getSeries().getName();
@@ -252,7 +252,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		return result;
 	}
 
-	public  List<String> getAuthorsOfProceedings(String proceedingsName) {
+	public  List<String> getAuthorsOfProceeding(Proceedings proceeding) {
 		openDB();
 		pm.currentTransaction().begin();
 
@@ -260,10 +260,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		query.setFilter("title == a");
 		query.declareParameters("String a");
 
-		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceedingsName);
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceeding.getTitle());
 		List<String> result = new ArrayList<String>();
 		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + proceedingsName);
+			System.out.println("Error: Did not find a publication with ID: " + proceeding.getTitle());
 
 		} else {
 			for (Person i : proceedings.iterator().next().getAuthors()) {
@@ -274,18 +274,18 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		return result;
 	}
 
-	public  List<String> getInProceedingsOfProceedings(String proceedingName) {
+	public  List<String> getInProceedingsOfProceedings(String proceedingID) {
 		openDB();
 		pm.currentTransaction().begin();
 
 		Query query = pm.newQuery(Proceedings.class);
-		query.setFilter("title == a");
+		query.setFilter("id == a");
 		query.declareParameters("String a");
 
-		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceedingName);
+		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(proceedingID);
 		List<String> result = new ArrayList<String>();
 		if (proceedings.isEmpty()) {
-			System.out.println("Error: Did not find a publication with ID: " + proceedingName);
+			System.out.println("Error: Did not find a publication with ID: " + proceedingID);
 
 		} else {
 			for (InProceedings i : proceedings.iterator().next().getInProceedings()) {

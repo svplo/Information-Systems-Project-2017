@@ -85,6 +85,11 @@ abstract class DatabaseHelper {
 		abstract  Proceedings getProceedingOfInproceeding(InProceedings inProceedings);
 
 		abstract  List<String> getAuthorsOfInProceeding(InProceedings inProceeding);
+		
+		abstract  List<String> getAuthorsOfProceeding(Proceedings proceeding);
+		abstract String getPublisherName(Proceedings proceeding);
+		abstract  String getSeriesName(Proceedings proceeding);
+
 
 		abstract  List<Publication> searchForPublication(String search);
 

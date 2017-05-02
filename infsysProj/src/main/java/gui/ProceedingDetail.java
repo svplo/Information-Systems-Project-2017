@@ -188,10 +188,8 @@ public class ProceedingDetail extends MyJFrame {
 		contentPane.add(txtTitle, c);
 
 		//Load the Authors from DB
+		authors = DatabaseHelper.get().getAuthorsOfProceeding(proceeding);
 
-		for(Person p : proceeding.getAuthors()){
-			authors.add(p.getName());
-		}
 		//authors = DatabaseHelper.getAuthorsOfProceedings(proceeding.getTitle());
 
 		lblAuthors = new JLabel("Authors(" + authors.size() + ")");
@@ -411,7 +409,7 @@ public class ProceedingDetail extends MyJFrame {
 		txtPublisher = new JTextField();
 		txtPublisher.setEditable(false);
 		if(proceeding.getPublisher() != null){
-			txtPublisher.setText(proceeding.getPublisher().getName());
+			txtPublisher.setText(DatabaseHelper.get().getPublisherName(proceeding));
 		}
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 10;
@@ -480,7 +478,7 @@ public class ProceedingDetail extends MyJFrame {
 		txtSeries = new JTextField();
 		txtSeries.setEditable(false);
 		if(proceeding.getSeries() != null){
-			txtSeries.setText(proceeding.getSeries().getName());
+			txtSeries.setText(DatabaseHelper.get().getSeriesName(proceeding));
 		}
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;

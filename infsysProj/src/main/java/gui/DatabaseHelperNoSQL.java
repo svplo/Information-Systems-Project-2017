@@ -48,6 +48,8 @@ import infsysProj.infsysProj.Publication;
 import infsysProj.infsysProj.Publisher;
 import infsysProj.infsysProj.Series;
 
+
+//Run the following command to open the database localhost: C:\Program Files\MongoDB\Server\3.4\bin>mongod.exe
 public class DatabaseHelperNoSQL extends DatabaseHelper{
 	private MongoDatabase database;
 	private String dbStandardName = "TheNoSQLDatabase16";
@@ -280,11 +282,11 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		return String.valueOf(confE.getYear());
 	}
 
-	public List<String> getAuthorsOfProceedings(String proceedingName) {
+	public List<String> getAuthorsOfProceeding(Proceedings proceeding) {
 		connectToDB();
 		createDBintern();
 		
-		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
+		Iterator<Document> cursor = myQuery("Proceedings", "title", proceeding.getTitle());
 		Proceedings proc = AdaptorNoSQL.toProceeding(cursor.next());
 
 		List<String> result = new ArrayList<String>();
@@ -1917,6 +1919,17 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	String getNumberOfPublicationsForPublisher(Publisher name) {
 		
 		return String.valueOf(name.getPublications().size());
+	}
+
+	@Override
+	String getPublisherName(Proceedings proceeding) {
+		
+		return proceeding.getPublisher().getName();
+	}
+
+	@Override
+	String getSeriesName(Proceedings proceeding) {
+		return proceeding.getSeries().getName();
 	}
 
 }

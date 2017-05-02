@@ -1159,5 +1159,28 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 	}
 
 
+	@Override
+	List<String> getAuthorsOfProceeding(Proceedings proceeding) {
+		
+		List<String> authors = new ArrayList<String>();
+		for(Person p : proceeding.getAuthors()){
+			authors.add(p.getName());
+		}
+
+		return authors;
+	}
+
+
+	@Override
+	String getPublisherName(Proceedings proceeding) {
+		
+		return proceeding.getPublisher().getName();
+	}
+
+	@Override
+	String getSeriesName(Proceedings proceeding) {
+		return proceeding.getSeries().getName();
+	}
+
 
 }
