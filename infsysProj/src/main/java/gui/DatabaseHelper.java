@@ -42,7 +42,7 @@ abstract class DatabaseHelper {
 		case BASEX:
 			return new DatabaseHelperBaseX();
 		case NOSQL:
-			return new DatabaseHelperBaseX();
+			return new DatabaseHelperNoSQL();
 		default:
 			return null;
 		}

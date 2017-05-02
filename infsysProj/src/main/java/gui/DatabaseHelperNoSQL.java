@@ -14,11 +14,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.xml.sax.SAXException;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
@@ -45,13 +48,13 @@ import infsysProj.infsysProj.Publication;
 import infsysProj.infsysProj.Publisher;
 import infsysProj.infsysProj.Series;
 
-public class DatabaseHelper {
-	private static MongoDatabase database;
-	private static String dbStandardName = "TheNoSQLDatabase16";
-	private static MongoClient mongoClient;
+public class DatabaseHelperNoSQL extends DatabaseHelper{
+	private MongoDatabase database;
+	private String dbStandardName = "TheNoSQLDatabase16";
+	private MongoClient mongoClient;
 
 	// source: http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/quick-tour/
-	public static void connectToDB() {
+	public void connectToDB() {
 		// if using the default port
 		// mongoClient = new MongoClient();
 		// MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
@@ -68,22 +71,22 @@ public class DatabaseHelper {
 		// DB db = mongoClient.getDB( "mydb" );
 	}
 
-	public static void closeConnectionDB() {
+	public void closeConnectionDB() {
 		mongoClient.close();
 	}
 
-	public static void createDB() {
+	public void createDB() {
 		// database will be created automatically if it does not exist
 		database = mongoClient.getDatabase(dbStandardName);
 	}
 
-	public static List<Publication> getAllPublications() {
+	public List<Publication> getAllPublications() {
 		List<Publication> result = getAllInProceedings();
 		result.addAll(getAllProceedings());
 		return result;
 	}
 
-	public static List<Publication> getAllProceedings() {
+	public List<Publication> getAllProceedings() {
 		connectToDB();
 		createDB();
 
@@ -102,7 +105,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<Person> getAllPeople() {
+	public List<Person> getAllPeople() {
 		connectToDB();
 		createDB();
 
@@ -121,7 +124,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<Conference> getAllConference() {
+	public List<Conference> getAllConference() {
 		connectToDB();
 		createDB();
 
@@ -140,7 +143,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<Series> getAllSeries() {
+	public List<Series> getAllSeries() {
 		connectToDB();
 		createDB();
 
@@ -159,7 +162,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<Publisher> getAllPublisher() {
+	public List<Publisher> getAllPublisher() {
 		connectToDB();
 		createDB();
 
@@ -178,7 +181,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<ConferenceEdition> getAllConferenceEdition() {
+	public List<ConferenceEdition> getAllConferenceEdition() {
 		connectToDB();
 		createDB();
 
@@ -197,21 +200,21 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static String getPublisherName(String proceedingName) {
+	public String getPublisherName(String proceedingName) {
 		DatabaseHelper.connectToDB();
 
 		DatabaseHelper.closeConnectionDB();
 		return "";
 	}
 
-	public static String getSeriesName(String proceedingName) {
+	public String getSeriesName(String proceedingName) {
 		DatabaseHelper.connectToDB();
 
 		DatabaseHelper.closeConnectionDB();
 		return "";
 	}
 
-	public static String getConferenceName(String proceedingName) {
+	public String getConferenceName(String proceedingName) {
 		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
 		Iterator<Document> cursor = myQuery("Proceedings", "title", proceedingName);
@@ -228,7 +231,7 @@ public class DatabaseHelper {
 		return conf.getName();
 	}
 
-	public static String getConferenceEditionName(ConferenceEdition edition) {
+	public String getConferenceEditionName(ConferenceEdition edition) {
 		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
 		
@@ -241,7 +244,7 @@ public class DatabaseHelper {
 		return conf.getName();
 	}
 
-	public static String getConferenceEditionProceeding(ConferenceEdition edition) {
+	public String getConferenceEditionProceeding(ConferenceEdition edition) {
 		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
 		
@@ -254,7 +257,7 @@ public class DatabaseHelper {
 		return proc.getTitle();
 	}
 
-	public static String getConferenceYear(String proceedingName) {
+	public String getConferenceYear(String proceedingName) {
 		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
 		
@@ -269,7 +272,7 @@ public class DatabaseHelper {
 		return String.valueOf(confE.getYear());
 	}
 
-	public static List<String> getAuthorsOfProceedings(String proceedingName) {
+	public List<String> getAuthorsOfProceedings(String proceedingName) {
 		DatabaseHelper.connectToDB();
 		DatabaseHelper.createDB();
 		
@@ -287,7 +290,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<String> getIDCollection(Document doc, String key) {
+	public List<String> getIDCollection(Document doc, String key) {
 		List<String> IDs = new ArrayList<String>();
 
 		List<Document> inProceedingsIDsDoc = ((List<Document>) doc.get(key));
@@ -297,7 +300,7 @@ public class DatabaseHelper {
 		return IDs;
 	}
 
-	public static List<String> getInProceedingsOfProceedings(String proceedingId) {
+	public List<String> getInProceedingsOfProceedings(String proceedingId) {
 
 		connectToDB();
 		createDB();
@@ -319,7 +322,7 @@ public class DatabaseHelper {
 
 	}
 
-	public static List<String> getAuthoredPublicationsForPerson(String personName) {
+	public List<String> getAuthoredPublicationsForPerson(String personName) {
 		DatabaseHelper.connectToDB();
 		createDB();
 
@@ -339,7 +342,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<String> getEditedPublicationsForPerson(String personName) {
+	public List<String> getEditedPublicationsForPerson(String personName) {
 		DatabaseHelper.connectToDB();
 		createDB();
 
@@ -359,7 +362,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<Publication> getAllInProceedings() {
+	public List<Publication> getAllInProceedings() {
 		connectToDB();
 		createDB();
 
@@ -378,14 +381,14 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<Publication> searchForPublication(String search) {
+	public List<Publication> searchForPublication(String search) {
 		List<Publication> result = searchForProceedings(search);
 		result.addAll(searchForInProceedings(search));
 		return result;
 
 	}
 
-	public static List<Person> searchForPeople(String search) {
+	public List<Person> searchForPeople(String search) {
 		connectToDB();
 		createDB();
 
@@ -405,7 +408,7 @@ public class DatabaseHelper {
 
 	}
 
-	public static List<Conference> searchForConference(String search) {
+	public List<Conference> searchForConference(String search) {
 		connectToDB();
 		createDB();
 
@@ -424,7 +427,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<Series> searchForSeries(String search) {
+	public List<Series> searchForSeries(String search) {
 		connectToDB();
 		createDB();
 
@@ -443,7 +446,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<ConferenceEdition> searchForConferenceEdition(String search) {
+	public List<ConferenceEdition> searchForConferenceEdition(String search) {
 		connectToDB();
 		createDB();
 
@@ -463,7 +466,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<Publisher> searchForPublisher(String search) {
+	public List<Publisher> searchForPublisher(String search) {
 		connectToDB();
 		createDB();
 
@@ -482,7 +485,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<Publication> searchForProceedings(String search) {
+	public List<Publication> searchForProceedings(String search) {
 		connectToDB();
 		createDB();
 
@@ -502,7 +505,7 @@ public class DatabaseHelper {
 
 	}
 
-	public static List<Publication> searchForInProceedings(String search) {
+	public List<Publication> searchForInProceedings(String search) {
 		connectToDB();
 		createDB();
 
@@ -521,7 +524,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static void addInProceedings(List<InProceedings> list) {
+	public void addInProceedings(List<InProceedings> list) {
 		MongoCollection<Document> collection = database.getCollection("InProceedings");
 		int length = list.size();
 		List<Document> documents = new ArrayList<Document>();
@@ -540,7 +543,7 @@ public class DatabaseHelper {
 		System.out.println("All InProceedings added to Database");
 	}
 
-	public static void addPersons(List<Person> list) {
+	public void addPersons(List<Person> list) {
 		// Add Persons
 		MongoCollection<Document> collection = database.getCollection("Person");
 		int length = list.size();
@@ -556,7 +559,7 @@ public class DatabaseHelper {
 
 	}
 
-	public static void addSeries(List<Series> list) {
+	public void addSeries(List<Series> list) {
 		// Add Series
 		MongoCollection<Document> collection = database.getCollection("Series");
 		int length = list.size();
@@ -572,7 +575,7 @@ public class DatabaseHelper {
 
 	}
 
-	public static void addPublishers(List<Publisher> list) {
+	public void addPublishers(List<Publisher> list) {
 		// Add Publisher
 		MongoCollection<Document> collection = database.getCollection("Publisher");
 		int length = list.size();
@@ -588,7 +591,7 @@ public class DatabaseHelper {
 
 	}
 
-	public static void addConferences(List<Conference> list) {
+	public void addConferences(List<Conference> list) {
 		// Add Conference
 		MongoCollection<Document> collection = database.getCollection("Conference");
 		int length = list.size();
@@ -604,7 +607,7 @@ public class DatabaseHelper {
 
 	}
 
-	public static void addConferenceEditions(List<ConferenceEdition> list) {
+	public void addConferenceEditions(List<ConferenceEdition> list) {
 		// Add Conference Editions
 		MongoCollection<Document> collection = database.getCollection("ConferenceEdition");
 		int length = list.size();
@@ -623,7 +626,7 @@ public class DatabaseHelper {
 	/*
 	 * Person Add/Del/Upd
 	 */
-	public static void addProceedings(List<Proceedings> list) {
+	public void addProceedings(List<Proceedings> list) {
 
 		// Add Proceedings
 		MongoCollection<Document> collection = database.getCollection("Proceedings");
@@ -645,7 +648,7 @@ public class DatabaseHelper {
 
 	}
 
-	public static void myDelete(String collection, String key, String compareString) {
+	public void myDelete(String collection, String key, String compareString) {
 
 		BasicDBObject find = new BasicDBObject();
 		find.put(key, compareString);
@@ -654,7 +657,7 @@ public class DatabaseHelper {
 
 	}
 
-	public static Iterator<Document> myQuery(String collection, String key, String compareString) {
+	public Iterator<Document> myQuery(String collection, String key, String compareString) {
 
 		BasicDBObject whereQuery = new BasicDBObject();
 		whereQuery.put(key, compareString);
@@ -665,7 +668,7 @@ public class DatabaseHelper {
 
 	}
 	
-	public static void myInsert(String collection, Document doc){
+	public void myInsert(String collection, Document doc){
 		
 		MongoCollection<Document> coll = database.getCollection(collection);
 		coll.insertOne(doc);
@@ -673,7 +676,7 @@ public class DatabaseHelper {
 	}
 
 	
-	public static void myReplacement(String collection, String key, String compareString, Document doc){
+	public void myReplacement(String collection, String key, String compareString, Document doc){
 		
 		BasicDBObject find = new BasicDBObject();
 		find.put(key, compareString);
@@ -682,7 +685,7 @@ public class DatabaseHelper {
 
 	}
 
-	public static void updatePerson(String id, String name, List<String> authoredPublications, List<String> editedPublications) {
+	public void updatePerson(String id, String name, List<String> authoredPublications, List<String> editedPublications) {
 		connectToDB();
 		createDB();
 
@@ -745,7 +748,7 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 
-	public static void deletePerson(String id) {
+	public void deletePerson(String id) {
 		connectToDB();
 		createDB();
 
@@ -783,14 +786,14 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 
-	public static void updateProceeding(String title,Proceedings newProc,List<String> authors,List<String> inProcNames, String publisherName, String seriesName, String conferenceName,int confYear){
+	public void updateProceeding(String title,Proceedings newProc,List<String> authors,List<String> inProcNames, String publisherName, String seriesName, String conferenceName,int confYear){
 		
 		deleteProceeding(title);
 		addProceeding(newProc,authors,inProcNames,publisherName,seriesName,conferenceName,confYear);
 	}
 
 	
-	public static void deleteProceeding(String title) {
+	public void deleteProceeding(String title) {
 		connectToDB();
 		createDB();
 		
@@ -872,7 +875,7 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 
-	public static void addPerson(String newName, List<String> authoredPublications, List<String> editedPublications) {
+	public void addPerson(String newName, List<String> authoredPublications, List<String> editedPublications) {
 		connectToDB();
 		createDB();
 		String id = (new ObjectId()).toString();
@@ -917,14 +920,14 @@ public class DatabaseHelper {
 	 * InProceedings stuff
 	 */
 
-	public static String getID(Document doc, String key) {
+	public String getID(Document doc, String key) {
 		// TODO Maybe someone know how to get _id of sub document
 
 		DBObject refer = (DBObject) doc.get(key);
 		return ((String) refer.get("_id"));
 	}
 
-	public static Proceedings getProceedingOfInproceeding(String InProceedingId) {
+	public Proceedings getProceedingOfInproceeding(String InProceedingId) {
 		connectToDB();
 		createDB();
 		InProceedings p;
@@ -945,7 +948,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static List<String> getAuthorsOfInProceeding(String inProceedingId) {
+	public List<String> getAuthorsOfInProceeding(String inProceedingId) {
 		connectToDB();
 		createDB();
 
@@ -965,7 +968,7 @@ public class DatabaseHelper {
 		return result;
 	}
 
-	public static void deleteInProceeding(String id) {
+	public void deleteInProceeding(String id) {
 		connectToDB();
 		createDB();
 		
@@ -1007,7 +1010,7 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 
-	public static void updateInProceeding(String id, InProceedings newInProceeding, String procTitle, List<String> authors) {
+	public void updateInProceeding(String id, InProceedings newInProceeding, String procTitle, List<String> authors) {
 		connectToDB();
 		createDB();
 
@@ -1017,11 +1020,11 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 	
-	public static void p(Object o){
+	public void p(Object o){
 		System.out.println(o);
 	}
 
-	public static void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors) {
+	public void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors) {
 		connectToDB();
 		createDB();
 		
@@ -1062,7 +1065,7 @@ public class DatabaseHelper {
 
 	}
 
-	public static void addProceeding(Proceedings newProceeding,List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear) {
+	public void addProceeding(Proceedings newProceeding,List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear) {
 		connectToDB();
 		createDB();
 		
@@ -1190,7 +1193,7 @@ public class DatabaseHelper {
 
 	// TODO: add Publication table
 	// find publication by key (according to xml file)
-	public static void query1(String id) {
+	public void query1(String id) {
 		String thisQuery = "Query 1";
 		connectToDB();
 		createDB();
@@ -1226,7 +1229,7 @@ public class DatabaseHelper {
 	}
 
 	// Find publications by title, returning only a subset of all found publications
-	public static void query2(String title, int startOffset, int endOffset) {
+	public void query2(String title, int startOffset, int endOffset) {
 		String thisQuery = "Query 2";
 		connectToDB();
 		createDB();
@@ -1273,7 +1276,7 @@ public class DatabaseHelper {
 	}
 
 	// Find publications by title, returning only a subset of all found publications ORDERED by title
-	public static void query3(String title, int startOffset, int endOffset) {
+	public void query3(String title, int startOffset, int endOffset) {
 		String thisQuery = "Query 3";
 		connectToDB();
 		createDB();
@@ -1318,7 +1321,7 @@ public class DatabaseHelper {
 	}
 
 	// returns name of the co-authors of a given author
-	public static void query4(String author) {
+	public void query4(String author) {
 		String thisQuery = "Query 4";
 		connectToDB();
 		createDB();
@@ -1364,7 +1367,7 @@ public class DatabaseHelper {
 		closeConnectionDB();
 	}
 	
-	public static void query5(String name1, String name2){
+	public void query5(String name1, String name2){
 		
 		String thisQuery = "Query 5";
 		connectToDB();
@@ -1426,7 +1429,7 @@ public class DatabaseHelper {
 	}
 	
 	
-	public static int query5rec(String id1, String id2, int currDepth, int maxDepth){
+	public int query5rec(String id1, String id2, int currDepth, int maxDepth){
 				
 		Person author1 = new Person();
 		
@@ -1474,7 +1477,7 @@ public class DatabaseHelper {
 	}
 
 	// global average of authors / publication (InProceedings + Proceedings)
-	public static void query6() {
+	public void query6() {
 		String thisQuery = "Query 6";
 		connectToDB();
 		createDB();
@@ -1513,7 +1516,7 @@ public class DatabaseHelper {
 	}
 
 	 // Returns the number of publications per year between the interval year1 and year 2
-    public static void query7(int year1, int year2) {
+    public void query7(int year1, int year2) {
         String thisQuery = "Query 7";
         connectToDB();
         createDB();
@@ -1565,7 +1568,7 @@ public class DatabaseHelper {
     }
 
 	// No of all publications of a conference, except proceedings
-	public static void query8(String conferenceName) {
+	public void query8(String conferenceName) {
 		connectToDB();
 		createDB();
 
@@ -1605,7 +1608,7 @@ public class DatabaseHelper {
 	}
 	
 	
-	public static void query9(String confName){
+	public void query9(String confName){
 		connectToDB();
 		createDB();
 
@@ -1656,7 +1659,7 @@ public class DatabaseHelper {
 		
 	}
 	
-	public static void query11(String confName){
+	public void query11(String confName){
 		connectToDB();
 		createDB();
 
@@ -1704,7 +1707,7 @@ public class DatabaseHelper {
 	
 	
 
-	public static void query10(String confName){
+	public void query10(String confName){
 		connectToDB();
 		createDB();
 
@@ -1762,7 +1765,7 @@ public class DatabaseHelper {
 		
 	}
 
-	public static void query12(){
+	public void query12(){
 
 		String thisQuery = "Query 12";
 		List<String> resultList = new ArrayList<String>();
@@ -1811,7 +1814,7 @@ public class DatabaseHelper {
 	}
 
 	//all publications, where given author is mentioned last
-	public static void query13 (String author){
+	public void query13 (String author){
 			int count = 0;
 			String thisQuery = "Query 13";
 			connectToDB();
@@ -1848,7 +1851,7 @@ public class DatabaseHelper {
 	}
 	
 	
-	public static void query14(int year1, int year2){
+	public void query14(int year1, int year2){
 
 		String thisQuery = "Query 14";
 		List<String> resultList = new ArrayList<String>();
@@ -1900,5 +1903,24 @@ public class DatabaseHelper {
 		closeConnectionDB();
 
 		
-	}	
+	}
+
+	@Override
+	String getNumberOfPublicationsForPublisher(Publisher name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	Proceedings getProceedingOfInproceeding(InProceedings inProceedings) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	List<String> getAuthorsOfInProceeding(InProceedings inProceeding) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
