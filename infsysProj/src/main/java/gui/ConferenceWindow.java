@@ -96,7 +96,7 @@ public class ConferenceWindow extends JFrame {
 
             public void actionPerformed(ActionEvent e){
 				System.out.println(searchTextField.getText());
-				allConference = DatabaseHelper.searchForConference(searchTextField.getText());
+				allConference = DatabaseHelper.get().searchForConference(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
             	
@@ -112,7 +112,7 @@ public class ConferenceWindow extends JFrame {
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add( searchTextField, c );
 	    
-	    allConference = new ArrayList<Conference>(DatabaseHelper.getAllConference());
+	    allConference = new ArrayList<Conference>(DatabaseHelper.get().getAllConference());
 		currentConference = allConference.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new ConferenceTableModel(currentConference);
 		table = new JTable(tableModel)/*{
@@ -148,7 +148,7 @@ public class ConferenceWindow extends JFrame {
 			searchButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					System.out.println(searchTextField.getText());
-					allConference = DatabaseHelper.searchForConference(searchTextField.getText());
+					allConference = DatabaseHelper.get().searchForConference(searchTextField.getText());
 					pageNumber = 0;
 					reloadTable();
 				}
@@ -381,7 +381,7 @@ public class ConferenceWindow extends JFrame {
 	}
 	
 	public void reloadDataFromDatabase(){
-		allConference = new ArrayList<Conference>(DatabaseHelper.getAllConference());
+		allConference = new ArrayList<Conference>(DatabaseHelper.get().getAllConference());
 		reloadTable();
 	}
 	

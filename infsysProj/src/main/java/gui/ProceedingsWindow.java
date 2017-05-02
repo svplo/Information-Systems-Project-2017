@@ -108,7 +108,7 @@ public class ProceedingsWindow extends JFrame {
 		searchTextField.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				allPublications = DatabaseHelper.searchForProceedings(searchTextField.getText());
+				allPublications = DatabaseHelper.get().searchForProceedings(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
 
@@ -125,7 +125,7 @@ public class ProceedingsWindow extends JFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(searchTextField, c);
 
-		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllProceedings());
+		allPublications = new ArrayList<Publication>(DatabaseHelper.get().getAllProceedings());
 		currentPublications = allPublications.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new PublicationTableModel(currentPublications);
 		table = new JTable(tableModel) {
@@ -160,7 +160,7 @@ public class ProceedingsWindow extends JFrame {
 		JButton searchButton = new JButton("Search");
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				allPublications = DatabaseHelper.searchForProceedings(searchTextField.getText());
+				allPublications = DatabaseHelper.get().searchForProceedings(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
 			}
@@ -409,7 +409,7 @@ public class ProceedingsWindow extends JFrame {
 
 	public List<Publication> createListPublications() {
 
-		Collection<Publication> allPublications = new ArrayList<Publication>(DatabaseHelper.getAllProceedings());
+		Collection<Publication> allPublications = new ArrayList<Publication>(DatabaseHelper.get().getAllProceedings());
 		return new ArrayList<Publication>(allPublications);
 
 		/*
@@ -422,7 +422,7 @@ public class ProceedingsWindow extends JFrame {
 	}
 
 	public void reloadDataFromDatabase() {
-		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllProceedings());
+		allPublications = new ArrayList<Publication>(DatabaseHelper.get().getAllProceedings());
 		reloadTable();
 	}
 

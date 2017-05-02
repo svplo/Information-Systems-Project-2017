@@ -114,7 +114,7 @@ public class InProceedingDetail extends MyJFrame {
 				}
 
 				//Need to get Proceeding _
-				DatabaseHelper.updateInProceeding(inProceeding.getId(),newInProc,txtProceeding.getText(),authors);
+				DatabaseHelper.get().updateInProceeding(inProceeding.getId(),newInProc,txtProceeding.getText(),authors);
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
@@ -135,7 +135,7 @@ public class InProceedingDetail extends MyJFrame {
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DatabaseHelper.deleteInProceeding(inProceeding.getId());
+				DatabaseHelper.get().deleteInProceeding(inProceeding.getId());
 				caller.reloadDataFromDatabase();
 				JOptionPane.showMessageDialog(null, "Inproceeding successfully deleted");
 				closeWindow();
@@ -284,7 +284,7 @@ public class InProceedingDetail extends MyJFrame {
 		txtProceeding = new JTextField();
 		txtProceeding.setEditable(false);
 		if(this.inProceeding.getProceedings() != null){
-			proceedingsName = DatabaseHelper.getProceedingOfInproceeding(this.inProceeding.getProceedings().getID()).getTitle();
+			proceedingsName = DatabaseHelper.get().getProceedingOfInproceeding(this.inProceeding.getProceedings().getID()).getTitle();
 		}
 		else{
 			proceedingsName = "";
@@ -320,7 +320,7 @@ public class InProceedingDetail extends MyJFrame {
 		c.insets = new Insets(5, 5, 5, 5);
 		contentPane.add(editProceeding, c);
 
-		authors = DatabaseHelper.getAuthorsOfInProceeding(this.inProceeding);
+		authors = DatabaseHelper.get().getAuthorsOfInProceeding(this.inProceeding);
 
 		lblAuthors = new JLabel("Authors (" + authors.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;

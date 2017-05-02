@@ -82,7 +82,7 @@ public class PersonDetail extends MyJFrame {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String newName = txtTitle.getText();
-				DatabaseHelper.updatePerson(person.getName(),newName, authoredPublications, editedPublications);
+				DatabaseHelper.get().updatePerson(person.getName(),newName, authoredPublications, editedPublications);
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
@@ -102,7 +102,7 @@ public class PersonDetail extends MyJFrame {
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DatabaseHelper.deletePerson(person.getName());
+				DatabaseHelper.get().deletePerson(person.getName());
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}
@@ -144,7 +144,7 @@ public class PersonDetail extends MyJFrame {
 		
 
         //load names of InProceedings from Database
-        authoredPublications = DatabaseHelper.getAuthoredPublicationsForPerson(person.getName());
+        authoredPublications = DatabaseHelper.get().getAuthoredPublicationsForPerson(person.getName());
 
 		lblauthoredPublications = new JLabel("Authored Publications (" + authoredPublications.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -280,7 +280,7 @@ public class PersonDetail extends MyJFrame {
 		contentPane.add(addEditedPublicationButton, c);
 
         //load names of InProceedings from Database
-        editedPublications = DatabaseHelper.getEditedPublicationsForPerson(person.getName());
+        editedPublications = DatabaseHelper.get().getEditedPublicationsForPerson(person.getName());
 
 		lblEditedPublications = new JLabel("Edited Publications (" + editedPublications.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;

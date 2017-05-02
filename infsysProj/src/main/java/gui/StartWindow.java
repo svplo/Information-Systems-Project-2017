@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -49,6 +50,35 @@ public class StartWindow extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+
+		
+		String[] petStrings = { "ZooDB", "NoSQL", "BaseX"};
+
+		//Create the combo box, select item at index 4.
+		//Indices start at 0, so 4 specifies the pig.
+		JComboBox petList = new JComboBox(petStrings);
+		petList.setSelectedIndex(0);
+		petList.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				switch(petList.getSelectedIndex()){
+					case 0:
+						DatabaseHelper.database = DatabaseHelper.Database.ZOODB;
+						break;
+					case 1:
+						DatabaseHelper.database = DatabaseHelper.Database.NOSQL;
+						break;
+					case 2:
+						DatabaseHelper.database = DatabaseHelper.Database.BASEX;
+						break;
+					default:
+						break;
+							
+				}
+			}
+		});
+		petList.setBounds(20, 15, 150, 25);
+		contentPane.add(petList);
+
 
 		JButton btnPublicationTableFrame = new JButton("Publication Table");
 		btnPublicationTableFrame.addActionListener(new ActionListener() {
@@ -176,7 +206,7 @@ public class StartWindow extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				//XMLParser xmlparser = new XMLParser();
 				//xmlparser.parse();
-				DatabaseHelper.createDB();
+				DatabaseHelper.get().createDB();
 			}
 		});
 		// modify button
@@ -199,7 +229,7 @@ public class StartWindow extends JFrame {
 				//DatabaseHelper.query3("expert system", 0, 3);
 				
 				//equal to zoodb output
-				//DatabaseHelper.query4("William D. Young");
+				//DatabaseHelper.query4("Ian Parberry");
 				
 				//equal to zoodb output
 				//DatabaseHelper.query5("J. Thomas Haigh", "William R. Bevier");
@@ -216,10 +246,10 @@ public class StartWindow extends JFrame {
 				//DatabaseHelper.query7(1980,1990);
 				
 				//equal to zoodb output
-				//DatabaseHelper.query8("ECHT");
+				//DatabaseHelper.query8("ICML");
 				
 				//equal to zoodb output
-				//DatabaseHelper.query9("ECHT");
+				DatabaseHelper.get().query9("ICML");
 
 				//equal to zoodb output
 				//DatabaseHelper.query10("ECHT");
@@ -228,7 +258,8 @@ public class StartWindow extends JFrame {
 				//DatabaseHelper.query11("ECHT");
 
 				//equal to zoodb output
-/*				try {
+				/*
+			try {
 					DatabaseHelper.query12();
 				} catch (ParserConfigurationException e) {
 					// TODO Auto-generated catch block
@@ -242,13 +273,14 @@ public class StartWindow extends JFrame {
 				}
 */
 				//equal to zoodb output
-/*				try {
+				/*
+				try {
 					DatabaseHelper.query13("Adi Shamir");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-*/				
+				*/
 				//DatabaseHelper.query14(1980, 1990);
 
 			}

@@ -106,7 +106,7 @@ public class PublisherWindow extends JFrame{
 
             public void actionPerformed(ActionEvent e){
 				System.out.println(searchTextField.getText());
-				allPublisher = DatabaseHelper.searchForPublisher(searchTextField.getText());
+				allPublisher = DatabaseHelper.get().searchForPublisher(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
             	
@@ -121,7 +121,7 @@ public class PublisherWindow extends JFrame{
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add( searchTextField, c );
 	    
-	    allPublisher = new ArrayList<Publisher>(DatabaseHelper.getAllPublisher());
+	    allPublisher = new ArrayList<Publisher>(DatabaseHelper.get().getAllPublisher());
 		currentPublisher = allPublisher.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new PublisherTableModel(currentPublisher);
 		table = new JTable(tableModel)/*{
@@ -157,7 +157,7 @@ public class PublisherWindow extends JFrame{
 			searchButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					System.out.println(searchTextField.getText());
-					allPublisher = DatabaseHelper.searchForPublisher(searchTextField.getText());
+					allPublisher = DatabaseHelper.get().searchForPublisher(searchTextField.getText());
 					pageNumber = 0;
 					reloadTable();
 				}
@@ -386,7 +386,7 @@ public class PublisherWindow extends JFrame{
 	}
 	
 	public void reloadDataFromDatabase(){
-		allPublisher = new ArrayList<Publisher>(DatabaseHelper.getAllPublisher());
+		allPublisher = new ArrayList<Publisher>(DatabaseHelper.get().getAllPublisher());
 		reloadTable();
 	}
 	

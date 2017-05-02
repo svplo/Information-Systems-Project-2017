@@ -127,10 +127,10 @@ public class ProceedingDetail extends MyJFrame {
 
 				newProc.setVolume(txtVolume.getText());
 				try{
-					DatabaseHelper.updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),Integer.parseInt(txtConfEdition.getText()));
+					DatabaseHelper.get().updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),Integer.parseInt(txtConfEdition.getText()));
 				}
 				catch(NumberFormatException e){
-					DatabaseHelper.updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0);
+					DatabaseHelper.get().updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0);
 
 				}
 
@@ -503,7 +503,7 @@ public class ProceedingDetail extends MyJFrame {
 
 		txtConf = new JTextField();
 		txtConf.setEditable(false);
-		txtConf.setText(DatabaseHelper.getConferenceName(proceeding.getTitle()));
+		txtConf.setText(DatabaseHelper.get().getConferenceName(proceeding.getTitle()));
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
 		c.weighty = 0;
@@ -525,7 +525,7 @@ public class ProceedingDetail extends MyJFrame {
 
 		txtConfEdition = new JTextField();
 		txtConfEdition.setEditable(false);
-		txtConfEdition.setText(DatabaseHelper.getConferenceYear(proceeding.getTitle()));
+		txtConfEdition.setText(DatabaseHelper.get().getConferenceYear(proceeding.getTitle()));
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
 		c.weighty = 0;
@@ -536,7 +536,7 @@ public class ProceedingDetail extends MyJFrame {
 		contentPane.add(txtConfEdition, c);
 
 		// TODO load names of InProceedings from Database
-		inProcNames = DatabaseHelper.getInProceedingsOfProceedings(proceeding.getId());
+		inProcNames = DatabaseHelper.get().getInProceedingsOfProceedings(proceeding.getId());
 
 		lblInProceedings = new JLabel("InProceedings(" + inProcNames.size() + ")");
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -664,7 +664,7 @@ public class ProceedingDetail extends MyJFrame {
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				DatabaseHelper.deleteProceeding(proceeding.getTitle());
+				DatabaseHelper.get().deleteProceeding(proceeding.getTitle());
 				//JOptionPane.showMessageDialog(null, "Proceeding successfully deleted");
 				caller.reloadDataFromDatabase();
 				dispose();

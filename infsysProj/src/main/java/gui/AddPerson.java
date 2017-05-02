@@ -70,7 +70,7 @@ public class AddPerson extends MyJFrame {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String newName = txtTitle.getText();
-				DatabaseHelper.addPerson(newName, authoredPublications, editedPublications);
+				DatabaseHelper.get().addPerson(newName, authoredPublications, editedPublications);
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}

@@ -107,7 +107,7 @@ public class ConferenceEditionWindow extends JFrame {
 
             public void actionPerformed(ActionEvent e){
 				System.out.println(searchTextField.getText());
-				allConferenceEdition = DatabaseHelper.searchForConferenceEdition(searchTextField.getText());
+				allConferenceEdition = DatabaseHelper.get().searchForConferenceEdition(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
             	
@@ -123,7 +123,7 @@ public class ConferenceEditionWindow extends JFrame {
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add( searchTextField, c );
 	    
-	    allConferenceEdition = new ArrayList<ConferenceEdition>(DatabaseHelper.getAllConferenceEdition());
+	    allConferenceEdition = new ArrayList<ConferenceEdition>(DatabaseHelper.get().getAllConferenceEdition());
 		currentConferenceEdition = allConferenceEdition.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new ConferenceEditionTableModel(currentConferenceEdition);
 		table = new JTable(tableModel)/*{
@@ -159,7 +159,7 @@ public class ConferenceEditionWindow extends JFrame {
 			searchButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					System.out.println(searchTextField.getText());
-					allConferenceEdition = DatabaseHelper.searchForConferenceEdition(searchTextField.getText());
+					allConferenceEdition = DatabaseHelper.get().searchForConferenceEdition(searchTextField.getText());
 					pageNumber = 0;
 					reloadTable();
 				}
@@ -317,7 +317,7 @@ public class ConferenceEditionWindow extends JFrame {
 			        int col = table.columnAtPoint(e.getPoint());
 			        String name = table.getColumnName(col);
 			        	switch(col){
-			        		/*case 0:
+			        		case 0:
 			        			nNameClicked++;
 			        			if(nNameClicked%2 == 0){
 							        Collections.sort(allConferenceEdition, new Comparator<ConferenceEdition>() {
@@ -336,7 +336,7 @@ public class ConferenceEditionWindow extends JFrame {
 							        });
 
 			        			}
-						        break;*/
+						        break;
 			        		case 1 :
 			        			nYearClicked++;
 			        		
@@ -359,7 +359,7 @@ public class ConferenceEditionWindow extends JFrame {
 			        			}
 
 			        			break;
-			        		/*case 2 :
+			        		case 2 :
 			        			nProceedingsClicked++;
 				        		
 			        			if(nProceedingsClicked%2 == 0){
@@ -382,7 +382,7 @@ public class ConferenceEditionWindow extends JFrame {
 
 
 			        			break;
-*/
+
 			        		default :
 			        			
 			        			break;
@@ -409,7 +409,7 @@ public class ConferenceEditionWindow extends JFrame {
 	}
 	
 	public void reloadDataFromDatabase(){
-		allConferenceEdition = new ArrayList<ConferenceEdition>(DatabaseHelper.getAllConferenceEdition());
+		allConferenceEdition = new ArrayList<ConferenceEdition>(DatabaseHelper.get().getAllConferenceEdition());
 		reloadTable();
 	}
 	

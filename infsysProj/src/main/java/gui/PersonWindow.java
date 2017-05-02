@@ -116,7 +116,7 @@ public class PersonWindow extends JFrame {
 
             public void actionPerformed(ActionEvent e){
 				System.out.println(searchTextField.getText());
-				allPeople = DatabaseHelper.searchForPeople(searchTextField.getText());
+				allPeople = DatabaseHelper.get().searchForPeople(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
             	
@@ -133,7 +133,7 @@ public class PersonWindow extends JFrame {
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add( searchTextField, c );
 	    
-		allPeople = new ArrayList<Person>(DatabaseHelper.getAllPeople());
+		allPeople = new ArrayList<Person>(DatabaseHelper.get().getAllPeople());
 		currentPeople = allPeople.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new PersonTableModel(currentPeople);
 		table = new JTable(tableModel){
@@ -172,7 +172,7 @@ public class PersonWindow extends JFrame {
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println(searchTextField.getText());
-				allPeople = DatabaseHelper.searchForPeople(searchTextField.getText());
+				allPeople = DatabaseHelper.get().searchForPeople(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
 			}
@@ -470,7 +470,7 @@ public class PersonWindow extends JFrame {
 
 	public List<Publication> createListPublications() {
 
-		Collection<Publication> allPublications = new ArrayList<Publication>(DatabaseHelper.getAllProceedings());
+		Collection<Publication> allPublications = new ArrayList<Publication>(DatabaseHelper.get().getAllProceedings());
 		return new ArrayList<Publication>(allPublications);
 
 		/*
@@ -483,7 +483,7 @@ public class PersonWindow extends JFrame {
 	}
 	
 	public void reloadDataFromDatabase(){
-		allPeople = new ArrayList<Person>(DatabaseHelper.getAllPeople());
+		allPeople = new ArrayList<Person>(DatabaseHelper.get().getAllPeople());
 		reloadTable();
 	}
 	

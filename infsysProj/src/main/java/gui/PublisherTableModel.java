@@ -44,7 +44,7 @@ public class PublisherTableModel extends AbstractTableModel{
 			returnValue = publisher.getName();
 			break;
 		case COLUMN_YEAR:
-			returnValue = DatabaseHelper.getNumberOfPublicationsForPublisher(publisher.getName());
+			returnValue = DatabaseHelper.get().getNumberOfPublicationsForPublisher(publisher.getName());
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid column index");

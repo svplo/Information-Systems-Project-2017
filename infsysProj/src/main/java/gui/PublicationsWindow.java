@@ -114,7 +114,7 @@ public class PublicationsWindow extends JFrame {
 
             public void actionPerformed(ActionEvent e){
 				System.out.println(searchTextField.getText());
-				allPublications = DatabaseHelper.searchForPublication(searchTextField.getText());
+				allPublications = DatabaseHelper.get().searchForPublication(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
             	
@@ -132,7 +132,7 @@ public class PublicationsWindow extends JFrame {
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add( searchTextField, c );
 	    
-		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllPublications());
+		allPublications = new ArrayList<Publication>(DatabaseHelper.get().getAllPublications());
 		currentPublications = allPublications.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new PublicationTableModel(currentPublications);
 		table = new JTable(tableModel);
@@ -153,7 +153,7 @@ public class PublicationsWindow extends JFrame {
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println(searchTextField.getText());
-				allPublications = DatabaseHelper.searchForPublication(searchTextField.getText());
+				allPublications = DatabaseHelper.get().searchForPublication(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
 			}
@@ -428,7 +428,7 @@ public class PublicationsWindow extends JFrame {
 
 	public List<Publication> createListPublications() {
 
-		Collection<Publication> allPublications = DatabaseHelper.getAllPublications();
+		Collection<Publication> allPublications = DatabaseHelper.get().getAllPublications();
 		return new ArrayList<Publication>(allPublications);
 
 		/*

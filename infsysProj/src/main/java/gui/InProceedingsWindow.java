@@ -110,7 +110,7 @@ public class InProceedingsWindow extends JFrame {
 		searchTextField.addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e){
-				allPublications = DatabaseHelper.searchForInProceedings(searchTextField.getText());
+				allPublications = DatabaseHelper.get().searchForInProceedings(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
             	
@@ -128,7 +128,7 @@ public class InProceedingsWindow extends JFrame {
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add( searchTextField, c );
 	    
-		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
+		allPublications = new ArrayList<Publication>(DatabaseHelper.get().getAllInProceedings());
 		currentPublications = allPublications.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new PublicationTableModel(currentPublications);
 		table = new JTable(tableModel){
@@ -163,7 +163,7 @@ public class InProceedingsWindow extends JFrame {
 	    JButton searchButton = new JButton("Search");
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				allPublications = DatabaseHelper.searchForInProceedings(searchTextField.getText());
+				allPublications = DatabaseHelper.get().searchForInProceedings(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
 			}
@@ -455,7 +455,7 @@ public class InProceedingsWindow extends JFrame {
 
 	public List<Publication> createListPublications() {
 
-		Collection<Publication> allPublications = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
+		Collection<Publication> allPublications = new ArrayList<Publication>(DatabaseHelper.get().getAllInProceedings());
 		return new ArrayList<Publication>(allPublications);
 
 		/*
@@ -471,7 +471,7 @@ public class InProceedingsWindow extends JFrame {
 	}
 	
 	public void reloadDataFromDatabase(){
-		allPublications = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
+		allPublications = new ArrayList<Publication>(DatabaseHelper.get().getAllInProceedings());
 		reloadTable();
 	}
 	

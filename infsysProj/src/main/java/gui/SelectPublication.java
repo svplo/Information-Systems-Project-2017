@@ -125,22 +125,22 @@ public class SelectPublication extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				switch (mode) {
 				case PUBLICATION:
-					allObjects = DatabaseHelper.searchForPublication(searchTextField.getText());
+					allObjects = DatabaseHelper.get().searchForPublication(searchTextField.getText());
 					break;
 				case INPROCEEDINGS:
-					allObjects = DatabaseHelper.searchForInProceedings(searchTextField.getText());
+					allObjects = DatabaseHelper.get().searchForInProceedings(searchTextField.getText());
 
 					break;
 				case PROCEEDINGS:
-					allObjects = DatabaseHelper.searchForProceedings(searchTextField.getText());
+					allObjects = DatabaseHelper.get().searchForProceedings(searchTextField.getText());
 
 					break;
 				case PERSON:
-					allObjects = DatabaseHelper.searchForPeople(searchTextField.getText());
+					allObjects = DatabaseHelper.get().searchForPeople(searchTextField.getText());
 					break;
 
 				default:
-					allObjects = DatabaseHelper.searchForPublication(searchTextField.getText());
+					allObjects = DatabaseHelper.get().searchForPublication(searchTextField.getText());
 
 					break;
 				}
@@ -162,22 +162,22 @@ public class SelectPublication extends JFrame {
 
 		switch (mode) {
 		case PUBLICATION:
-			allObjects = new ArrayList<Publication>(DatabaseHelper.getAllPublications());
+			allObjects = new ArrayList<Publication>(DatabaseHelper.get().getAllPublications());
 			break;
 		case INPROCEEDINGS:
-			allObjects = new ArrayList<Publication>(DatabaseHelper.getAllInProceedings());
+			allObjects = new ArrayList<Publication>(DatabaseHelper.get().getAllInProceedings());
 
 			break;
 		case PROCEEDINGS:
-			allObjects = new ArrayList<Publication>(DatabaseHelper.getAllProceedings());
+			allObjects = new ArrayList<Publication>(DatabaseHelper.get().getAllProceedings());
 
 			break;
 		case PERSON:
-			allObjects = new ArrayList<Person>(DatabaseHelper.getAllPeople());
+			allObjects = new ArrayList<Person>(DatabaseHelper.get().getAllPeople());
 
 			break;
 		default:
-			allObjects = new ArrayList<Publication>(DatabaseHelper.getAllPublications());
+			allObjects = new ArrayList<Publication>(DatabaseHelper.get().getAllPublications());
 
 			break;
 		}
@@ -233,22 +233,22 @@ public class SelectPublication extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				switch (mode) {
 				case PUBLICATION:
-					allObjects = DatabaseHelper.searchForPublication(searchTextField.getText());
+					allObjects = DatabaseHelper.get().searchForPublication(searchTextField.getText());
 					break;
 				case INPROCEEDINGS:
-					allObjects = DatabaseHelper.searchForInProceedings(searchTextField.getText());
+					allObjects = DatabaseHelper.get().searchForInProceedings(searchTextField.getText());
 
 					break;
 				case PROCEEDINGS:
-					allObjects = DatabaseHelper.searchForProceedings(searchTextField.getText());
+					allObjects = DatabaseHelper.get().searchForProceedings(searchTextField.getText());
 
 					break;
 				case PERSON:
-					allObjects = DatabaseHelper.searchForPeople(searchTextField.getText());
+					allObjects = DatabaseHelper.get().searchForPeople(searchTextField.getText());
 
 					break;
 				default:
-					allObjects = DatabaseHelper.searchForPublication(searchTextField.getText());
+					allObjects = DatabaseHelper.get().searchForPublication(searchTextField.getText());
 
 					break;
 				}
@@ -569,7 +569,7 @@ public class SelectPublication extends JFrame {
 
 	public List<Publication> createListPublications() {
 
-		Collection<Publication> allPublications = DatabaseHelper.getAllPublications();
+		Collection<Publication> allPublications = DatabaseHelper.get().getAllPublications();
 		return new ArrayList<Publication>(allPublications);
 
 		/*

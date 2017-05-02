@@ -90,7 +90,7 @@ public class SeriesWindow extends JFrame {
 
             public void actionPerformed(ActionEvent e){
 				System.out.println(searchTextField.getText());
-				allSeries = DatabaseHelper.searchForSeries(searchTextField.getText());
+				allSeries = DatabaseHelper.get().searchForSeries(searchTextField.getText());
 				pageNumber = 0;
 				reloadTable();
             	
@@ -106,7 +106,7 @@ public class SeriesWindow extends JFrame {
 	    c.insets = new Insets(5,5,5,5);
 	    contentPane.add( searchTextField, c );
 	    
-	    allSeries = new ArrayList<Series>(DatabaseHelper.getAllSeries());
+	    allSeries = new ArrayList<Series>(DatabaseHelper.get().getAllSeries());
 		currentSeries = allSeries.subList(0, itemsPerPageIndex.getNumber());
 		tableModel = new SeriesTableModel(currentSeries);
 		table = new JTable(tableModel)/*{
@@ -142,7 +142,7 @@ public class SeriesWindow extends JFrame {
 			searchButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					System.out.println(searchTextField.getText());
-					allSeries = DatabaseHelper.searchForSeries(searchTextField.getText());
+					allSeries = DatabaseHelper.get().searchForSeries(searchTextField.getText());
 					pageNumber = 0;
 					reloadTable();
 				}
@@ -371,7 +371,7 @@ public class SeriesWindow extends JFrame {
 	}
 	
 	public void reloadDataFromDatabase(){
-		allSeries = new ArrayList<Series>(DatabaseHelper.getAllSeries());
+		allSeries = new ArrayList<Series>(DatabaseHelper.get().getAllSeries());
 		reloadTable();
 	}
 	
