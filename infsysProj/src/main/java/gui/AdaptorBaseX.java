@@ -1,4 +1,4 @@
-package gui;
+package main.java.gui;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -10,13 +10,7 @@ import org.basex.query.value.node.ANode;
 import org.basex.query.value.node.DBNode;
 import org.basex.query.value.node.FElem;
 
-import infsysProj.infsysProj.Conference;
-import infsysProj.infsysProj.ConferenceEdition;
-import infsysProj.infsysProj.DomainObject;
-import infsysProj.infsysProj.Person;
-import infsysProj.infsysProj.Proceedings;
-import infsysProj.infsysProj.Publisher;
-import infsysProj.infsysProj.Series;
+import main.java.infsysProj.infsysProj.*;
 
 public class AdaptorBaseX {
 

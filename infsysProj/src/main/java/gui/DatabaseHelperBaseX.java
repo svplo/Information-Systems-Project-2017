@@ -1,4 +1,4 @@
-package gui;
+package main.java.gui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,15 +24,9 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import infsysProj.infsysProj.Conference;
-import infsysProj.infsysProj.ConferenceEdition;
-import infsysProj.infsysProj.DomainObject;
-import infsysProj.infsysProj.InProceedings;
-import infsysProj.infsysProj.Person;
-import infsysProj.infsysProj.Proceedings;
-import infsysProj.infsysProj.Publication;
-import infsysProj.infsysProj.Publisher;
-import infsysProj.infsysProj.Series;
+import com.sun.xml.internal.bind.CycleRecoverable.Context;
+
+import main.java.infsysProj.infsysProj.*;
 
 public class DatabaseHelperBaseX extends DatabaseHelper{
 	private Context context;

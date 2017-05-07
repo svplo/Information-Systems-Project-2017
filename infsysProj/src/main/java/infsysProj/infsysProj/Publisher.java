@@ -1,4 +1,4 @@
-package infsysProj.infsysProj;
+package main.java.infsysProj.infsysProj;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package gui;
+package main.java.gui;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -23,8 +23,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicArrowButton;
 
-import infsysProj.infsysProj.Series;
-
+import main.java.infsysProj.infsysProj.*;
 public class SeriesWindow extends JFrame {
 
 	private static final long serialVersionUID = 1L;

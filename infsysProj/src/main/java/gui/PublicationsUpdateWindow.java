@@ -1,4 +1,4 @@
-package gui;
+package main.java.gui;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -11,6 +11,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import main.java.infsysProj.infsysProj.*;
 
 public class PublicationsUpdateWindow extends JFrame {
 	private JPanel contentPane;

@@ -1,4 +1,4 @@
-package infsysProj.infsysProj;
+package main.java.infsysProj.infsysProj;
 //package ch.ethz.globis.isk.domain;
 
 import java.util.HashSet;

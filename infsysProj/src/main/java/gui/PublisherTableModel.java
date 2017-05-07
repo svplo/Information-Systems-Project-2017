@@ -1,10 +1,10 @@
-package gui;
+package main.java.gui;
 
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
-import infsysProj.infsysProj.Publisher;
-import infsysProj.infsysProj.Publisher;
+
+import main.java.infsysProj.infsysProj.*;
 
 public class PublisherTableModel extends AbstractTableModel{
 
