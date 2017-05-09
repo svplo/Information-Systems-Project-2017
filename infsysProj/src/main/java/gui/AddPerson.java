@@ -1,4 +1,4 @@
-package main.java.gui;
+package gui;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -27,7 +27,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
 
-import main.java.infsysProj.infsysProj.*;
+import infsysProj.infsysProj.*;
 
 public class AddPerson extends MyJFrame {
 

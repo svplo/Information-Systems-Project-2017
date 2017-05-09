@@ -1,4 +1,4 @@
-package main.java.gui;
+package gui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -39,7 +39,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 
-import main.java.infsysProj.infsysProj.*;
+import infsysProj.infsysProj.*;
 
 
 //Run the following command to open the database localhost: C:\Program Files\MongoDB\Server\3.4\bin>mongod.exe

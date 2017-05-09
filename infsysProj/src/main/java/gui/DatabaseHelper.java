@@ -1,4 +1,4 @@
-package main.java.gui;
+package gui;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.xml.sax.SAXException;
 
-import main.java.infsysProj.infsysProj.*;
+import infsysProj.infsysProj.*;
 
 
 abstract class DatabaseHelper {

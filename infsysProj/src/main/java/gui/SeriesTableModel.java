@@ -1,9 +1,9 @@
-package main.java.gui;
+package gui;
 
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
-import main.java.infsysProj.infsysProj.*;
+import infsysProj.infsysProj.*;
 public class SeriesTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1L;

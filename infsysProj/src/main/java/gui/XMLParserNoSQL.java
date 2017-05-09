@@ -1,4 +1,4 @@
-package main.java.gui;
+package gui;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,7 +13,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import main.java.infsysProj.infsysProj.*;
+import infsysProj.infsysProj.*;
 
 public class XMLParserNoSQL {
 

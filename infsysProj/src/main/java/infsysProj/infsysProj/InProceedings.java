@@ -1,4 +1,4 @@
-package main.java.infsysProj.infsysProj;
+package infsysProj.infsysProj;
 
 import java.util.List;
 

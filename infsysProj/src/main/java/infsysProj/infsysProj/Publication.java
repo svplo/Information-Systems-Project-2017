@@ -1,4 +1,4 @@
-package main.java.infsysProj.infsysProj;
+package infsysProj.infsysProj;
 //package ch.ethz.globis.isk.domain;
 
 import java.util.LinkedList;

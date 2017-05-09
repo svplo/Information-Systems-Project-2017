@@ -1,4 +1,4 @@
-package main.java.gui;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -17,7 +17,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 
-import main.java.infsysProj.infsysProj.*;
+import infsysProj.infsysProj.*;
 
 /* Java GUI using swing
 * checkout resource: http://www.developer.com/java/creating-a-jdbc-gui-application.html

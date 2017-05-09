@@ -1,8 +1,8 @@
-package main.java.gui;
+package gui;
 
 import javax.swing.JFrame;
 
-import main.java.infsysProj.infsysProj.*;
+import infsysProj.infsysProj.*;
 
 public class MyJFrame extends JFrame {
 
