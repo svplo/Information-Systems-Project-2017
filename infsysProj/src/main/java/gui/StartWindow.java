@@ -213,9 +213,12 @@ public class StartWindow extends JFrame {
 		contentPane.add(reloadXMLButton);
 		
 		//Queries
-		JButton btnQueriesTableFrame = new JButton("Run Queries");
+		JButton btnQueriesTableFrame = new JButton("Generate Statistics");
 		btnQueriesTableFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
+				
+				DatabaseHelper.queryStatistics();
 				//TODO: check if answers are correct
 				//Run the queries required for task 1.3
 				//DatabaseHelper.query1("conf/acm/ColeMM87");
@@ -247,7 +250,7 @@ public class StartWindow extends JFrame {
 				//DatabaseHelper.query8("ICML");
 				
 				//equal to zoodb output
-				DatabaseHelper.get().query9("ICML");
+				//DatabaseHelper.get().query9("ICML");
 
 				//equal to zoodb output
 				//DatabaseHelper.query10("ECHT");
