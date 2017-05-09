@@ -1,10 +1,10 @@
-package gui;
+package main.java.gui;
 
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import infsysProj.infsysProj.Person;
+import main.java.infsysProj.infsysProj.*;
 
 //resource: https://docs.oracle.com/javase/tutorial/uiswing/components/table.html#simple
 public class PersonTableModel extends AbstractTableModel {

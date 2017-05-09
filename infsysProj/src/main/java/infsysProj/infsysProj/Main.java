@@ -1,4 +1,4 @@
-package infsysProj.infsysProj;
+package main.java.infsysProj.infsysProj;
 /*
  * Copyright 2009-2016 Tilmann Zaeschke. All rights reserved.
  * 

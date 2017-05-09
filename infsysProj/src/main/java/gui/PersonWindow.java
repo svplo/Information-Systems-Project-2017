@@ -1,4 +1,4 @@
-package gui;
+package main.java.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -37,10 +37,7 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import infsysProj.infsysProj.InProceedings;
-import infsysProj.infsysProj.Person;
-import infsysProj.infsysProj.Proceedings;
-import infsysProj.infsysProj.Publication;
+import main.java.infsysProj.infsysProj.*;
 
 /**
  * This program demonstrates how to sort rows in a table.

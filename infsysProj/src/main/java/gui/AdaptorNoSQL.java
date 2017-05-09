@@ -1,4 +1,4 @@
-package gui;
+package main.java.gui;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,14 +9,7 @@ import org.bson.Document;
 
 import com.mongodb.BasicDBObject;
 
-import infsysProj.infsysProj.Conference;
-import infsysProj.infsysProj.ConferenceEdition;
-import infsysProj.infsysProj.InProceedings;
-import infsysProj.infsysProj.Person;
-import infsysProj.infsysProj.Proceedings;
-import infsysProj.infsysProj.Publication;
-import infsysProj.infsysProj.Publisher;
-import infsysProj.infsysProj.Series;
+import main.java.infsysProj.infsysProj.*;
 
 public class AdaptorNoSQL {
 

@@ -1,4 +1,4 @@
-package gui;
+package main.java.gui;
 
 
 
@@ -27,7 +27,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicArrowButton;
 
-import infsysProj.infsysProj.Conference;
+import main.java.infsysProj.infsysProj.*;
 
 
 public class ConferenceWindow extends JFrame {

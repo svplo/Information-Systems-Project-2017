@@ -1,4 +1,4 @@
-package infsysProj.infsysProj;
+package main.java.infsysProj.infsysProj;
 
 import org.zoodb.api.impl.ZooPC;
 

@@ -1,10 +1,10 @@
-package gui;
+package main.java.gui;
 
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import infsysProj.infsysProj.ConferenceEdition;
+import main.java.infsysProj.infsysProj.*;
 
 public class ConferenceEditionTableModel extends AbstractTableModel {
 

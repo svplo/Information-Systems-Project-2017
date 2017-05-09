@@ -1,4 +1,4 @@
-package gui;
+package main.java.gui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,14 +20,7 @@ import javax.jdo.Query;
 import org.zoodb.jdo.ZooJdoHelper;
 import org.zoodb.tools.ZooHelper;
 
-import infsysProj.infsysProj.Conference;
-import infsysProj.infsysProj.ConferenceEdition;
-import infsysProj.infsysProj.InProceedings;
-import infsysProj.infsysProj.Person;
-import infsysProj.infsysProj.Proceedings;
-import infsysProj.infsysProj.Publication;
-import infsysProj.infsysProj.Publisher;
-import infsysProj.infsysProj.Series;
+import main.java.infsysProj.infsysProj.*;
 
 public class DatabaseHelperZooDB extends DatabaseHelper {
 	private  PersistenceManager pm;

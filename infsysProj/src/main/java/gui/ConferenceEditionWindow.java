@@ -1,4 +1,4 @@
-package gui;
+package main.java.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,13 +33,8 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import gui.PersonWindow.ItemsPerPage;
-import infsysProj.infsysProj.InProceedings;
-import infsysProj.infsysProj.Person;
-import infsysProj.infsysProj.ConferenceEdition;
-import infsysProj.infsysProj.Proceedings;
-import infsysProj.infsysProj.Publication;
-import infsysProj.infsysProj.Series;
+import main.java.gui.PersonWindow.ItemsPerPage;
+import main.java.infsysProj.infsysProj.*;
 
 public class ConferenceEditionWindow extends JFrame {
 
