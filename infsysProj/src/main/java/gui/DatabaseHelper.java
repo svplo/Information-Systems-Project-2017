@@ -19,6 +19,7 @@ abstract class DatabaseHelper {
 	
 	static class QueryData {
 		long execTime;
+		long usedMem;
 		String queryDetail;
 		long memoryUsage;
 		
@@ -243,6 +244,14 @@ abstract class DatabaseHelper {
 	private static QueryData runQuery(int i){
 		
 		QueryData result = new QueryData();
+		Runtime rt = Runtime.getRuntime();
+		long totalMem = rt.totalMemory();
+		long mstart1 = 0;
+		long mstart2 = 0;
+		long mstart3 = 0;
+		long mend1 = 0;
+		long mend2 = 0;
+		long mend3 = 0;
 		long start1 = 0;
 		long start2 = 0;
 		long start3 = 0;
@@ -254,55 +263,457 @@ abstract class DatabaseHelper {
 		case 1:
 			result.queryDetail = "find publication by key";
 			start1 = System.currentTimeMillis();
-			for (int j = 0; j < 100; j++) {
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 200; j++) {
 				get().query1("conf/acm/ColeMM87");
 			}
 			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
 			
 			start2 = System.currentTimeMillis();
-			for (int j = 0; j < 100; j++) {
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 200; j++) {
 				get().query1("conf/flfp/Bohm86");
 			}
 			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
 
 			start3 = System.currentTimeMillis();
-			for (int j = 0; j < 100; j++) {
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 200; j++) {
 				get().query1("conf/dac/ShirakawaOHTO80");
 			}
 			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
 
 			break;
 		case 2:
+			result.queryDetail = "find publication with offset";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 120; j++) {
+				get().query2("expert system", 0, 3);
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 120; j++) {
+				get().query2("expert system", 0, 3);
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 120; j++) {
+				get().query2("expert system", 0, 3);
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		case 3:
+			result.queryDetail = "find publication ordered";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query3("expert system", 0, 30);
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query3("expert system", 0, 30);
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query3("expert system", 0, 30);
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		case 4:
+			result.queryDetail = "find co authors";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query4("Ian Parberry");
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query4("Adi Shamir");
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query4("J. Thomas Haigh");
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		case 5:
+			result.queryDetail = "distance of 2 authors";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query5("J. Thomas Haigh", "William R. Bevier");
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query5("William D. Young","J. Thomas Haigh");
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query5("Guy Dupenloup","Hiroshi Fukuda");
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		case 6:
+			result.queryDetail = "avg authors per inproceedings";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query6();
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query6();
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query6();
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		case 7:
+			result.queryDetail = "number of publications per year";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query7(1980,1990);
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query7(1970,1980);
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query7(1960,1970);
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		case 8:
+			result.queryDetail = "number of publications for a conf";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query8("ICML");
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query8("ECHT");
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query8("ICML");
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		case 9:
+			result.queryDetail = "authors and editors of conf";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query9("ICML");
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query9("ECHT");
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query9("ICML");
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		case 10:
+			result.queryDetail = "authors of conf";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query10("ICML");
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query10("ECHT");
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query10("ICML");
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		case 11:
+			result.queryDetail = "all publications of conf";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query11("ICML");
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query11("ECHT");
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query11("ECHT");
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		case 12:
+			result.queryDetail = "people who are editors and authors";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				try {
+					get().query12();
+				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SAXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				try {
+					get().query12();
+				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SAXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				try {
+					get().query12();
+				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SAXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		case 13:
+			result.queryDetail = "publications were author appears last";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				try {
+					get().query13("Adi Shamir");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				try {
+					get().query13("Adi Shamir");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				try {
+					get().query13("Adi Shamir");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		case 14:
+			result.queryDetail = "publishers";
+			start1 = System.currentTimeMillis();
+			mstart1 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query14(1950,1960);
+			}
+			end1 = System.currentTimeMillis();
+			mend1 = totalMem - rt.freeMemory();
+			
+			start2 = System.currentTimeMillis();
+			mstart2 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query14(1960,1970);
+			}
+			end2 = System.currentTimeMillis();
+			mend2 = totalMem - rt.freeMemory();
+
+			start3 = System.currentTimeMillis();
+			mstart3 = totalMem - rt.freeMemory();
+			for (int j = 0; j < 100; j++) {
+				get().query14(1980,1990);
+			}
+			end3 = System.currentTimeMillis();
+			mend3 = totalMem - rt.freeMemory();
+			
 			break;
 		default:
 			break;
 		}
 
 		result.execTime = (end1 -start1 + end2-start2 +end3-start3)/3;
+		result.usedMem = 0;
+		int valid = 0; // counts valid runs
+		// if the measurement is negative, this means that the garbage collector ran
+		if(mend1 - mstart1 > 0){
+			result.usedMem += mend1 - mstart1;
+			valid++;
+		}
+		if(mend2 - mstart2 > 0){
+			result.usedMem += mend2 - mstart2;
+			valid++;
+		} 
+		if(mend3 - mstart3 > 0){
+			result.usedMem += mend3 - mstart3;
+			valid++;
+		} 
+		if (valid == 0) {
+		// if the gc ran in all 3 measurements
+			result.usedMem = 0;
+		} else {
+// divided by 1000 in order to get the measurements in KB, instead of bytes
+			result.usedMem /= (valid*1000);
+		}
+
 		return result;
 
 	}
