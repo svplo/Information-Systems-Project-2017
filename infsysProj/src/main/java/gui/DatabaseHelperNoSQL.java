@@ -25,6 +25,7 @@ import org.xml.sax.SAXException;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
+import com.mongodb.CommandResult;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -76,6 +77,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		closeConnectionDB();
 		XMLParserNoSQL xmlparser = new XMLParserNoSQL();
 		xmlparser.parse();
+		
 	}
 
 	public void createDBintern() {

@@ -217,8 +217,8 @@ public class StartWindow extends JFrame {
 		btnQueriesTableFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				
 				DatabaseHelper.queryStatistics();
+				
 				//TODO: check if answers are correct
 				//Run the queries required for task 1.3
 				//DatabaseHelper.query1("conf/acm/ColeMM87");

@@ -21,7 +21,6 @@ abstract class DatabaseHelper {
 		long execTime;
 		long usedMem;
 		String queryDetail;
-		long memoryUsage;
 		
 		/*
 	    public QueryData(long execTime,String queryDetail,long memoryUsage) {
@@ -194,11 +193,14 @@ abstract class DatabaseHelper {
 		rowhead.createCell(0).setCellValue("Query No.");
 		rowhead.createCell(1).setCellValue("Details");
 		rowhead.createCell(2).setCellValue("Time ZooDB");
-		rowhead.createCell(4).setCellValue("Time NoSQL");
-		rowhead.createCell(3).setCellValue("Time BaseX");
-
+		rowhead.createCell(3).setCellValue("Time NoSQL");
+		rowhead.createCell(4).setCellValue("Time BaseX");
+		rowhead.createCell(5).setCellValue("Memory ZooDB");
+		rowhead.createCell(6).setCellValue("Memory NoSQL");
+		rowhead.createCell(7).setCellValue("Memory BaseX");
+		
 		// Run all queries and measure start and endTime
-		for (int i = 1; i < 15; i++) {
+		for (int i = 0; i < 15; i++) {
 			//iterate over all three databases
 			
 			rowhead = sheet.createRow(i);
@@ -211,13 +213,18 @@ abstract class DatabaseHelper {
 				rowhead.createCell(1).setCellValue(queryData.queryDetail);
 				switch(db){
 				case ZOODB:
-					rowhead.createCell(2).setCellValue(queryData.execTime + "ms");
+					rowhead.createCell(2).setCellValue(queryData.execTime + " ms");
+					rowhead.createCell(5).setCellValue(queryData.usedMem + " KB");
 					break;
-				case BASEX:
-					rowhead.createCell(3).setCellValue(queryData.execTime + "ms");
-					break;
+					
 				case NOSQL:
-					rowhead.createCell(4).setCellValue(queryData.execTime + "ms");
+					rowhead.createCell(3).setCellValue(queryData.execTime + " ms");
+					rowhead.createCell(6).setCellValue(queryData.usedMem + " KB");
+					break;
+
+				case BASEX:
+					rowhead.createCell(4).setCellValue(queryData.execTime + " ms");
+					rowhead.createCell(7).setCellValue(queryData.usedMem + " KB");
 					break;
 				}
 
@@ -259,12 +266,13 @@ abstract class DatabaseHelper {
 		long end2 = 0;
 		long end3 = 0;
 
+		
 		switch (i) {
 		case 1:
 			result.queryDetail = "find publication by key";
 			start1 = System.currentTimeMillis();
 			mstart1 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 200; j++) {
+			for (int j = 0; j < 700; j++) {
 				get().query1("conf/acm/ColeMM87");
 			}
 			end1 = System.currentTimeMillis();
@@ -272,7 +280,7 @@ abstract class DatabaseHelper {
 			
 			start2 = System.currentTimeMillis();
 			mstart2 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 200; j++) {
+			for (int j = 0; j < 700; j++) {
 				get().query1("conf/flfp/Bohm86");
 			}
 			end2 = System.currentTimeMillis();
@@ -280,7 +288,7 @@ abstract class DatabaseHelper {
 
 			start3 = System.currentTimeMillis();
 			mstart3 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 200; j++) {
+			for (int j = 0; j < 700; j++) {
 				get().query1("conf/dac/ShirakawaOHTO80");
 			}
 			end3 = System.currentTimeMillis();
@@ -372,7 +380,7 @@ abstract class DatabaseHelper {
 			result.queryDetail = "distance of 2 authors";
 			start1 = System.currentTimeMillis();
 			mstart1 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 50; j++) {
 				get().query5("J. Thomas Haigh", "William R. Bevier");
 			}
 			end1 = System.currentTimeMillis();
@@ -380,7 +388,7 @@ abstract class DatabaseHelper {
 			
 			start2 = System.currentTimeMillis();
 			mstart2 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 50; j++) {
 				get().query5("William D. Young","J. Thomas Haigh");
 			}
 			end2 = System.currentTimeMillis();
@@ -388,7 +396,7 @@ abstract class DatabaseHelper {
 
 			start3 = System.currentTimeMillis();
 			mstart3 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 50; j++) {
 				get().query5("Guy Dupenloup","Hiroshi Fukuda");
 			}
 			end3 = System.currentTimeMillis();
@@ -399,7 +407,7 @@ abstract class DatabaseHelper {
 			result.queryDetail = "avg authors per inproceedings";
 			start1 = System.currentTimeMillis();
 			mstart1 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 2500; j++) {
 				get().query6();
 			}
 			end1 = System.currentTimeMillis();
@@ -407,7 +415,7 @@ abstract class DatabaseHelper {
 			
 			start2 = System.currentTimeMillis();
 			mstart2 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 2500; j++) {
 				get().query6();
 			}
 			end2 = System.currentTimeMillis();
@@ -415,7 +423,7 @@ abstract class DatabaseHelper {
 
 			start3 = System.currentTimeMillis();
 			mstart3 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 2500; j++) {
 				get().query6();
 			}
 			end3 = System.currentTimeMillis();
@@ -426,7 +434,7 @@ abstract class DatabaseHelper {
 			result.queryDetail = "number of publications per year";
 			start1 = System.currentTimeMillis();
 			mstart1 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 1200; j++) {
 				get().query7(1980,1990);
 			}
 			end1 = System.currentTimeMillis();
@@ -434,7 +442,7 @@ abstract class DatabaseHelper {
 			
 			start2 = System.currentTimeMillis();
 			mstart2 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 1200; j++) {
 				get().query7(1970,1980);
 			}
 			end2 = System.currentTimeMillis();
@@ -442,7 +450,7 @@ abstract class DatabaseHelper {
 
 			start3 = System.currentTimeMillis();
 			mstart3 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 1200; j++) {
 				get().query7(1960,1970);
 			}
 			end3 = System.currentTimeMillis();
@@ -453,7 +461,7 @@ abstract class DatabaseHelper {
 			result.queryDetail = "number of publications for a conf";
 			start1 = System.currentTimeMillis();
 			mstart1 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 1000; j++) {
 				get().query8("ICML");
 			}
 			end1 = System.currentTimeMillis();
@@ -461,7 +469,7 @@ abstract class DatabaseHelper {
 			
 			start2 = System.currentTimeMillis();
 			mstart2 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 1000; j++) {
 				get().query8("ECHT");
 			}
 			end2 = System.currentTimeMillis();
@@ -469,7 +477,7 @@ abstract class DatabaseHelper {
 
 			start3 = System.currentTimeMillis();
 			mstart3 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 1000; j++) {
 				get().query8("ICML");
 			}
 			end3 = System.currentTimeMillis();
@@ -480,7 +488,7 @@ abstract class DatabaseHelper {
 			result.queryDetail = "authors and editors of conf";
 			start1 = System.currentTimeMillis();
 			mstart1 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 900; j++) {
 				get().query9("ICML");
 			}
 			end1 = System.currentTimeMillis();
@@ -488,7 +496,7 @@ abstract class DatabaseHelper {
 			
 			start2 = System.currentTimeMillis();
 			mstart2 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 900; j++) {
 				get().query9("ECHT");
 			}
 			end2 = System.currentTimeMillis();
@@ -496,7 +504,7 @@ abstract class DatabaseHelper {
 
 			start3 = System.currentTimeMillis();
 			mstart3 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 900; j++) {
 				get().query9("ICML");
 			}
 			end3 = System.currentTimeMillis();
@@ -507,7 +515,7 @@ abstract class DatabaseHelper {
 			result.queryDetail = "authors of conf";
 			start1 = System.currentTimeMillis();
 			mstart1 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 800; j++) {
 				get().query10("ICML");
 			}
 			end1 = System.currentTimeMillis();
@@ -515,7 +523,7 @@ abstract class DatabaseHelper {
 			
 			start2 = System.currentTimeMillis();
 			mstart2 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 800; j++) {
 				get().query10("ECHT");
 			}
 			end2 = System.currentTimeMillis();
@@ -523,7 +531,7 @@ abstract class DatabaseHelper {
 
 			start3 = System.currentTimeMillis();
 			mstart3 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 800; j++) {
 				get().query10("ICML");
 			}
 			end3 = System.currentTimeMillis();
@@ -534,7 +542,7 @@ abstract class DatabaseHelper {
 			result.queryDetail = "all publications of conf";
 			start1 = System.currentTimeMillis();
 			mstart1 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 900; j++) {
 				get().query11("ICML");
 			}
 			end1 = System.currentTimeMillis();
@@ -542,7 +550,7 @@ abstract class DatabaseHelper {
 			
 			start2 = System.currentTimeMillis();
 			mstart2 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 900; j++) {
 				get().query11("ECHT");
 			}
 			end2 = System.currentTimeMillis();
@@ -550,7 +558,7 @@ abstract class DatabaseHelper {
 
 			start3 = System.currentTimeMillis();
 			mstart3 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 900; j++) {
 				get().query11("ECHT");
 			}
 			end3 = System.currentTimeMillis();
@@ -561,7 +569,7 @@ abstract class DatabaseHelper {
 			result.queryDetail = "people who are editors and authors";
 			start1 = System.currentTimeMillis();
 			mstart1 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 16; j++) {
 				try {
 					get().query12();
 				} catch (ParserConfigurationException e) {
@@ -580,7 +588,7 @@ abstract class DatabaseHelper {
 			
 			start2 = System.currentTimeMillis();
 			mstart2 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 16; j++) {
 				try {
 					get().query12();
 				} catch (ParserConfigurationException e) {
@@ -599,7 +607,7 @@ abstract class DatabaseHelper {
 
 			start3 = System.currentTimeMillis();
 			mstart3 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 16; j++) {
 				try {
 					get().query12();
 				} catch (ParserConfigurationException e) {
@@ -621,7 +629,7 @@ abstract class DatabaseHelper {
 			result.queryDetail = "publications were author appears last";
 			start1 = System.currentTimeMillis();
 			mstart1 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 50; j++) {
 				try {
 					get().query13("Adi Shamir");
 				} catch (Exception e) {
@@ -634,7 +642,7 @@ abstract class DatabaseHelper {
 			
 			start2 = System.currentTimeMillis();
 			mstart2 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 50; j++) {
 				try {
 					get().query13("Adi Shamir");
 				} catch (Exception e) {
@@ -647,7 +655,7 @@ abstract class DatabaseHelper {
 
 			start3 = System.currentTimeMillis();
 			mstart3 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 50; j++) {
 				try {
 					get().query13("Adi Shamir");
 				} catch (Exception e) {
@@ -663,7 +671,7 @@ abstract class DatabaseHelper {
 			result.queryDetail = "publishers";
 			start1 = System.currentTimeMillis();
 			mstart1 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 25; j++) {
 				get().query14(1950,1960);
 			}
 			end1 = System.currentTimeMillis();
@@ -671,7 +679,7 @@ abstract class DatabaseHelper {
 			
 			start2 = System.currentTimeMillis();
 			mstart2 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 25; j++) {
 				get().query14(1960,1970);
 			}
 			end2 = System.currentTimeMillis();
@@ -679,7 +687,7 @@ abstract class DatabaseHelper {
 
 			start3 = System.currentTimeMillis();
 			mstart3 = totalMem - rt.freeMemory();
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 25; j++) {
 				get().query14(1980,1990);
 			}
 			end3 = System.currentTimeMillis();
