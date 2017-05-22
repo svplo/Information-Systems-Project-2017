@@ -22,14 +22,7 @@ abstract class DatabaseHelper {
 		long usedMem;
 		String queryDetail;
 		
-		/*
-	    public QueryData(long execTime,String queryDetail,long memoryUsage) {
-	        this.execTime = execTime;
-	        this.queryDetail = queryDetail;
-	        this.memoryUsage = memoryUsage;
-
-	    } 
-	    */
+		
 	}
 
 	public static enum Database {
