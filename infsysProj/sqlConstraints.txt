@@ -1,0 +1,33 @@
+Missing: 6), I am unsure how to handle arrays of authors in Publcation
+
+
+
+inheritance in postgres https://www.postgresql.org/docs/9.0/static/ddl-inherit.html
+
+ALTER TABLE DomainObject {
+	ADD unique USING INDEX id
+}
+
+ALTER TABLE Publication{
+	title String NOT NULL,
+	year int,
+	author String[] NOT NULL,
+	CHECK (year > 1900 && year < Now().year +2),
+	CHECK (author != [])
+}
+
+CREATE TRIGGER t1
+BEFORE
+INSERT OR UPDATE
+isbn
+On Proceedings
+WHEN (NEW.isbn != OLD.isbn){
+	note = note + "ISBN updated, old value was " + OLD.isbn
+}
+
+ALTER TABLE InProceedings {
+	crossref String NOT NULL,
+	FOREIGN KEY (crossref) REFERENCES Proceedings(id),
+	CHECK (note == "Draft" || note == "Submitted" || note =="Accepted" || note == "Published")
+}
+
