@@ -1,5 +1,7 @@
 package infsysProj.infsysProj;
 
+import javax.validation.constraints.NotNull;
+
 import org.zoodb.api.impl.ZooPC;
 
 /**
@@ -8,6 +10,7 @@ import org.zoodb.api.impl.ZooPC;
 
 public class DomainObject extends ZooPC  {
 
+	@NotNull
 	String id;
 
 	public String getId() {

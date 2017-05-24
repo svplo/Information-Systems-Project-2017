@@ -4,23 +4,31 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import javax.jdo.Extent;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.zoodb.jdo.ZooJdoHelper;
 import org.zoodb.tools.ZooHelper;
 
-import infsysProj.infsysProj.*;
+import infsysProj.infsysProj.Conference;
+import infsysProj.infsysProj.ConferenceEdition;
+import infsysProj.infsysProj.InProceedings;
+import infsysProj.infsysProj.Person;
+import infsysProj.infsysProj.Proceedings;
+import infsysProj.infsysProj.Publication;
+import infsysProj.infsysProj.Publisher;
+import infsysProj.infsysProj.Series;
 
 public class DatabaseHelperZooDB extends DatabaseHelper {
 	private  PersistenceManager pm;
@@ -1337,7 +1345,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		closeDB(pm);
 	}
 
-	public  void addProceedings(List<Proceedings> list) {
+	public  void addProceedings(List<Proceedings> list, Boolean init) {
+		
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
 
 		pm.setMultithreaded(true);
 
@@ -1345,6 +1356,14 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		for (int i = 0; i < length; i++) {
 			pm.currentTransaction().begin();
 			pm.currentTransaction().setRetainValues(true);
+			// if you remove the !, the program exits
+			if(!init){
+				Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(list.get(i));
+				if(1 != constraintViolations.size()){
+					System.out.println("Proceeding does not have an domain id.");
+					System.exit(1);
+				}
+			}
 			pm.makePersistent(list.get(i));
 			pm.currentTransaction().commit();
 
