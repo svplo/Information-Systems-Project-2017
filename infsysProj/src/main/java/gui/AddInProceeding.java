@@ -100,7 +100,7 @@ public class AddInProceeding extends MyJFrame {
 
 				}
 
-				DatabaseHelper.get().addInProceeding(newInProc,txtProceeding.getText(),authors);
+				DatabaseHelper.get().addInProceeding(newInProc,txtProceeding.getText(),authors, false);
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}

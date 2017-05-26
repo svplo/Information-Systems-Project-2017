@@ -67,7 +67,7 @@ public class AddPerson extends MyJFrame {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String newName = txtTitle.getText();
-				DatabaseHelper.get().addPerson(newName, authoredPublications, editedPublications);
+				DatabaseHelper.get().addPerson(newName, authoredPublications, editedPublications, false);
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}

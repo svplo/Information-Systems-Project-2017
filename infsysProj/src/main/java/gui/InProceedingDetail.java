@@ -110,7 +110,7 @@ public class InProceedingDetail extends MyJFrame {
 				}
 
 				//Need to get Proceeding _
-				DatabaseHelper.get().updateInProceeding(inProceeding.getId(),newInProc,txtProceeding.getText(),authors);
+				DatabaseHelper.get().updateInProceeding(inProceeding.getId(),newInProc,txtProceeding.getText(),authors, false);
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}

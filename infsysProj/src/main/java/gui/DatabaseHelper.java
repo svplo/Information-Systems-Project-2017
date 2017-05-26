@@ -115,21 +115,21 @@ abstract class DatabaseHelper {
 
 	abstract List<Publication> searchForInProceedings(String search);
 
-	abstract void updatePerson(String oldName, String name, List<String> authoredPublications, List<String> editedPublications);
+	abstract void updatePerson(String oldName, String name, List<String> authoredPublications, List<String> editedPublications, boolean init);
 
 	abstract void deletePerson(String name);
 
-	abstract void updateProceeding(String title, Proceedings newProc, List<String> authors, List<String> inProcNames, String publisherName, String seriesName, String conferenceName, int confYear);
+	abstract void updateProceeding(String title, Proceedings newProc, List<String> authors, List<String> inProcNames, String publisherName, String seriesName, String conferenceName, int confYear, boolean init);
 
 	abstract void deleteProceeding(String title);
 
-	abstract void addPerson(String newName, List<String> authoredPublications, List<String> editedPublications);
+	abstract void addPerson(String newName, List<String> authoredPublications, List<String> editedPublications, boolean init);
 
 	abstract void deleteInProceeding(String id);
 
-	abstract void updateInProceeding(String id, InProceedings newInProceeding, String procTitle, List<String> authors);
+	abstract void updateInProceeding(String id, InProceedings newInProceeding, String procTitle, List<String> authors, boolean init);
 
-	abstract void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors);
+	abstract void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors, boolean init);
 
 	abstract void addProceeding(Proceedings newProceeding, List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear);
 

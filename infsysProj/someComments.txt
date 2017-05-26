@@ -1,0 +1,8 @@
+2. attribute Publication.title must be of type string:
+	slide 48 from data quality constraints lecture:
+		Mongodb is data type free
+
+		Zoodb: type already ensured through domain classes?
+
+
+Not implemented: Update/add Publications --> how to do testing?

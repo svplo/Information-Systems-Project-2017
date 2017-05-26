@@ -555,7 +555,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 	}
 
-	public  void updatePerson(String personName, String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications) {
+	public  void updatePerson(String personName, String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications, Boolean init) {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -571,7 +574,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 		Collection<Person> proceedings = (Collection<Person>) query.execute(personName);
 		List<Person> allPublications = new ArrayList<Person>(proceedings);
-		Person p;
+		Person p = null;
 		if (proceedings.isEmpty()) {
 			System.out.println("Error: Did not find a publication with ID: " + personName);
 		} else {
@@ -648,13 +651,23 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 			pm.makePersistent(p);
 		}
 
+		if(!init){
+			Set<ConstraintViolation<Person>> constraintViolations = validator.validate(p);
+			if(1 != constraintViolations.size()){
+				pm.currentTransaction().rollback();
+				throw new Error("Person does not have a unique domain id");
+			}
+		}
+		
 		pm.currentTransaction().commit();
 		closeDB(pm);
 
 	}
 
-	public  void addPerson(String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications) {
-
+	public  void addPerson(String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications, boolean init) {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -713,6 +726,14 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		p.setAuthoredPublications(autPubs);
 		pm.makePersistent(p);
 
+		if(!init){
+			Set<ConstraintViolation<Person>> constraintViolations = validator.validate(p);
+			if(1 != constraintViolations.size()){
+				pm.currentTransaction().rollback();
+				throw new Error("Person does not have a unique domain id");
+			}
+		}
+		
 		pm.currentTransaction().commit();
 		closeDB(pm);
 
@@ -819,8 +840,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 	}
 
-	public  void addInProceedings(List<InProceedings> list) {
-
+	public  void addInProceedings(List<InProceedings> list, boolean init) {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
 		pm.setMultithreaded(true);
 
 		int length = list.size();
@@ -828,6 +851,13 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 			pm.currentTransaction().begin();
 			pm.currentTransaction().setRetainValues(true);
 			pm.makePersistent(list.get(i));
+			if(!init){
+				Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(list.get(i));
+				if(1 != constraintViolations.size()){
+					pm.currentTransaction().rollback();
+					throw new Error("In proceedings does not have a unique domain id");
+				}
+			}
 			pm.currentTransaction().commit();
 
 			if (i % 500 == 0) {
@@ -839,7 +869,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		System.out.println("All InProceedings added to Database");
 	}
 
-	public  void updateInProceeding(String name, InProceedings newInProc, String proceedingsName, List<String> authors) {
+	public  void updateInProceeding(String name, InProceedings newInProc, String proceedingsName, List<String> authors, boolean init) {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -934,7 +967,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 	}
 
-	public  void updateProceeding(String name, Proceedings newProc, List<String> authors, List<String> inProceedings, String publisherName, String seriesName, String conf, int confEdition) {
+	public  void updateProceeding(String name, Proceedings newProc, List<String> authors, List<String> inProceedings, String publisherName, String seriesName, String conf, int confEdition, boolean init) {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -1149,7 +1185,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 	}
 
-	public  void addProceeding(Proceedings newProc, List<String> authors, List<String> inProceedings, String publisherName, String seriesName, String conf, int confEdition) {
+	public  void addProceeding(Proceedings newProc, List<String> authors, List<String> inProceedings, String publisherName, String seriesName, String conf, int confEdition, boolean init) {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -1283,7 +1322,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 	}
 
-	public  void addInProceeding(InProceedings newInProc, String proceedingsName, List<String> authors) {
+	public  void addInProceeding(InProceedings newInProc, String proceedingsName, List<String> authors, Boolean init) {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
 		pm.currentTransaction().setRetainValues(true);
@@ -1339,6 +1381,14 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 		newInProc.setAuthors(newAuthors);
 
+		if(!init){
+			Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(newInProc);
+			if(1 != constraintViolations.size()){
+				pm.currentTransaction().rollback();
+				throw new Error("Proceeding does not have a domain id");
+			}
+		}
+		
 		pm.makePersistent(newInProc);
 
 		pm.currentTransaction().commit();
@@ -1356,12 +1406,12 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		for (int i = 0; i < length; i++) {
 			pm.currentTransaction().begin();
 			pm.currentTransaction().setRetainValues(true);
-			// if you remove the !, the program exits
+			// if you remove the !, the program exits during parsing
 			if(!init){
 				Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(list.get(i));
 				if(1 != constraintViolations.size()){
-					System.out.println("Proceeding does not have an domain id.");
-					System.exit(1);
+					pm.currentTransaction().rollback();
+					throw new Error("Proceeding does not have a unique domain id");
 				}
 			}
 			pm.makePersistent(list.get(i));
@@ -2122,6 +2172,24 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 	@Override
 	List<String> getAuthorsOfInProceeding(InProceedings inProceeding) {
 		return getAuthorsOfInProceeding(inProceeding.getTitle());
+	}
+
+	@Override
+	void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors, boolean init) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	void updatePerson(String oldName, String name, List<String> authoredPublications, List<String> editedPublications, boolean init) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	void addProceeding(Proceedings newProceeding, List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

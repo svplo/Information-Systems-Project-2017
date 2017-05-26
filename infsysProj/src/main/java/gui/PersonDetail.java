@@ -79,7 +79,7 @@ public class PersonDetail extends MyJFrame {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String newName = txtTitle.getText();
-				DatabaseHelper.get().updatePerson(person.getName(),newName, authoredPublications, editedPublications);
+				DatabaseHelper.get().updatePerson(person.getName(),newName, authoredPublications, editedPublications, false);
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}

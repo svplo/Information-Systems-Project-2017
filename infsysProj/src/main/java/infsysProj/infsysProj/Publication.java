@@ -4,12 +4,20 @@ package infsysProj.infsysProj;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 /**
  * Defines the base state for a publication. Is inherited by all specialized types of publications.
  */
 public class Publication extends DomainObject {
+	@NotNull
 	String title;
 	List<Person> authors = new LinkedList<Person>();
+	
+	@Min(value = 1901)
+	@Max(value = 1)
 	int year;
 	String electronicEdition;
 

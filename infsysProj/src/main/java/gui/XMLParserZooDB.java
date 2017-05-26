@@ -39,7 +39,7 @@ public class XMLParserZooDB {
 		dh.createDBinternal();
 		dh.openDB();
 		dh.addProceedings(readProceedings, true);
-		dh.addInProceedings(readInProceedings);
+		dh.addInProceedings(readInProceedings, true);
 		dh.closeDB();
 
 	}
