@@ -111,10 +111,10 @@ public class AddProceedings extends MyJFrame {
 				newProc.setIsbn(txtISBN.getText());
 				newProc.setVolume(txtVolume.getText());
 				try{
-					DatabaseHelper.get().addProceeding(newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),Integer.parseInt(txtConfEdition.getText()));
+					DatabaseHelper.get().addProceeding(newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),Integer.parseInt(txtConfEdition.getText()), false);
 				}
 				catch(NumberFormatException e){
-					DatabaseHelper.get().addProceeding(newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0);
+					DatabaseHelper.get().addProceeding(newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0, false);
 
 				}
 

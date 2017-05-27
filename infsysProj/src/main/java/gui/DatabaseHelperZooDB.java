@@ -855,7 +855,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 				Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(list.get(i));
 				if(1 != constraintViolations.size()){
 					pm.currentTransaction().rollback();
-					throw new Error("In proceedings does not have a unique domain id");
+					throw new Error(constraintViolations.iterator().next().getMessage());
 				}
 			}
 			pm.currentTransaction().commit();
@@ -895,7 +895,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		if (proceedings.isEmpty()) {
 			System.out.println("Error: Did not find a publication with ID: " + name);
 		} else {
-			p = proceedings.iterator().next();
+			p = proceedings.iterator().next();			
 			p.setTitle(newInProc.getTitle());
 			p.setNote(newInProc.getNote());
 			p.setElectronicEdition(newInProc.getElectronicEdition());
@@ -935,6 +935,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 				oldAuthor.setAuthoredPublications(newSet);
 				pm.makePersistent(oldAuthor);
 			}
+
 			List<Person> theNewAuthors = new ArrayList<Person>();
 			for (String newAuthor : authors) {
 				Query query2 = pm.newQuery(Person.class);
@@ -959,6 +960,16 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 			}
 			p.setAuthors(theNewAuthors);
 
+			System.out.println("here");
+			if(!init){
+				System.out.println("ttthere");
+				Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(p);
+				if(1 != constraintViolations.size()){
+					pm.currentTransaction().rollback();
+					throw new Error(constraintViolations.iterator().next().getMessage());
+				}
+			}
+			
 			pm.makePersistent(p);
 		}
 
@@ -980,13 +991,20 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		query.declareParameters("String a");
 
 		Collection<Proceedings> proceedings = (Collection<Proceedings>) query.execute(name);
-		Proceedings p;
+		Proceedings p = null;
 		if (proceedings.isEmpty()) {
 			System.out.println("Error: Did not find a publication with name: " + name);
 		} else {
 			p = proceedings.iterator().next();
 			p.setTitle(newProc.getTitle());
-			p.setNote(newProc.getNote());
+			//constraint 5
+			String newNote = "";
+			if(! p.getIsbn().equals(newProc.getIsbn())){
+				newNote = newProc.getNote() + " "+ "ISBN updated, old value was " + p.getIsbn();
+			} else {
+				newNote = newProc.getNote();
+			}
+			p.setNote(newNote);
 			p.setElectronicEdition(newProc.getElectronicEdition());
 			p.setYear(newProc.getYear());
 			p.setNumber(newProc.getNumber());
@@ -1180,6 +1198,14 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 			pm.makePersistent(p);
 		}
 
+		if(!init){
+			Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(p);
+			if(0 != constraintViolations.size()){
+				pm.currentTransaction().rollback();
+				throw new Error(constraintViolations.iterator().next().getMessage());
+			}
+		}
+		
 		pm.currentTransaction().commit();
 		closeDB(pm);
 
@@ -1315,6 +1341,15 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		ed.setYear(confEdition);
 		ed.setConference(inProc5);
 		p.setConferenceEdition(ed);
+		
+		if(!init){
+			Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(p);
+			if(1 != constraintViolations.size()){
+				pm.currentTransaction().rollback();
+				throw new Error(constraintViolations.iterator().next().getMessage());
+			}
+		}
+		
 		pm.makePersistent(p);
 
 		pm.currentTransaction().commit();
@@ -2182,12 +2217,6 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 	@Override
 	void updatePerson(String oldName, String name, List<String> authoredPublications, List<String> editedPublications, boolean init) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	void addProceeding(Proceedings newProceeding, List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear) {
 		// TODO Auto-generated method stub
 		
 	}

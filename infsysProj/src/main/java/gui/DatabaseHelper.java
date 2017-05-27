@@ -131,7 +131,7 @@ abstract class DatabaseHelper {
 
 	abstract void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors, boolean init);
 
-	abstract void addProceeding(Proceedings newProceeding, List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear);
+	abstract void addProceeding(Proceedings newProceeding, List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear, boolean init);
 
 	/**
 	 * 

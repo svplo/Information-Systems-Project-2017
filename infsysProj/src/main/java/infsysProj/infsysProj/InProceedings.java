@@ -2,12 +2,18 @@ package infsysProj.infsysProj;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
+import constraints.ValidNote;
+
 /**
  * A type of article that was published as part of a conference proceedings (one conference proceeding features many in proceedings).
  */
 public class InProceedings extends Publication {
+	@ValidNote
 	String note;
 	String pages;
+	@NotNull
 	Proceedings proceedings;
 	
 
