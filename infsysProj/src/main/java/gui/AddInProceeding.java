@@ -99,8 +99,15 @@ public class AddInProceeding extends MyJFrame {
 					newInProc.setYear(0);
 
 				}
-
-				DatabaseHelper.get().addInProceeding(newInProc,txtProceeding.getText(),authors, false);
+				try {
+					DatabaseHelper.get().addInProceeding(newInProc,txtProceeding.getText(),authors, false);
+				} catch(Error e){
+					JOptionPane.showMessageDialog(
+					authorsTable,
+					e,
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+				}
 				caller.reloadDataFromDatabase();
 				closeWindow();
 			}

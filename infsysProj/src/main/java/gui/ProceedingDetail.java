@@ -126,9 +126,21 @@ public class ProceedingDetail extends MyJFrame {
 					DatabaseHelper.get().updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),Integer.parseInt(txtConfEdition.getText()), false);
 				}
 				catch(NumberFormatException e){
-					DatabaseHelper.get().updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0, false);
+					try {
+						DatabaseHelper.get().updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0, false);
+					} catch(Error e1){
+						JOptionPane.showMessageDialog(
+						authorsTable,
+						e1,
+						"Error",
+						JOptionPane.ERROR_MESSAGE);
+					}
 				} catch(Error e){
-					System.out.println(e);
+					JOptionPane.showMessageDialog(
+					authorsTable,
+					e,
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
 				}
 
 				caller.reloadDataFromDatabase();

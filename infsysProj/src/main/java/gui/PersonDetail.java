@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
@@ -79,8 +80,16 @@ public class PersonDetail extends MyJFrame {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String newName = txtTitle.getText();
-				DatabaseHelper.get().updatePerson(person.getName(),newName, authoredPublications, editedPublications, false);
-				caller.reloadDataFromDatabase();
+				try {
+					DatabaseHelper.get().updatePerson(person.getName(),newName, authoredPublications, editedPublications, false);
+				} catch (Error e){
+					JOptionPane.showMessageDialog(
+					authoredPublicationsTable,
+					e,
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+				}
+					caller.reloadDataFromDatabase();
 				closeWindow();
 			}
 		});
