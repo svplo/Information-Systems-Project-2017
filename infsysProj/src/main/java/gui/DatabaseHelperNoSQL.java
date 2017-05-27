@@ -4,28 +4,25 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.parsers.ParserConfigurationException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
-import org.bson.BsonDocument;
 import org.bson.Document;
-import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
-import org.xml.sax.SAXException;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
-import com.mongodb.CommandResult;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -40,7 +37,14 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 
-import infsysProj.infsysProj.*;
+import infsysProj.infsysProj.Conference;
+import infsysProj.infsysProj.ConferenceEdition;
+import infsysProj.infsysProj.InProceedings;
+import infsysProj.infsysProj.Person;
+import infsysProj.infsysProj.Proceedings;
+import infsysProj.infsysProj.Publication;
+import infsysProj.infsysProj.Publisher;
+import infsysProj.infsysProj.Series;
 
 
 //Run the following command to open the database localhost: C:\Program Files\MongoDB\Server\3.4\bin>mongod.exe
@@ -529,7 +533,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		return result;
 	}
 
-	public void addInProceedings(List<InProceedings> list) {
+	public void addInProceedings(List<InProceedings> list, boolean init) {
 		MongoCollection<Document> collection = database.getCollection("InProceedings");
 		int length = list.size();
 		List<Document> documents = new ArrayList<Document>();
@@ -548,12 +552,21 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		System.out.println("All InProceedings added to Database");
 	}
 
-	public void addPersons(List<Person> list) {
+	public void addPersons(List<Person> list, boolean init) {
 		// Add Persons
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
 		MongoCollection<Document> collection = database.getCollection("Person");
 		int length = list.size();
 		List<Document> documents = new ArrayList<Document>();
 		for (int i = 0; i < length; i++) {
+			if(!init){
+				Set<ConstraintViolation<Person>> constraintViolations = validator.validate(list.get(i));
+				if(1 != constraintViolations.size()){
+					closeConnectionDB();
+					throw new Error(constraintViolations.iterator().next().getMessage());
+				}
+			}
 			documents.add(AdaptorNoSQL.toDBDocument(list.get(i)));
 		}
 		if (!documents.isEmpty()) {
@@ -631,7 +644,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	/*
 	 * Person Add/Del/Upd
 	 */
-	public void addProceedings(List<Proceedings> list) {
+	public void addProceedings(List<Proceedings> list, boolean init) {
 
 		// Add Proceedings
 		MongoCollection<Document> collection = database.getCollection("Proceedings");
@@ -690,13 +703,51 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 	}
 
-	public void updatePerson(String id, String name, List<String> authoredPublications, List<String> editedPublications) {
+	public void updatePerson(String id, String name, List<String> authoredPublications, List<String> editedPublications, boolean init) {
 		connectToDB();
 		createDBintern();
-
-		// remove Person from authorList of authored Publications
+		
 		Iterator<Document> cursor0 = myQuery("Person", "_id", id);
 		Person oldPerson = AdaptorNoSQL.toPerson(cursor0.next());
+		
+		Iterator<String> aPubIter = authoredPublications.iterator();
+		Iterator<String> ePubIter = editedPublications.iterator();
+		Set<Publication> aPublications = new HashSet<Publication>();
+		Set<Publication> ePublications = new HashSet<Publication>();
+		while (aPubIter.hasNext()) {
+
+			Iterator<Document> cursor = myQuery("InProceedings", "title", aPubIter.next());
+			while (cursor.hasNext()) {
+				InProceedings inProceeding = AdaptorNoSQL.toInProceedings(cursor.next());
+				inProceeding.addAuthor(oldPerson);
+				myReplacement("InProceedings", "_id", inProceeding.getId(), AdaptorNoSQL.toDBDocument(inProceeding));
+				aPublications.add(inProceeding);
+
+			}
+		}
+		while (ePubIter.hasNext()) {
+			Iterator<Document> cursor = myQuery("Proceedings", "title", ePubIter.next());
+			while (cursor.hasNext()) {
+				Proceedings proceeding = AdaptorNoSQL.toProceeding(cursor.next());
+				proceeding.addAuthor(oldPerson);
+				myReplacement("Proceedings", "_id", proceeding.getId(), AdaptorNoSQL.toDBDocument(proceeding));
+				ePublications.add(proceeding);
+			}
+		}
+		Person p = new Person(id, name, aPublications, ePublications);
+		
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
+		if(!init){
+			Set<ConstraintViolation<Person>> constraintViolations = validator.validate(p);
+			if(1 != constraintViolations.size()){
+				closeConnectionDB();
+				throw new Error(constraintViolations.iterator().next().getMessage());
+			}
+		}
+
+		// remove Person from authorList of authored Publications
 		for (Publication inProc : oldPerson.getAuthoredPublications()) {
 			Iterator<Document> cursor1 = myQuery("InProceedings", "_id", inProc.getId());
 			InProceedings inProceeding = AdaptorNoSQL.toInProceedings(cursor1.next());
@@ -724,31 +775,6 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			myReplacement("Proceedings", "_id", proc.getId(), AdaptorNoSQL.toDBDocument(proceeding));
 		}
 
-		Iterator<String> aPubIter = authoredPublications.iterator();
-		Iterator<String> ePubIter = editedPublications.iterator();
-		Set<Publication> aPublications = new HashSet<Publication>();
-		Set<Publication> ePublications = new HashSet<Publication>();
-		while (aPubIter.hasNext()) {
-
-			Iterator<Document> cursor = myQuery("InProceedings", "title", aPubIter.next());
-			while (cursor.hasNext()) {
-				InProceedings inProceeding = AdaptorNoSQL.toInProceedings(cursor.next());
-				inProceeding.addAuthor(oldPerson);
-				myReplacement("InProceedings", "_id", inProceeding.getId(), AdaptorNoSQL.toDBDocument(inProceeding));
-				aPublications.add(inProceeding);
-
-			}
-		}
-		while (ePubIter.hasNext()) {
-			Iterator<Document> cursor = myQuery("Proceedings", "title", ePubIter.next());
-			while (cursor.hasNext()) {
-				Proceedings proceeding = AdaptorNoSQL.toProceeding(cursor.next());
-				proceeding.addAuthor(oldPerson);
-				myReplacement("Proceedings", "_id", proceeding.getId(), AdaptorNoSQL.toDBDocument(proceeding));
-				ePublications.add(proceeding);
-			}
-		}
-		Person p = new Person(id, name, aPublications, ePublications);
 		myReplacement("Person", "_id", id, AdaptorNoSQL.toDBDocument(p));
 		closeConnectionDB();
 	}
@@ -791,10 +817,10 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		closeConnectionDB();
 	}
 
-	public void updateProceeding(String title,Proceedings newProc,List<String> authors,List<String> inProcNames, String publisherName, String seriesName, String conferenceName,int confYear){
+	public void updateProceeding(String title,Proceedings newProc,List<String> authors,List<String> inProcNames, String publisherName, String seriesName, String conferenceName,int confYear, boolean init){
 		
 		deleteProceeding(title);
-		addProceeding(newProc,authors,inProcNames,publisherName,seriesName,conferenceName,confYear);
+		addProceeding(newProc,authors,inProcNames,publisherName,seriesName,conferenceName,confYear, init);
 	}
 
 	
@@ -880,7 +906,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		closeConnectionDB();
 	}
 
-	public void addPerson(String newName, List<String> authoredPublications, List<String> editedPublications) {
+	public void addPerson(String newName, List<String> authoredPublications, List<String> editedPublications, boolean init) {
 		connectToDB();
 		createDBintern();
 		String id = (new ObjectId()).toString();
@@ -917,6 +943,16 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 		// instead of updating only specific fields, replace them all
 		MongoCollection<Document> collection = database.getCollection("Person");
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
+		if(!init){
+			Set<ConstraintViolation<Person>> constraintViolations = validator.validate(p);
+			if(1 != constraintViolations.size()){
+				closeConnectionDB();
+				throw new Error(constraintViolations.iterator().next().getMessage());
+			}
+		}
 		collection.insertOne(AdaptorNoSQL.toDBDocument(p));
 
 		closeConnectionDB();
@@ -1015,12 +1051,12 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		closeConnectionDB();
 	}
 
-	public void updateInProceeding(String id, InProceedings newInProceeding, String procTitle, List<String> authors) {
+	public void updateInProceeding(String id, InProceedings newInProceeding, String procTitle, List<String> authors, boolean init) {
 		connectToDB();
 		createDBintern();
 
 		deleteInProceeding(id);
-		addInProceeding(newInProceeding,procTitle,authors);
+		addInProceeding(newInProceeding,procTitle,authors, init);
 		
 		closeConnectionDB();
 	}
@@ -1029,7 +1065,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		System.out.println(o);
 	}
 
-	public void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors) {
+	public void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors, boolean init) {
 		connectToDB();
 		createDBintern();
 		
@@ -1065,16 +1101,29 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		
 		MongoCollection<Document> collection = database.getCollection("InProceedings");
 		collection.insertOne(AdaptorNoSQL.toDBDocument(newInProceeding));
+		
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
+		if(!init){
+			Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(newInProceeding);
+			if(1 != constraintViolations.size()){
+				deleteInProceeding(newInProceeding.getId());
+				closeConnectionDB();
+				throw new Error(constraintViolations.iterator().next().getMessage());
+			}
+		}
 
 		closeConnectionDB();
 
 	}
 
-	public void addProceeding(Proceedings newProceeding,List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear) {
+	public void addProceeding(Proceedings newProceeding,List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear, boolean init) {
 		connectToDB();
 		createDBintern();
 		
 		
+		String oldId = newProceeding.getId();
 		//create new ID for new InProceedings
 		String id = (new ObjectId()).toString();
 		newProceeding.setId(id);
@@ -1083,6 +1132,32 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		//update all authors
 		Iterator<String> authorIter = authors.iterator();
 		List<Person> authorsList = new ArrayList<Person>();
+		newProceeding.setAuthors(authorsList);
+		
+		Iterator<String> inProcIter = inProceedings.iterator();
+		Set<InProceedings> inProcList = new HashSet<InProceedings>();
+		newProceeding.setInProceedings(inProcList);
+		
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
+		if(!init){
+			Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(newProceeding);
+			if(1 != constraintViolations.size()){
+				closeConnectionDB();
+				throw new Error(constraintViolations.iterator().next().getMessage());
+			}
+		}
+		
+		//constraint 5
+		Iterator<Document> cursor1 = myQuery("Proceedings", "id", oldId);
+		String currentIsbn = AdaptorNoSQL.toProceeding(cursor1.next()).getIsbn();
+		if(! currentIsbn.equals(newProceeding.getIsbn())){
+			newProceeding.setNote(newProceeding.getNote() + " "+ "ISBN updated, old value was " + currentIsbn);
+		} else {
+			newProceeding.setNote(newProceeding.getNote());
+		}
+		
 		while (authorIter.hasNext()) {
 			
 			Iterator<Document> cursor = myQuery("Person", "name", authorIter.next());
@@ -1093,11 +1168,8 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 				authorsList.add(p);
 			}
 		}
-		newProceeding.setAuthors(authorsList);
 		
 		//update all authors
-		Iterator<String> inProcIter = inProceedings.iterator();
-		Set<InProceedings> inProcList = new HashSet<InProceedings>();
 		while (inProcIter.hasNext()) {
 			
 			Iterator<Document> cursor = myQuery("InProceedings", "title", inProcIter.next());
@@ -1108,8 +1180,6 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 				inProcList.add(p);
 			}
 		}
-		newProceeding.setInProceedings(inProcList);
-		
 		
 		//handle Publisher
 		Iterator<Document> cursor = myQuery("Publisher", "name", pubName);
@@ -1184,7 +1254,6 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 		
 		myInsert("Proceedings", AdaptorNoSQL.toDBDocument(newProceeding));
-
 		closeConnectionDB();
 
 	}

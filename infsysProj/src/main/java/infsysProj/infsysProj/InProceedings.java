@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import constraints.ValidNote;
+import constraints.ValidPages;
 
 /**
  * A type of article that was published as part of a conference proceedings (one conference proceeding features many in proceedings).
@@ -12,6 +13,7 @@ import constraints.ValidNote;
 public class InProceedings extends Publication {
 	@ValidNote
 	String note;
+	@ValidPages
 	String pages;
 	@NotNull
 	Proceedings proceedings;

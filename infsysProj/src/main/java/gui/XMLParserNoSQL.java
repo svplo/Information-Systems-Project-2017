@@ -38,9 +38,9 @@ public class XMLParserNoSQL {
 		DatabaseHelperNoSQL dh = (DatabaseHelperNoSQL) DatabaseHelper.get();
 		dh.connectToDB();
 		dh.createDBintern();
-		dh.addProceedings(readProceedings);
-		dh.addPersons(readPeople);
-		dh.addInProceedings(readInProceedings);
+		dh.addProceedings(readProceedings, true);
+		dh.addPersons(readPeople, true);
+		dh.addInProceedings(readInProceedings, true);
 		dh.addConferences(readConferences);
 		dh.addSeries(readSeries);
 		dh.addPublishers(readPublishers);

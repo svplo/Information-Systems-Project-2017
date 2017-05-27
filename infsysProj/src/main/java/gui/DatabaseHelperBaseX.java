@@ -10,21 +10,41 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.basex.core.*;
-import org.basex.core.cmd.*;
-import org.basex.query.*;
-import org.basex.query.iter.*;
-import org.basex.query.value.item.*;
+import org.basex.core.BaseXException;
+import org.basex.core.Context;
+import org.basex.core.cmd.Close;
+import org.basex.core.cmd.CreateDB;
+import org.basex.core.cmd.InfoDB;
+import org.basex.core.cmd.Open;
+import org.basex.core.cmd.Optimize;
+import org.basex.query.QueryException;
+import org.basex.query.QueryIOException;
+import org.basex.query.QueryProcessor;
+import org.basex.query.iter.Iter;
+import org.basex.query.value.item.Item;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import infsysProj.infsysProj.*;
+import infsysProj.infsysProj.Conference;
+import infsysProj.infsysProj.ConferenceEdition;
+import infsysProj.infsysProj.DomainObject;
+import infsysProj.infsysProj.InProceedings;
+import infsysProj.infsysProj.Person;
+import infsysProj.infsysProj.Proceedings;
+import infsysProj.infsysProj.Publication;
+import infsysProj.infsysProj.Publisher;
+import infsysProj.infsysProj.Series;
 
 public class DatabaseHelperBaseX extends DatabaseHelper{
 	private Context context;
@@ -445,9 +465,9 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 		return result;
 	}
 
-	public  void updatePerson(String oldName, String name, List<String> authoredPublications, List<String> editedPublications) {
+	public  void updatePerson(String oldName, String name, List<String> authoredPublications, List<String> editedPublications, boolean init) {
 		deletePerson(oldName);
-		addPerson(name, authoredPublications, editedPublications);
+		addPerson(name, authoredPublications, editedPublications, init);
 	}
 
 	public  void deletePerson(String name) {
@@ -460,10 +480,10 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 		closeConnectionDB();
 	}
 
-	public  void updateProceeding(String title, Proceedings newProc, List<String> authors, List<String> inProcNames, String publisherName, String seriesName, String conferenceName, int confYear) {
+	public  void updateProceeding(String title, Proceedings newProc, List<String> authors, List<String> inProcNames, String publisherName, String seriesName, String conferenceName, int confYear, boolean init) {
 
 		deleteProceeding(title);
-		addProceeding(newProc, authors, inProcNames, publisherName, seriesName, conferenceName, confYear);
+		addProceeding(newProc, authors, inProcNames, publisherName, seriesName, conferenceName, confYear, init);
 	}
 
 	public  void deleteProceeding(String title) {
@@ -474,9 +494,9 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 		closeConnectionDB();
 	}
 
-	public  void addPerson(String newName, List<String> authoredPublications, List<String> editedPublications) {
+	public  void addPerson(String newName, List<String> authoredPublications, List<String> editedPublications, boolean init) {
 		connectToDB();
-		
+		//TODO add constraints
 		for(String title : authoredPublications){
 			String query = "insert node ("+ toxml("author", newName)+") into /root/inproceedings[title = \"" + escape(title) + "\"]";
 			myQuery(query);
@@ -499,9 +519,9 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 		closeConnectionDB();
 	}
 
-	public  void updateInProceeding(String id, InProceedings newInProceeding, String procTitle, List<String> authors) {
+	public  void updateInProceeding(String id, InProceedings newInProceeding, String procTitle, List<String> authors, boolean init) {
 		deleteInProceeding(id);
-		addInProceeding(newInProceeding, procTitle, authors);
+		addInProceeding(newInProceeding, procTitle, authors, init);
 		return;
 	}
 
@@ -520,12 +540,22 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 		return "<" + tag + ">" + value + "</" + tag + ">";
 	}
 
-	public  void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors) {
+	public  void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors, boolean init) {
 		connectToDB();
 
 		// create new ID for new InProceedings
 		String id = java.util.UUID.randomUUID().toString();
 		newInProceeding.setId(id);
+		
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
+		if(!init){
+			Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(newInProceeding);
+			if(0 != constraintViolations.size()){
+				throw new Error(constraintViolations.iterator().next().getMessage());
+			}
+		}
 		
 		String authorXml = "";
 		for(String s : authors){
@@ -564,11 +594,12 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 
 	}
 
-	public  void addProceeding(Proceedings newProceeding, List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear) {
+	public  void addProceeding(Proceedings newProceeding, List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear, boolean init) {
 		connectToDB();
 		
 		//TODO: escape characters like < >
 		// create new ID for new InProceedings
+		String title = newProceeding.getTitle();
 		String id = java.util.UUID.randomUUID().toString();
 		newProceeding.setId(id);
 		
@@ -577,12 +608,31 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 			authorXml = authorXml + toxml("editor", s);
 		}
 			
+		String newNote ="";
+		
+		String queryProc = "for $x in /root/proceedings where contains($x/title,\"" + escape(title) + "\") return $x/isbn/text()";
+		List<String> resProc = myQuery(queryProc);
+		String currentIsbn = resProc.iterator().next();
+		if(! currentIsbn.equals(newProceeding.getIsbn())){
+			newNote = newProceeding.getNote() + " "+ "ISBN updated, old value was " + currentIsbn;
+		} else {
+			newNote = newProceeding.getNote();
+		}
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
+		if(!init){
+			Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(newProceeding);
+			if(0 != constraintViolations.size()){
+				throw new Error(constraintViolations.iterator().next().getMessage());
+			}
+		}
 		String query1 = "insert node (<proceedings><tag>nodeToEdit</tag>"
 						+authorXml
 						+toxml("isbn",newProceeding.getIsbn())
 						+toxml("title",newProceeding.getTitle())
 						+toxml("year",String.valueOf(newProceeding.getYear()))
-						+toxml("note",newProceeding.getNote())
+						+toxml("note",newNote)
 						+toxml("ee",newProceeding.getElectronicEdition()) 
 						+toxml("volume",newProceeding.getVolume()) 
 						+toxml("number",String.valueOf(newProceeding.getNumber())) 

@@ -127,7 +127,8 @@ public class ProceedingDetail extends MyJFrame {
 				}
 				catch(NumberFormatException e){
 					DatabaseHelper.get().updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0, false);
-
+				} catch(Error e){
+					System.out.println(e);
 				}
 
 				caller.reloadDataFromDatabase();

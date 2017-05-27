@@ -114,8 +114,21 @@ public class AddProceedings extends MyJFrame {
 					DatabaseHelper.get().addProceeding(newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),Integer.parseInt(txtConfEdition.getText()), false);
 				}
 				catch(NumberFormatException e){
-					DatabaseHelper.get().addProceeding(newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0, false);
-
+					try{
+						DatabaseHelper.get().addProceeding(newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0, false);
+					}catch(Error e1){
+						JOptionPane.showMessageDialog(
+						inProceedingsTable,
+						e1,
+						"Error",
+						JOptionPane.ERROR_MESSAGE);
+					}
+				}catch(Error e1){
+					JOptionPane.showMessageDialog(
+					inProceedingsTable,
+					e1,
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
 				}
 
 				caller.reloadDataFromDatabase();
