@@ -103,6 +103,7 @@ public class ProceedingDetail extends MyJFrame {
 				String newName = txtTitle.getText();
 				Proceedings newProc = new Proceedings();
 				newProc.setTitle(txtTitle.getText());
+				newProc.setId(proceeding.getID());
 				newProc.setElectronicEdition(txtElect.getText());
 				newProc.setNote(txtNote.getText());
 				newProc.setIsbn(txtISBN.getText());
@@ -124,6 +125,9 @@ public class ProceedingDetail extends MyJFrame {
 				newProc.setVolume(txtVolume.getText());
 				try{
 					DatabaseHelper.get().updateProceeding(proceeding.getTitle(),newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),Integer.parseInt(txtConfEdition.getText()), false);
+					caller.reloadDataFromDatabase();
+					closeWindow();
+
 				}
 				catch(NumberFormatException e){
 					try {
@@ -143,8 +147,6 @@ public class ProceedingDetail extends MyJFrame {
 					JOptionPane.ERROR_MESSAGE);
 				}
 
-				caller.reloadDataFromDatabase();
-				closeWindow();
 			}
 		});
 

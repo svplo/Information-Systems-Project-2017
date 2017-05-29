@@ -562,9 +562,10 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		for (int i = 0; i < length; i++) {
 			if(!init){
 				Set<ConstraintViolation<Person>> constraintViolations = validator.validate(list.get(i));
-				if(1 != constraintViolations.size()){
+				if(0 != constraintViolations.size()){
 					closeConnectionDB();
-					throw new Error(constraintViolations.iterator().next().getMessage());
+					ConstraintViolation<Person> next = constraintViolations.iterator().next();
+					throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
 				}
 			}
 			documents.add(AdaptorNoSQL.toDBDocument(list.get(i)));
@@ -741,9 +742,10 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		
 		if(!init){
 			Set<ConstraintViolation<Person>> constraintViolations = validator.validate(p);
-			if(1 != constraintViolations.size()){
+			if(0 != constraintViolations.size()){
 				closeConnectionDB();
-				throw new Error(constraintViolations.iterator().next().getMessage());
+				ConstraintViolation<Person> next = constraintViolations.iterator().next();
+				throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
 			}
 		}
 
@@ -818,7 +820,21 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	}
 
 	public void updateProceeding(String title,Proceedings newProc,List<String> authors,List<String> inProcNames, String publisherName, String seriesName, String conferenceName,int confYear, boolean init){
+		connectToDB();
+		createDBintern();
+
+		//constraint 5
+		System.out.println(newProc.getID());
+		Iterator<Document> cursor1 = myQuery("Proceedings", "id", newProc.getId());
+		String currentIsbn = AdaptorNoSQL.toProceeding(cursor1.next()).getIsbn();
+		if(! currentIsbn.equals(newProc.getIsbn())){
+			newProc.setNote(newProc.getNote() + " "+ "ISBN updated, old value was " + currentIsbn);
+		} else {
+			newProc.setNote(newProc.getNote());
+		}
 		
+		closeConnectionDB();
+
 		deleteProceeding(title);
 		addProceeding(newProc,authors,inProcNames,publisherName,seriesName,conferenceName,confYear, init);
 	}
@@ -948,9 +964,10 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		
 		if(!init){
 			Set<ConstraintViolation<Person>> constraintViolations = validator.validate(p);
-			if(1 != constraintViolations.size()){
+			if(0 != constraintViolations.size()){
 				closeConnectionDB();
-				throw new Error(constraintViolations.iterator().next().getMessage());
+				ConstraintViolation<Person> next = constraintViolations.iterator().next();
+				throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
 			}
 		}
 		collection.insertOne(AdaptorNoSQL.toDBDocument(p));
@@ -1107,10 +1124,11 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		
 		if(!init){
 			Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(newInProceeding);
-			if(1 != constraintViolations.size()){
+			if(0 != constraintViolations.size()){
 				deleteInProceeding(newInProceeding.getId());
 				closeConnectionDB();
-				throw new Error(constraintViolations.iterator().next().getMessage());
+				ConstraintViolation<InProceedings> next = constraintViolations.iterator().next();
+				throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
 			}
 		}
 
@@ -1122,8 +1140,6 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		connectToDB();
 		createDBintern();
 		
-		
-		String oldId = newProceeding.getId();
 		//create new ID for new InProceedings
 		String id = (new ObjectId()).toString();
 		newProceeding.setId(id);
@@ -1140,24 +1156,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();
-		
-		if(!init){
-			Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(newProceeding);
-			if(1 != constraintViolations.size()){
-				closeConnectionDB();
-				throw new Error(constraintViolations.iterator().next().getMessage());
-			}
-		}
-		
-		//constraint 5
-		Iterator<Document> cursor1 = myQuery("Proceedings", "id", oldId);
-		String currentIsbn = AdaptorNoSQL.toProceeding(cursor1.next()).getIsbn();
-		if(! currentIsbn.equals(newProceeding.getIsbn())){
-			newProceeding.setNote(newProceeding.getNote() + " "+ "ISBN updated, old value was " + currentIsbn);
-		} else {
-			newProceeding.setNote(newProceeding.getNote());
-		}
-		
+				
 		while (authorIter.hasNext()) {
 			
 			Iterator<Document> cursor = myQuery("Person", "name", authorIter.next());
@@ -1251,6 +1250,15 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		newProceeding.setConferenceEdition(confE);
 		myInsert("ConferenceEdition", AdaptorNoSQL.toDBDocument(confE));
 		
+		System.out.println(newProceeding.getId());
+		if(!init){
+			Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(newProceeding);
+			if(0 != constraintViolations.size()){
+				closeConnectionDB();
+				ConstraintViolation<Proceedings> next = constraintViolations.iterator().next();
+				throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
+			}
+		}
 
 		
 		myInsert("Proceedings", AdaptorNoSQL.toDBDocument(newProceeding));

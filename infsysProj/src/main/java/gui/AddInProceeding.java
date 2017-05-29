@@ -101,15 +101,15 @@ public class AddInProceeding extends MyJFrame {
 				}
 				try {
 					DatabaseHelper.get().addInProceeding(newInProc,txtProceeding.getText(),authors, false);
+					caller.reloadDataFromDatabase();
+					closeWindow();
 				} catch(Error e){
 					JOptionPane.showMessageDialog(
 					authorsTable,
-					e,
+					e.toString(),
 					"Error",
 					JOptionPane.ERROR_MESSAGE);
 				}
-				caller.reloadDataFromDatabase();
-				closeWindow();
 			}
 		});
 

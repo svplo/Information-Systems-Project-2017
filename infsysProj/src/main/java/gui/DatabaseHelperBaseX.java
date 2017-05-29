@@ -481,6 +481,24 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 	}
 
 	public  void updateProceeding(String title, Proceedings newProc, List<String> authors, List<String> inProcNames, String publisherName, String seriesName, String conferenceName, int confYear, boolean init) {
+		connectToDB();
+
+		String newNote;
+		String queryProc = "/root/proceedings[title = \"" + escape(title) + "\"]/isbn/text()";
+
+		//String queryProc = "for $x in /root/proceedings where contains($x/title,\"" + escape(title) + "\") return $x/isbn/text()";
+		List<String> resProc = myQuery(queryProc);
+		String currentIsbn = "";
+		if(resProc.iterator().hasNext()){
+			currentIsbn = resProc.iterator().next();
+		}
+		if(! currentIsbn.equals(newProc.getIsbn())){
+			newNote = newProc.getNote() + " "+ "ISBN updated, old value was " + currentIsbn;
+		} else {
+			newNote = newProc.getNote();
+		}
+		newProc.setNote(newNote);
+		closeConnectionDB();
 
 		deleteProceeding(title);
 		addProceeding(newProc, authors, inProcNames, publisherName, seriesName, conferenceName, confYear, init);
@@ -543,19 +561,14 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 	public  void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors, boolean init) {
 		connectToDB();
 
+		for(String a : authors){
+			newInProceeding.addAuthor(new Person());
+		}
+
 		// create new ID for new InProceedings
 		String id = java.util.UUID.randomUUID().toString();
 		newInProceeding.setId(id);
 		
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		Validator validator = factory.getValidator();
-		
-		if(!init){
-			Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(newInProceeding);
-			if(0 != constraintViolations.size()){
-				throw new Error(constraintViolations.iterator().next().getMessage());
-			}
-		}
 		
 		String authorXml = "";
 		for(String s : authors){
@@ -568,6 +581,21 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 		if(procKey.size() != 0){
 			crossrefXml = toxml("crossref", procKey.get(0).replaceAll("key=", "").replaceAll("\"", ""));
 		}
+		if(!crossrefXml.equals("")){
+			newInProceeding.setProceedings(new Proceedings());
+		}
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
+		if(!init){
+			Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(newInProceeding);
+			if(0 != constraintViolations.size()){
+				closeConnectionDB();
+				ConstraintViolation<InProceedings> next = constraintViolations.iterator().next();
+				throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
+			}
+		}
+
 
 		String query1 = "insert node (<inproceedings><tag>nodeToEdit</tag>"
 						+authorXml
@@ -597,6 +625,9 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 	public  void addProceeding(Proceedings newProceeding, List<String> authors, List<String> inProceedings, String pubName, String seriesName, String confName, int confYear, boolean init) {
 		connectToDB();
 		
+		for(String a : authors){
+			newProceeding.addAuthor(new Person());
+		}
 		//TODO: escape characters like < >
 		// create new ID for new InProceedings
 		String title = newProceeding.getTitle();
@@ -609,7 +640,7 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 		}
 			
 		String newNote ="";
-		
+		/*
 		String queryProc = "for $x in /root/proceedings where contains($x/title,\"" + escape(title) + "\") return $x/isbn/text()";
 		List<String> resProc = myQuery(queryProc);
 		String currentIsbn = resProc.iterator().next();
@@ -617,14 +648,18 @@ public class DatabaseHelperBaseX extends DatabaseHelper{
 			newNote = newProceeding.getNote() + " "+ "ISBN updated, old value was " + currentIsbn;
 		} else {
 			newNote = newProceeding.getNote();
-		}
+		}*/
+		newNote = newProceeding.getNote();
+
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();
 		
 		if(!init){
 			Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(newProceeding);
 			if(0 != constraintViolations.size()){
-				throw new Error(constraintViolations.iterator().next().getMessage());
+				closeConnectionDB();
+				ConstraintViolation<Proceedings> next = constraintViolations.iterator().next();
+				throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
 			}
 		}
 		String query1 = "insert node (<proceedings><tag>nodeToEdit</tag>"

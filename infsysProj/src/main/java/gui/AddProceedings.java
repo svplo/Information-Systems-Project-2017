@@ -112,10 +112,16 @@ public class AddProceedings extends MyJFrame {
 				newProc.setVolume(txtVolume.getText());
 				try{
 					DatabaseHelper.get().addProceeding(newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),Integer.parseInt(txtConfEdition.getText()), false);
+					caller.reloadDataFromDatabase();
+					closeWindow();
+
 				}
 				catch(NumberFormatException e){
 					try{
 						DatabaseHelper.get().addProceeding(newProc,authors,inProcNames, txtPublisher.getText(), txtSeries.getText(), txtConf.getText(),0, false);
+						caller.reloadDataFromDatabase();
+						closeWindow();
+
 					}catch(Error e1){
 						JOptionPane.showMessageDialog(
 						inProceedingsTable,
@@ -131,8 +137,6 @@ public class AddProceedings extends MyJFrame {
 					JOptionPane.ERROR_MESSAGE);
 				}
 
-				caller.reloadDataFromDatabase();
-				closeWindow();
 			}
 		});
 

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import constraints.CheckYear;
@@ -16,6 +17,7 @@ import constraints.CheckYear;
  */
 public class Publication extends DomainObject {
 	@NotNull
+	@NotBlank
 	String title;
 	
 	@NotNull

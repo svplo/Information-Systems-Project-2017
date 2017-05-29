@@ -653,7 +653,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 		if(!init){
 			Set<ConstraintViolation<Person>> constraintViolations = validator.validate(p);
-			if(1 != constraintViolations.size()){
+			if(0 != constraintViolations.size()){
 				pm.currentTransaction().rollback();
 				throw new Error("Person does not have a unique domain id");
 			}
@@ -728,7 +728,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 		if(!init){
 			Set<ConstraintViolation<Person>> constraintViolations = validator.validate(p);
-			if(1 != constraintViolations.size()){
+			if(0 != constraintViolations.size()){
 				pm.currentTransaction().rollback();
 				throw new Error("Person does not have a unique domain id");
 			}
@@ -796,7 +796,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		pm.currentTransaction().setRetainValues(true);
 
 		Query query = pm.newQuery(InProceedings.class);
-		query.setFilter("title == a");
+		query.setFilter("id == a");
 		query.declareParameters("String a");
 
 		Collection<InProceedings> proceedings1 = (Collection<InProceedings>) query.execute(title);
@@ -853,9 +853,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 			pm.makePersistent(list.get(i));
 			if(!init){
 				Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(list.get(i));
-				if(1 != constraintViolations.size()){
+				if(0 != constraintViolations.size()){
 					pm.currentTransaction().rollback();
-					throw new Error(constraintViolations.iterator().next().getMessage());
+					ConstraintViolation<InProceedings> next = constraintViolations.iterator().next();
+					throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
 				}
 			}
 			pm.currentTransaction().commit();
@@ -887,7 +888,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		 * }
 		 */
 		Query query = pm.newQuery(InProceedings.class);
-		query.setFilter("title == a");
+		query.setFilter("id == a");
 		query.declareParameters("String a");
 
 		Collection<InProceedings> proceedings = (Collection<InProceedings>) query.execute(name);
@@ -964,9 +965,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 			if(!init){
 				System.out.println("ttthere");
 				Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(p);
-				if(1 != constraintViolations.size()){
+				if(0 != constraintViolations.size()){
 					pm.currentTransaction().rollback();
-					throw new Error(constraintViolations.iterator().next().getMessage());
+					ConstraintViolation<InProceedings> next = constraintViolations.iterator().next();
+					throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
 				}
 			}
 			
@@ -1202,7 +1204,8 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 			Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(p);
 			if(0 != constraintViolations.size()){
 				pm.currentTransaction().rollback();
-				throw new Error(constraintViolations.iterator().next().getMessage());
+				ConstraintViolation<Proceedings> next = constraintViolations.iterator().next();
+				throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
 			}
 		}
 		
@@ -1344,9 +1347,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		
 		if(!init){
 			Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(p);
-			if(1 != constraintViolations.size()){
+			if(0 != constraintViolations.size()){
 				pm.currentTransaction().rollback();
-				throw new Error(constraintViolations.iterator().next().getMessage());
+				ConstraintViolation<Proceedings> next = constraintViolations.iterator().next();
+				throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
 			}
 		}
 		
@@ -1356,8 +1360,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		closeDB(pm);
 
 	}
+	
 
-	public  void addInProceeding(InProceedings newInProc, String proceedingsName, List<String> authors, Boolean init) {
+	@Override
+	public  void addInProceeding(InProceedings newInProc, String proceedingsName, List<String> authors, boolean init) {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();
 		
@@ -1418,9 +1424,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 		if(!init){
 			Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(newInProc);
-			if(1 != constraintViolations.size()){
+			if(0 != constraintViolations.size()){
 				pm.currentTransaction().rollback();
-				throw new Error("Proceeding does not have a domain id");
+				ConstraintViolation<InProceedings> next = constraintViolations.iterator().next();
+				throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
 			}
 		}
 		
@@ -1444,7 +1451,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 			// if you remove the !, the program exits during parsing
 			if(!init){
 				Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(list.get(i));
-				if(1 != constraintViolations.size()){
+				if(0 != constraintViolations.size()){
 					pm.currentTransaction().rollback();
 					throw new Error("Proceeding does not have a unique domain id");
 				}
@@ -2209,11 +2216,6 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		return getAuthorsOfInProceeding(inProceeding.getTitle());
 	}
 
-	@Override
-	void addInProceeding(InProceedings newInProceeding, String procTitle, List<String> authors, boolean init) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	void updatePerson(String oldName, String name, List<String> authoredPublications, List<String> editedPublications, boolean init) {

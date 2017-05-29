@@ -112,6 +112,9 @@ public class InProceedingDetail extends MyJFrame {
 				//Need to get Proceeding _
 				try{
 					DatabaseHelper.get().updateInProceeding(inProceeding.getId(),newInProc,txtProceeding.getText(),authors, false);
+					caller.reloadDataFromDatabase();
+					closeWindow();
+
 				}catch(Error e1){
 					JOptionPane.showMessageDialog(
 					authorsTable,
@@ -120,8 +123,6 @@ public class InProceedingDetail extends MyJFrame {
 					JOptionPane.ERROR_MESSAGE);
 				}
 
-				caller.reloadDataFromDatabase();
-				closeWindow();
 			}
 		});
 
@@ -463,34 +464,6 @@ public class InProceedingDetail extends MyJFrame {
 				}
 
 			}
-		});
-
-		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				// Proceedings Update Fields
-				String title = txtTitle.getText();
-				
-				try{
-					int year = Integer.parseInt(txtYear.getText());
-				}
-				catch(NumberFormatException eef){
-					int year = 0;
-
-				}
-
-				// List<String> authors;
-				String elect = txtElect.getText();
-				String note = txtNote.getText();
-				String pages = txtPages.getText();
-				String proceeding = txtProceeding.getText();
-
-				// List<String> inProceedings;
-
-				// DatabaseHelper.UpdateProceedings(inProceeding.getId(), title, year, elect, note, pages, proceeding);
-				dispose();
-			}
-
 		});
 
 		setContentPane(contentPane);
