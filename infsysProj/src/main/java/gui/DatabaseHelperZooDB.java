@@ -18,6 +18,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+import org.bson.types.ObjectId;
 import org.zoodb.jdo.ZooJdoHelper;
 import org.zoodb.tools.ZooHelper;
 
@@ -981,8 +982,6 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 	}
 
 	public  void updateProceeding(String name, Proceedings newProc, List<String> authors, List<String> inProceedings, String publisherName, String seriesName, String conf, int confEdition, boolean init) {
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		Validator validator = factory.getValidator();
 		
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -1080,20 +1079,21 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 			query1.declareParameters("String a");
 
 			Collection<Publisher> inProceed = (Collection<Publisher>) query1.execute(p.getPublisher().getName());
-			Publisher inProc;
+			Publisher publisherP;
 			if (inProceed.isEmpty()) {
 				System.out.println("Error: Did not find a Publisher with name: " + p.getPublisher().getName());
 			} else {
-				inProc = inProceed.iterator().next();
-				Set<Publication> oldSet = inProc.getPublications();
+				publisherP = inProceed.iterator().next();
+				Set<Publication> oldSet = publisherP.getPublications();
 				Set<Publication> newSet = new HashSet<Publication>();
 				for (Publication ufhe : oldSet) {
+					System.out.println(ufhe.getTitle());
 					if (!ufhe.getTitle().equals(newProc.getTitle())) {
 						newSet.add(ufhe);
 					}
 				}
-				inProc.setPublications(newSet);
-				pm.makePersistent(inProc);
+				publisherP.setPublications(newSet);
+				pm.makePersistent(publisherP);
 			}
 
 			// add Proceeding to new Publisher and add Publisher to Proceeding (possibly creat new Publisher)
@@ -1201,6 +1201,9 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		}
 
 		if(!init){
+			ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+			Validator validator = factory.getValidator();
+
 			Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(p);
 			if(0 != constraintViolations.size()){
 				pm.currentTransaction().rollback();
@@ -1215,8 +1218,6 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 	}
 
 	public  void addProceeding(Proceedings newProc, List<String> authors, List<String> inProceedings, String publisherName, String seriesName, String conf, int confEdition, boolean init) {
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		Validator validator = factory.getValidator();
 		
 		PersistenceManager pm = ZooJdoHelper.openDB(dbStandardName);
 		pm.currentTransaction().begin();
@@ -1234,6 +1235,8 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 			return;
 		}
 		Proceedings p = newProc;
+		String id = (new ObjectId()).toString();
+		p.setId(id);
 
 		// add new authors to Proceeding and add Proceeding to authors
 		List<Person> newAuthors = new ArrayList<Person>();
@@ -1346,6 +1349,8 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		p.setConferenceEdition(ed);
 		
 		if(!init){
+			ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+			Validator validator = factory.getValidator();
 			Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(p);
 			if(0 != constraintViolations.size()){
 				pm.currentTransaction().rollback();
@@ -1364,6 +1369,10 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 	@Override
 	public  void addInProceeding(InProceedings newInProc, String proceedingsName, List<String> authors, boolean init) {
+		
+		String id = (new ObjectId()).toString();
+		newInProc.setId(id);
+
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();
 		
