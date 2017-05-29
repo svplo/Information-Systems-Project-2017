@@ -100,7 +100,8 @@ public class AdaptorNoSQL {
 		proc.setElectronicEdition((String)doc.get("electronicEdition"));
 		proc.setTitle((String) doc.get("title"));
 		proc.setYear((int)doc.getInteger("year"));
-		
+		proc.setPages(doc.getString("pages"));
+
 		List<Person> authors = new ArrayList<Person>();
 		List<Document> authorsIDsDoc = ((List<Document>)doc.get("authors"));
 		for(Document d: authorsIDsDoc){

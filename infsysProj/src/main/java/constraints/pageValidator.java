@@ -14,7 +14,7 @@ public class pageValidator implements ConstraintValidator<ValidPages, String> {
         } else if(object.matches("[0-9]+")){
         	return true;
         }
-        object.replaceFirst("-", "");
+        object = object.replaceFirst("-", "");
         if (object.matches("[0-9]+")){
         	return true;
         } else {

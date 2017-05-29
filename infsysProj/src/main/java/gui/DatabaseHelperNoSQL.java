@@ -825,18 +825,19 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 
 		//constraint 5
 		System.out.println(newProc.getID());
-		Iterator<Document> cursor1 = myQuery("Proceedings", "id", newProc.getId());
+		Iterator<Document> cursor1 = myQuery("Proceedings", "_id", newProc.getId());
 		String currentIsbn = AdaptorNoSQL.toProceeding(cursor1.next()).getIsbn();
 		if(! currentIsbn.equals(newProc.getIsbn())){
-			newProc.setNote(newProc.getNote() + " "+ "ISBN updated, old value was " + currentIsbn);
+			newProc.setNote("ISBN updated, old value was " + currentIsbn);
 		} else {
 			newProc.setNote(newProc.getNote());
 		}
 		
 		closeConnectionDB();
 
-		deleteProceeding(title);
 		addProceeding(newProc,authors,inProcNames,publisherName,seriesName,conferenceName,confYear, init);
+		deleteProceeding(title);
+
 	}
 
 	
@@ -1069,13 +1070,11 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 	}
 
 	public void updateInProceeding(String id, InProceedings newInProceeding, String procTitle, List<String> authors, boolean init) {
-		connectToDB();
-		createDBintern();
+		
+		addInProceeding(newInProceeding,procTitle,authors, init);
 
 		deleteInProceeding(id);
-		addInProceeding(newInProceeding,procTitle,authors, init);
 		
-		closeConnectionDB();
 	}
 	
 	public void p(Object o){
@@ -1116,8 +1115,6 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		}
 		
 		
-		MongoCollection<Document> collection = database.getCollection("InProceedings");
-		collection.insertOne(AdaptorNoSQL.toDBDocument(newInProceeding));
 		
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();
@@ -1125,12 +1122,15 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		if(!init){
 			Set<ConstraintViolation<InProceedings>> constraintViolations = validator.validate(newInProceeding);
 			if(0 != constraintViolations.size()){
-				deleteInProceeding(newInProceeding.getId());
+				//deleteInProceeding(newInProceeding.getId());
 				closeConnectionDB();
 				ConstraintViolation<InProceedings> next = constraintViolations.iterator().next();
 				throw new Error(next.getPropertyPath().toString() +" " + next.getMessage());
 			}
 		}
+		
+		MongoCollection<Document> collection = database.getCollection("InProceedings");
+		collection.insertOne(AdaptorNoSQL.toDBDocument(newInProceeding));
 
 		closeConnectionDB();
 
@@ -1153,10 +1153,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		Iterator<String> inProcIter = inProceedings.iterator();
 		Set<InProceedings> inProcList = new HashSet<InProceedings>();
 		newProceeding.setInProceedings(inProcList);
-		
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		Validator validator = factory.getValidator();
-				
+						
 		while (authorIter.hasNext()) {
 			
 			Iterator<Document> cursor = myQuery("Person", "name", authorIter.next());
@@ -1251,7 +1248,10 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 		myInsert("ConferenceEdition", AdaptorNoSQL.toDBDocument(confE));
 		
 		System.out.println(newProceeding.getId());
+
 		if(!init){
+			ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+			Validator validator = factory.getValidator();
 			Set<ConstraintViolation<Proceedings>> constraintViolations = validator.validate(newProceeding);
 			if(0 != constraintViolations.size()){
 				closeConnectionDB();
@@ -1260,7 +1260,7 @@ public class DatabaseHelperNoSQL extends DatabaseHelper{
 			}
 		}
 
-		
+		System.out.println(newProceeding.getID());
 		myInsert("Proceedings", AdaptorNoSQL.toDBDocument(newProceeding));
 		closeConnectionDB();
 
