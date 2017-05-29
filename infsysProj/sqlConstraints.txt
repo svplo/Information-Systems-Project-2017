@@ -4,30 +4,42 @@ Missing: 6), I am unsure how to handle arrays of authors in Publcation
 
 inheritance in postgres https://www.postgresql.org/docs/9.0/static/ddl-inherit.html
 
-ALTER TABLE DomainObject {
+ALTER TABLE DomainObject (
 	ADD unique USING INDEX id
-}
+);
 
-ALTER TABLE Publication{
+ALTER TABLE Publication(
 	title String NOT NULL,
 	year int,
-	author String[] NOT NULL,
-	CHECK (year > 1900 && year < Now().year +2),
-	CHECK (author != [])
-}
+	CHECK (year > 1900 && year < Now().year +1),
+	CHECK ((SELECT COUNT(*) c FROM (SELECT * FROM authors WHERE publication = id) > 0)
+);
 
 CREATE TRIGGER t1
 BEFORE
 INSERT OR UPDATE
 isbn
 On Proceedings
-WHEN (NEW.isbn != OLD.isbn){
+WHEN (NEW.isbn != OLD.isbn)(
 	note = note + "ISBN updated, old value was " + OLD.isbn
-}
+);
 
-ALTER TABLE InProceedings {
+ALTER TABLE InProceedings (
 	crossref String NOT NULL,
+	pages String,
 	FOREIGN KEY (crossref) REFERENCES Proceedings(id),
-	CHECK (note == "Draft" || note == "Submitted" || note =="Accepted" || note == "Published")
-}
+	CHECK (note == "Draft" || note == "Submitted" || note =="Accepted" || note == "Published"),
+	CHECK(pages LIKE [0-9] OR pages LIKE [0-9]-[0-9] or pages == NULL)
+);
 
+ALTER TABLE Proceedings(
+	
+	ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+ALTER TABLE authors(
+	person String NOT NULL,
+	FOREIGN KEY (person) REFERENCES Person(id),
+	publication String NOT NULL,
+	FOREIGN KEY publication REFERENCES Publication(id)
+);
