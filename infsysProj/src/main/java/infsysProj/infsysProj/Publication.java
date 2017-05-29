@@ -16,16 +16,16 @@ import constraints.CheckYear;
  * Defines the base state for a publication. Is inherited by all specialized types of publications.
  */
 public class Publication extends DomainObject {
-	@NotNull
-	@NotBlank
+	@NotNull(message = "Title cannot be null")
+	@NotBlank(message = "Title cannot be empty")
 	String title;
 	
-	@NotNull
-	@NotEmpty
+	@NotNull(message = "Authors cannot be null")
+	@NotEmpty(message = "Authors cannot be empty")
 	List<Person> authors = new LinkedList<Person>();
 	
-	@Min(value = 1901)
-	@CheckYear
+	@Min(value = 1901, message = "Minimum value for year is 1901")
+	@CheckYear(message = "Year cannot be larger than currentYear+1")
 	int year;
 	String electronicEdition;
 

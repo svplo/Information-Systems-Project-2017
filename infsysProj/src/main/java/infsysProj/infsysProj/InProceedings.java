@@ -11,11 +11,11 @@ import constraints.ValidPages;
  * A type of article that was published as part of a conference proceedings (one conference proceeding features many in proceedings).
  */
 public class InProceedings extends Publication {
-	@ValidNote
+	@ValidNote(message = "Note is invalid")
 	String note;
-	@ValidPages
+	@ValidPages(message = "Pages have an invalid format")
 	String pages;
-	@NotNull
+	@NotNull(message = "List of proceedings cannot be null")
 	Proceedings proceedings;
 	
 

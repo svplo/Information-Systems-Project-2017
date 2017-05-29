@@ -10,7 +10,7 @@ import org.zoodb.api.impl.ZooPC;
 
 public class DomainObject extends ZooPC  {
 
-	@NotNull
+	@NotNull(message = "Domain Object needs to have an ID")
 	String id;
 
 	public String getId() {
