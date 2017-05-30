@@ -12,6 +12,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -290,6 +291,22 @@ public class StartWindow extends JFrame {
 		btnQueriesTableFrame.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
 		btnQueriesTableFrame.setBounds(100, 600, 200, 25);
 		contentPane.add(btnQueriesTableFrame);
+		
+		/*
+		JButton btnAddProceeding = new JButton("AddProceeding with id: ");
+		JTextField txtId = new JTextField();
+		txtId.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
+		txtId.setBounds(240, 650, 150, 25);
+		contentPane.add(txtId);
+		btnQueriesTableFrame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0){
+				
+			}
+		});
+		btnAddProceeding.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
+		btnAddProceeding.setBounds(20, 650, 200, 25);
+		contentPane.add(btnAddProceeding);
+		*/
 	}
 	
 }

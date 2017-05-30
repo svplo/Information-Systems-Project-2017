@@ -8,12 +8,32 @@ ALTER TABLE DomainObject (
 	ADD unique USING INDEX id
 );
 
+//START Maybe better
+
+ALTER TABLE DomainObject
+	ADD UNIQUE (id);
+
+//END
+
 ALTER TABLE Publication(
 	title String NOT NULL,
 	year int,
 	CHECK (year > 1900 && year < Now().year +1),
 	CHECK ((SELECT COUNT(*) c FROM (SELECT * FROM authors WHERE publication = id) > 0)
 );
+
+//START
+
+ALTER TABLE Publication
+ALTER COLUMN title String SET NOT NULL;
+
+ALTER TABLE Publication
+ADD CONSTRAINT Check_Year CHECK (year > 1900 && year < Now().year +1);
+
+ALTER TABLE Publication
+ADD CONSTRAINT Check_Authors CHECK ((SELECT COUNT(*) c FROM (SELECT * FROM authors WHERE publication = id) > 0);
+
+//END
 
 CREATE TRIGGER t1
 BEFORE
@@ -32,10 +52,34 @@ ALTER TABLE InProceedings (
 	CHECK(pages LIKE [0-9] OR pages LIKE [0-9]-[0-9] or pages == NULL)
 );
 
+//START
+
+ALTER TABLE InProceedings
+ALTER COLUMN crossref String SET NOT NULL;
+
+ALTER TABLE InProceedings
+ADD FOREIGN KEY (crossref) REFERENCES Proceedings(id);
+
+ALTER TABLE IProceedings
+ADD CONSTRAINT Check_Note CHECK (note == "Draft" || note == "Submitted" || note =="Accepted" || note == "Published");
+
+ALTER TABLE IProceedings
+ADD CONSTRAINT Check_Page CHECK (pages LIKE [0-9] OR pages LIKE [0-9]-[0-9] or pages == NULL);
+
+//END
+
+
 ALTER TABLE Proceedings(
 	
 	ON DELETE RESTRICT ON UPDATE CASCADE
 );
+
+//START
+
+ALTER TABLE Proceedings
+ADD CONSTRAINT Proceeding_Delete ON DELETE RESTRICT ON UPDATE CASCADE;
+
+//END
 
 ALTER TABLE authors(
 	person String NOT NULL,
@@ -43,3 +87,20 @@ ALTER TABLE authors(
 	publication String NOT NULL,
 	FOREIGN KEY publication REFERENCES Publication(id)
 );
+
+//START
+
+ALTER TABLE Authors
+ALTER COLUMN person String SET NOT NULL;
+
+ALTER TABLE Authors
+ALTER COLUMN publication STRNIG SET NOT NULL;
+
+ALTER TABLE Authors
+ADD FOREIGN KEY (person) REFERENCES Person(id);
+
+ALTER TABLE Authors
+ADD FOREIGN KEY (publication) REFERENCES Publication(id);
+
+//END
+
