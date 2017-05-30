@@ -556,7 +556,7 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 
 	}
 
-	public  void updatePerson(String personName, String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications, Boolean init) {
+	public  void updatePerson(String personName, String newPersonName, List<String> newAuthoredPublications, List<String> newEditedPublications, boolean init) {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();
 		
@@ -2225,11 +2225,5 @@ public class DatabaseHelperZooDB extends DatabaseHelper {
 		return getAuthorsOfInProceeding(inProceeding.getTitle());
 	}
 
-
-	@Override
-	void updatePerson(String oldName, String name, List<String> authoredPublications, List<String> editedPublications, boolean init) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
 import infsysProj.infsysProj.*;
 
 
-abstract class DatabaseHelper {
+public abstract class DatabaseHelper {
 
 	
 	static class QueryData {
